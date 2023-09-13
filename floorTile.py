@@ -7,12 +7,13 @@
 #       an x and y coordinate alongside this class
 #
 
-class floorTile():
+
+class floorTile:
     def __init__(self):
         self.dirtiness = 0.0
         self.carpetType = 0
-        self.parentRoomName = 'Default Room'
-        
+        self.parentRoomName = "Default Room"
+
     def clean(self, efficiency):
-        #TO BE IMPLEMENTED
+        # TO BE IMPLEMENTED
         1
