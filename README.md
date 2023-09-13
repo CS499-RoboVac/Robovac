@@ -10,7 +10,8 @@ We will be using python 11 with Pygame, Tkinter, and any other libraries we end 
 Go [here](https://docs.conda.io/en/latest/miniconda.html) to install the correct Miniconda version for your system **Make sure you acccept the default settings**
 
 On Windows, launch the program called Anaconda prompt. This will be your terminal
-![Anaconda Prompt Image](AnacondaPrompt.png)
+
+![Anaconda Prompt Image](Documentation/AnacondaPrompt.png)
 
 On Mac and Linux, just use your default terminal for all terminal commands
 
