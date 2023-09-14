@@ -51,4 +51,7 @@ class Vec2():
 def Collision(pos, r, m): #(float, float) pos, float r, {(int, int):FloorTile} m -> bool
     for x in range(floor(pos.x-r), ceil(pos.x+r)+1):
         for y in range(floor(pos.y-r), ceil(pos.y+r)+1):
-            
+            if (Vec2(x, y)-pos).length()<r: #we looped over a square; now we're using the ones within a radius in that square
+                if not (x, y) in m:
+                    return True #there was a collision
+    return False #no collisions, we can go onwards
