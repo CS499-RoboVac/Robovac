@@ -39,24 +39,33 @@ class Button:
         if self.is_clicked(pygame.mouse.get_pos()) and not self.activated:
             self.activated = True
             self.action()
-            
 
         # Check if the button is being released
         if self.is_released(pygame.mouse.get_pos()):
             self.activated = False
 
         # Draw the button
-        pygame.draw.rect(canvas, active_color, (self.x, self.y, self.width, self.height))
+        pygame.draw.rect(
+            canvas, active_color, (self.x, self.y, self.width, self.height)
+        )
 
         # Draw the text
-        canvas.blit(self.text, (self.x + (self.width / 2 - self.text.get_width() / 2),
-                                self.y + (self.height / 2 - self.text.get_height() / 2)))
+        canvas.blit(
+            self.text,
+            (
+                self.x + (self.width / 2 - self.text.get_width() / 2),
+                self.y + (self.height / 2 - self.text.get_height() / 2),
+            ),
+        )
 
     # Check if the button is being hovered over
     # @param mouse_pos: The position of the mouse
     # @return: True if the button is being hovered over, False otherwise
     def is_hovered(self, mouse_pos):
-        return self.x <= mouse_pos[0] <= self.x + self.width and self.y <= mouse_pos[1] <= self.y + self.height
+        return (
+            self.x <= mouse_pos[0] <= self.x + self.width
+            and self.y <= mouse_pos[1] <= self.y + self.height
+        )
 
     # Check if the button is being clicked
     # @param mouse_pos: The position of the mouse
@@ -69,4 +78,3 @@ class Button:
     # @return: True if the button is being clicked, False otherwise
     def is_released(self, mouse_pos):
         return self.is_hovered(mouse_pos) and not pygame.mouse.get_pressed()[0]
-    

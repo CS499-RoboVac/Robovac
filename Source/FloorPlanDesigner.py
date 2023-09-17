@@ -14,7 +14,10 @@ tkRoot = tk.Tk()
 
 # How much of the screen should the canvas take up on start?
 start_size = 0.6
-screen_resolution = (tkRoot.winfo_screenwidth() * start_size, tkRoot.winfo_screenheight() * start_size)
+screen_resolution = (
+    tkRoot.winfo_screenwidth() * start_size,
+    tkRoot.winfo_screenheight() * start_size,
+)
 
 # Initialize pygame
 pygame.init()
@@ -31,13 +34,13 @@ toolbar = MainToolbar.MainToolbar(canvas, screen_resolution)
 
 
 while not exit:
-	canvas.fill(Colors.WHITE)
-	toolbar.draw()
+    canvas.fill(Colors.WHITE)
+    toolbar.draw()
 
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			exit = True
-		elif event.type == pygame.VIDEORESIZE:
-			screen_resolution = (event.w, event.h)
-			canvas = pygame.display.set_mode(screen_resolution, pygame.RESIZABLE)
-	pygame.display.update()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            exit = True
+        elif event.type == pygame.VIDEORESIZE:
+            screen_resolution = (event.w, event.h)
+            canvas = pygame.display.set_mode(screen_resolution, pygame.RESIZABLE)
+    pygame.display.update()

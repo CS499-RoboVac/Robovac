@@ -3,6 +3,7 @@
 from Common import Colors, Fonts, UI, Util
 import pygame
 
+
 class MainToolbar:
     # @param canvas: The canvas to draw the toolbar on
     # @param screen_resolution: The resolution of the screen
@@ -14,7 +15,17 @@ class MainToolbar:
         self.buttons = []
 
         # Add a button to the toolbar
-        testButton = UI.Button(10, 10, 100, 50, "Test", Fonts.button_font, Colors.GRAY, Colors.DARK_GRAY, lambda: print("Test"))
+        testButton = UI.Button(
+            10,
+            10,
+            100,
+            50,
+            "Test",
+            Fonts.button_font,
+            Colors.GRAY,
+            Colors.DARK_GRAY,
+            lambda: print("Test"),
+        )
         self.buttons.append(testButton)
 
         # Draw the title
@@ -25,9 +36,17 @@ class MainToolbar:
     # Called every frame by the main application loop
     def draw(self):
         # Draw the toolbar
-        pygame.draw.rect(self.canvas, Colors.LIGHT_GRAY, (0, 0, Util.scale_value(0.2, 200, self.screen_resolution[0], 400), self.screen_resolution[1]))
+        pygame.draw.rect(
+            self.canvas,
+            Colors.LIGHT_GRAY,
+            (
+                0,
+                0,
+                Util.scale_value(0.2, 200, self.screen_resolution[0], 400),
+                self.screen_resolution[1],
+            ),
+        )
 
         # Draw the buttons
         for button in self.buttons:
             button.draw(self.canvas)
-

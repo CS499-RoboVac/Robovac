@@ -15,4 +15,3 @@ button_font = pygame.font.SysFont("Arial", 15)
 
 # Font for the text boxes of the application
 text_box_font = pygame.font.SysFont("Arial", 15)
-
