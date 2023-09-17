@@ -35,7 +35,7 @@ toolbar = MainToolbar.MainToolbar(canvas, screen_resolution)
 
 while not exit:
     canvas.fill(Colors.WHITE)
-    toolbar.draw()
+    toolbar.draw(screen_resolution)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

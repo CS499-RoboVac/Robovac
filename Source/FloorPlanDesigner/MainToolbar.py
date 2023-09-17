@@ -14,19 +14,42 @@ class MainToolbar:
         # List of buttons
         self.buttons = []
 
-        # Add a button to the toolbar
-        testButton = UI.Button(
-            10,
-            10,
-            100,
-            50,
-            "Test",
-            Fonts.button_font,
-            Colors.GRAY,
-            Colors.DARK_GRAY,
-            lambda: print("Test"),
+        # Add the buttons to the toolbar
+        save_floorplan_button = UI.Button(
+            x_pos=10,
+            y_pos=50,
+            width=100,
+            height=30,
+            text="Save Floorplan",
+            border_thickness=2,
+            rounded=True,
+            action=lambda: print("Save Floorplan"),
         )
-        self.buttons.append(testButton)
+        self.buttons.append(save_floorplan_button)
+
+        load_floorplan_button = UI.Button(
+            x_pos=120,
+            y_pos=50,
+            width=100,
+            height=30,
+            text="Load Floorplan",
+            border_thickness=2,
+            rounded=True,
+            action=lambda: print("Load Floorplan"),
+        )
+        self.buttons.append(load_floorplan_button)
+
+        new_floorplan_button = UI.Button(
+            x_pos=10,
+            y_pos=10,
+            width=210,
+            height=30,
+            text="Create New Floorplan",
+            border_thickness=2,
+            rounded=True,
+            action=lambda: print("Create New Floorplan"),
+        )
+        self.buttons.append(new_floorplan_button)
 
         # Draw the title
         title = Fonts.title_font.render("Floor Plan Designer", True, Colors.WHITE)
@@ -34,7 +57,9 @@ class MainToolbar:
 
     # Function to draw the toolbar
     # Called every frame by the main application loop
-    def draw(self):
+    def draw(self, screen_resolution):
+        # Update the screen resolution
+        self.screen_resolution = screen_resolution
         # Draw the toolbar
         pygame.draw.rect(
             self.canvas,
@@ -42,7 +67,7 @@ class MainToolbar:
             (
                 0,
                 0,
-                Util.scale_value(0.2, 200, self.screen_resolution[0], 400),
+                230,
                 self.screen_resolution[1],
             ),
         )
