@@ -2,6 +2,10 @@ import pygame
 import tkinter as tk
 
 import Common.Colors as Colors
+import Common.Fonts as Fonts
+import Common.UI as UI
+import FloorPlanDesigner.MainToolbar as MainToolbar
+
 
 version = "0.0.1"
 
@@ -22,10 +26,18 @@ canvas = pygame.display.set_mode(screen_resolution, pygame.RESIZABLE)
 pygame.display.set_caption(f"Floor Plan Designer {version}")
 exit = False
 
+# Create the toolbar
+toolbar = MainToolbar.MainToolbar(canvas, screen_resolution)
+
+
 while not exit:
 	canvas.fill(Colors.WHITE)
+	toolbar.draw()
 
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			exit = True
+		elif event.type == pygame.VIDEORESIZE:
+			screen_resolution = (event.w, event.h)
+			canvas = pygame.display.set_mode(screen_resolution, pygame.RESIZABLE)
 	pygame.display.update()
