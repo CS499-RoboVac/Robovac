@@ -23,7 +23,7 @@ Currently the only Package we have to install seperately is:
 In your terminal, run 
 
 ```
-conda create --name robovac -c conda-forge Pygame
+conda create --name robovac -c conda-forge Pygame black
 ```
 Confirm with `y`
 
