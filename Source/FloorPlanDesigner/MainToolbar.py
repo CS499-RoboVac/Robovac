@@ -11,8 +11,19 @@ class MainToolbar:
         self.canvas = canvas
         self.screen_resolution = screen_resolution
 
-        # List of buttons
+        # Lists of ui elements
         self.buttons = []
+        self.text_boxes = []
+
+        # Add the text boxes to the toolbar
+        test_text_box = UI.InputBox(
+            x_pos=10,
+            y_pos=100,
+            width=210,
+            height=30,
+            number_only=True,
+        )
+        self.text_boxes.append(test_text_box)
 
         # Add the buttons to the toolbar
         save_floorplan_button = UI.Button(
@@ -63,7 +74,7 @@ class MainToolbar:
         # Draw the toolbar
         pygame.draw.rect(
             self.canvas,
-            Colors.LIGHT_GRAY,
+            Colors.DARK_GRAY,
             (
                 0,
                 0,
@@ -75,3 +86,13 @@ class MainToolbar:
         # Draw the buttons
         for button in self.buttons:
             button.draw(self.canvas)
+
+        # Draw the text boxes
+        for text_box in self.text_boxes:
+            text_box.draw(self.canvas)
+
+    # Handle events for components in the toolbar
+    # @param event: The event to handle
+    def handle_events(self, event):
+        for text_box in self.text_boxes:
+            text_box.handle_event(event)

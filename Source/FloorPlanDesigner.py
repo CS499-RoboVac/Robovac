@@ -38,6 +38,7 @@ while not exit:
     toolbar.draw(screen_resolution)
 
     for event in pygame.event.get():
+        toolbar.handle_events(event)
         if event.type == pygame.QUIT:
             exit = True
         elif event.type == pygame.VIDEORESIZE:
