@@ -5,8 +5,8 @@ import Common.Colors as Colors
 import Common.Fonts as Fonts
 import Common.Util as Util
 import Common.UI as UI
-import FloorPlanDesigner.LeftBar as LeftBar
 import FloorPlanDesigner.TopBar as TopBar
+import FloorPlanDesigner.SideBar as SideBar
 
 
 version = "0.0.1"
@@ -33,24 +33,34 @@ pygame.init()
 # Create the Canvas
 canvas = pygame.display.set_mode(screen_resolution, pygame.RESIZABLE)
 
+screen_resolution = canvas.get_size()
+
+
 # Title the window
 pygame.display.set_caption(f"Floor Plan Designer {version}")
 exit = False
 
-# Create the toolbar
-#leftBar = LeftBar.LeftBar(canvas, screen_resolution)
-
-testToolBar = TopBar.TopBar(
-    screen_resolution=screen_resolution,
+# Create the top bar
+TopBar = TopBar.TopBar(
+    canvas=canvas,
     x_pos=0,
     y_pos=0,
-    width=0.2,
-    height=1.0,
-    scale=True,
-    )
-drawables.append(testToolBar)
-eventables.append(testToolBar)
+    width=1,
+    height=0.075,
+)
+drawables.append(TopBar)
+eventables.append(TopBar)
 
+# Create the toolbar
+SideBar = SideBar.SideBar(
+    canvas=canvas,
+    x_pos=0,
+    y_pos=0.071,
+    width=0.2,
+    height=0.93,
+)
+drawables.append(SideBar)
+eventables.append(SideBar)
 
 while not exit:
     canvas.fill(Colors.WHITE)
