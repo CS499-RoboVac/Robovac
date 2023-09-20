@@ -24,3 +24,6 @@ DARK_CYAN = (0, 128, 128)
 MAGENTA = (255, 0, 255)
 LIGHT_MAGENTA = (255, 128, 255)
 DARK_MAGENTA = (128, 0, 128)
+
+# Furniture colors
+CHEST = (71, 37, 2)

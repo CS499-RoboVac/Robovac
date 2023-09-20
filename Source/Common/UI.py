@@ -1,4 +1,5 @@
 import pygame
+import abc
 
 from Common import Colors
 from Common import Fonts
@@ -7,18 +8,18 @@ from Common import Fonts
 # A parameterizable button class
 class Button:
     # Constructor
-    # @param x_pos: The x position of the button
-    # @param y_pos: The y position of the button
-    # @param width: The width of the button
-    # @param height: The height of the button
-    # @param text: The text of the button
-    # @param font: The font of the button
-    # @param color: The color of the button
-    # @param hover_color: The color of the button when hovered over
-    # @param click_color: The color of the button when clicked
-    # @param border_thickness: Optional, the thickness of the border
-    # @param rounded: Optional, whether or not the button should be rounded
-    # @param action: The action to perform when the button is pressed
+    # x_pos: The x position of the button
+    # y_pos: The y position of the button
+    # width: The width of the button
+    # height: The height of the button
+    # text: The text of the button
+    # font: The font of the button
+    # color: The color of the button
+    # hover_color: The color of the button when hovered over
+    # click_color: The color of the button when clicked
+    # border_thickness: Optional, the thickness of the border
+    # rounded: Optional, whether or not the button should be rounded
+    # action: The action to perform when the button is pressed
     def __init__(
         self,
         x_pos,
@@ -48,7 +49,7 @@ class Button:
         self.rounded = rounded
 
     # Draw the button
-    # @param canvas: The canvas to draw the button on
+    # canvas: The canvas to draw the button on
     def draw(self, canvas):
         active_color = self.color
 
@@ -106,7 +107,7 @@ class Button:
         )
 
     # Check if the button is being hovered over
-    # @param mouse_pos: The position of the mouse
+    # mouse_pos: The position of the mouse
     # @return: True if the button is being hovered over, False otherwise
     def is_hovered(self, mouse_pos):
         return (
@@ -115,13 +116,13 @@ class Button:
         )
 
     # Check if the button is being clicked
-    # @param mouse_pos: The position of the mouse
+    # mouse_pos: The position of the mouse
     # @return: True if the button is being clicked, False otherwise
     def is_clicked(self, mouse_pos):
         return self.is_hovered(mouse_pos) and pygame.mouse.get_pressed()[0]
 
     # Check if the button is being clicked
-    # @param mouse_pos: The position of the mouse
+    # mouse_pos: The position of the mouse
     # @return: True if the button is being clicked, False otherwise
     def is_released(self, mouse_pos):
         return self.is_hovered(mouse_pos) and not pygame.mouse.get_pressed()[0]
@@ -162,7 +163,7 @@ class InputBox:
         # Calculate the maximum number of characters that can fit in the text box
         self.max_chars = max(int(width / self.font.size("a")[0]) - 3, 1)
 
-    def handle_event(self, event):
+    def handle_events(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             # If the user clicked on the input_box rect.
             if self.rect.collidepoint(event.pos):
@@ -254,7 +255,144 @@ class InputBox:
             return None
 
     # Set the text box's text
-    # @param text: The text to set the text box's text to
+    # text: The text to set the text box's text to
     def set_text(self, text):
         self.text = text
         self.txt_surface = self.font.render(self.text, True, self.border_color)
+
+
+# A parameterizable text display box class
+class TextBox:
+    def __init__(
+        self,
+        x_pos,
+        y_pos,
+        width,
+        height,
+        background_color=Colors.LIGHT_GRAY,
+        text_color=Colors.BLACK,
+        font=Fonts.text_box_font,
+        border_thickness=0,
+        text="",
+    ):
+        self.rect = pygame.Rect(x_pos, y_pos, width, height)
+        self.text_color = text_color
+        self.background_color = background_color
+        self.font = font
+        self.border_thickness = border_thickness
+        self.text = text
+        self.txt_surface = font.render(text, True, self.text_color)
+
+    def draw(self, screen):
+        # Draw the background of the input box.
+        pygame.draw.rect(screen, self.background_color, self.rect, 0)
+        # Draw the text.
+        screen.blit(self.txt_surface, (self.rect.x + 5, self.rect.y + 5))
+        # Draw the border
+        if self.border_thickness > 0:
+            pygame.draw.rect(screen, self.text_color, self.rect, self.border_thickness)
+
+    # Update the text box's text
+    def update_text(self, new_text):
+        self.text = new_text
+        # Re-render the text
+        self.txt_surface = self.font.render(self.text, True, self.text_color)
+
+    # Update the text box's color
+    def update_color(self, new_color):
+        self.text_color = new_color
+        # Re-render the text
+        self.txt_surface = self.font.render(self.text, True, self.text_color)
+
+    # Get the text box's text
+    # @return: The text box's text
+    def get_text(self):
+        return self.text
+
+# A toolbar class
+# This class has drawables and eventables
+# TODO: Add "Button params" to the constructor. 
+# This will be a list of tuples that contain the parameters for each button. 
+# It will be optional, and if it is not provided, 
+# the buttons will use their default parameters, or parameters that are provided on a per-button basis
+# If scale is true, width and height will be percentages of the screen resolution
+# If scale is false, width and height will be the actual width and height of the toolbar in pixels
+class ToolBar(abc.ABC):
+
+    # Constructor
+    def __init__(self, screen_resolution, x_pos, y_pos, width, height, bg_color=Colors.DARK_GRAY, scale=True):
+        self.screen_resolution = screen_resolution
+        self.width = width
+        self.height = height
+        self.rect = pygame.Rect(x_pos, y_pos, width, height)
+        self.bg_color = bg_color
+        self.scale = scale
+        # Drawables and eventables are lists of objects that are drawn and have events handled
+        # Their draw and handle_events functions are passed into the main application loop
+        # Their draw functions are passed the canvas, and optionally the screen resolution
+        # Their handle_events functions are passed the event
+        self.drawables = []
+        self.eventables = []
+
+    # get_x: used to generate an x position relative to the toolbar
+    # Use this instead of hardcoding the x position of a drawable
+    def get_x(self, x_pos):
+        return self.rect.x + x_pos
+    
+    # get_y: used to generate a y position relative to the toolbar
+    # Use this instead of hardcoding the y position of a drawable
+    def get_y(self, y_pos):
+        return self.rect.y + y_pos
+    
+    # get_width: used to generate a width relative to the toolbar
+    # Use this instead of hardcoding the width of a drawable
+    # width: the percentage of the toolbar's width that the width should be
+    def get_width(self, width):
+        return self.rect.width * width
+    
+    # get_height: used to generate a height relative to the toolbar
+    # Use this instead of hardcoding the height of a drawable
+    # height: the percentage of the toolbar's height that the height should be
+    def get_height(self, height):
+        return self.rect.height * height
+
+    
+    # Handle events for components in the toolbar
+    # event: The event to handle
+    def handle_events(self, event):
+        # handle the events for the toolbar itself
+
+        # If the screen is resized, update the screen resolution
+        if event.type == pygame.VIDEORESIZE:
+            self.screen_resolution = (event.w, event.h)
+
+        # Handle events for eventables
+        for eventable in self.eventables:
+            eventable.handle_events(event)
+
+    # Draw the toolbar, and all of its drawables
+    def draw(self, canvas, screen_resolution):
+        # Draw the toolbar background
+        if self.scale:
+            width = int(self.width * screen_resolution[0])
+            height = int(self.height * screen_resolution[1])
+        else:
+            width = self.rect.width
+            height = self.rect.height
+        pygame.draw.rect(
+            canvas,
+            self.bg_color,
+            (
+                self.rect.x,
+                self.rect.y,
+                width,
+                height,
+            ),
+        )
+
+        # Draw the drawables
+        for drawable in self.drawables:
+            try:
+                drawable.draw(canvas)
+            except AttributeError:
+                drawable.draw(canvas, screen_resolution)

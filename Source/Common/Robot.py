@@ -12,9 +12,9 @@
 # The whiskers have a diameter, and a position relative to the robot they are attached to
 class Whisker:
     # Constructor
-    # @param x_pos: The x position of the whisker
-    # @param y_pos: The y position of the whisker
-    # @param diameter: The diameter of the whisker
+    # x_pos: The x position of the whisker
+    # y_pos: The y position of the whisker
+    # diameter: The diameter of the whisker
     def __init__(self, x_pos, y_pos, diameter):
         self.x_pos = x_pos
         self.y_pos = y_pos
@@ -23,11 +23,11 @@ class Whisker:
 
 class Robot:
     # Constructor
-    # @param x_pos: The x position of the robot
-    # @param y_pos: The y position of the robot
-    # @param diameter: The diameter of the robot in inches
-    # @param whisker_length: The length of the whiskers on the robot
-    # @param vaccum_width: The width of the vaccum on the robot
+    # x_pos: The x position of the robot
+    # y_pos: The y position of the robot
+    # diameter: The diameter of the robot in inches
+    # whisker_length: The length of the whiskers on the robot
+    # vaccum_width: The width of the vaccum on the robot
     def __init__(
         self,
         x_pos,
@@ -84,21 +84,21 @@ class Robot:
             return False
 
     # Update the size of the robot
-    # @param diameter: The new diameter of the robot
+    # diameter: The new diameter of the robot
     # @return: True if the robot is valid, False otherwise
     def update_size(self, diameter):
         self.diameter = diameter
         return self.validate()
 
     # Update the whisker length
-    # @param whisker_length: The new whisker length
+    # whisker_length: The new whisker length
     def update_whisker_length(self, whisker_length):
         self.whisker_length = whisker_length
         self.whiskers[0].diameter = whisker_length
         self.whiskers[1].diameter = whisker_length
 
     # Update the vaccum width
-    # @param vaccum_width: The new vaccum width
+    # vaccum_width: The new vaccum width
     # @return: True if the robot is valid, False otherwise
     def update_vaccum_width(self, vaccum_width):
         self.vaccum_width = vaccum_width
