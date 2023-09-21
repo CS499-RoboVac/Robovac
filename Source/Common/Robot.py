@@ -83,6 +83,9 @@ class Robot:
             self.is_valid = False
             return False
 
+        self.is_valid = True
+        return True
+
     # Update the size of the robot
     # diameter: The new diameter of the robot
     # @return: True if the robot is valid, False otherwise
