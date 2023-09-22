@@ -73,15 +73,11 @@ class Robot:
             dx = abs(whisker.x_pos - self.x_pos)
             dy = abs(whisker.y_pos - self.y_pos)
             radius = self.diameter / 2
-            if dx + dy <= radius:
-                break
-            if dx > radius or dy > radius:
+            if dx * dx + dy * dy <= radius * radius:
+                continue
+            else:
                 self.is_valid = False
                 return False
-            if dx * dx + dy * dy <= radius * radius:
-                break
-            self.is_valid = False
-            return False
 
         self.is_valid = True
         return True
