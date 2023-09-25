@@ -28,6 +28,3 @@ def importFloorPlan(fileName):
             k1, k2, dirt, carp, name = line.split(" ", 4)# split 4 times, peeling the 4 initial items off and leaving ewveryhting else as "name"
             floorPlan[(int(k1), int(k2))] = floorTile.floorTile(dirt=float(dirt), carp=int(carp), room=name.strip())
     return floorPlan
-
-exportFloorPlan(NewBlankFloor(200), "testMap.txt")
-
