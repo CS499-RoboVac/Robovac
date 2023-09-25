@@ -31,7 +31,7 @@ class Vec2():
 
     # Allows for list like indexing, example Vec2(2,3)[0], returns 2
     def __getitem__(self, index):
-        return self.y if index else self.y
+        return self.y if index else self.x
     
     def __str__(self):
         return "[" + str(self.x) + "," + str(self.y) + "]"

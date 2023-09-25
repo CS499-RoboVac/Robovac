@@ -9,10 +9,10 @@
 
 
 class floorTile:
-    def __init__(self):
-        self.dirtiness = 0.0
-        self.carpetType = 0
-        self.parentRoomName = "Default Room"
+    def __init__(self, dirt=0.0, carp = 0, room="Default Room"):
+        self.dirtiness = dirt
+        self.carpetType = carp
+        self.parentRoomName = room
 
     def clean(self, efficiency):
         # TO BE IMPLEMENTED
