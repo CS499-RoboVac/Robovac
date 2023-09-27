@@ -53,8 +53,15 @@ screen_resolution = canvas.get_size()
 pygame.display.set_caption(f"RoboSim {version}")
 exit = False
 
-# Open the floorplan designer in a new process with popen
-open_floorplan_designer = lambda: Popen(["python", "Source/RunFloorPlanDesigner.py"])
+# Open the windows in a new process with popen
+buttonFunctions = {
+    "open_floorplan_designer": lambda: Popen(
+        ["python", "Source/RunFloorPlanDesigner.py"]
+    ),
+    "open_simulator": lambda: print("Open Simulator"),
+    "open_view_previous_runs": lambda: print("Open View Previous Runs"),
+}
+
 
 # Add the toolbar
 toolbar = Toolbar.Toolbar(
@@ -65,9 +72,7 @@ toolbar = Toolbar.Toolbar(
     height=1,
     bg_color=Colors.DARK_GRAY,
     scale=True,
-    buttonFunctions={
-        "open_floorplan_designer": open_floorplan_designer,
-    },
+    buttonFunctions=buttonFunctions,
 )
 append_drawable_eventable(toolbar)
 
