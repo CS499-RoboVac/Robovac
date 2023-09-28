@@ -45,7 +45,7 @@ TopBar = TopBar.TopBar(
     canvas=canvas,
     x_pos=0,
     y_pos=0,
-    width=screen_resolution[1],
+    width=1,
     height=0.075,
 )
 drawables.append(TopBar)
@@ -56,7 +56,7 @@ SideBar = SideBar.SideBar(
     canvas=canvas,
     x_pos=0,
     y_pos=0.070,
-    width=0.5,
+    width=0.2,
     height=0.93,
 )
 drawables.append(SideBar)
@@ -70,8 +70,6 @@ while not exit:
 
     for event in pygame.event.get():
         # handle the eventables
-        for eventable in eventables:
-            eventable.handle_events(event)
 
         if event.type == pygame.QUIT:
             exit = True
@@ -81,8 +79,12 @@ while not exit:
             screen_resolution_list = list(screen_resolution)
             
             if screen_resolution_list[0] < 400:
-                screen_resolution_list[0] = 400
+                screen_resolution = (400, screen_resolution[1])
+            if screen_resolution_list[1] < 500:
+                screen_resolution = (screen_resolution[0], 500)
 
-            screen_resolution = tuple(screen_resolution_list)
+            #screen_resolution = tuple(screen_resolution_list)
             canvas = pygame.display.set_mode(screen_resolution, pygame.RESIZABLE)
+        for eventable in eventables:
+            eventable.handle_events(event)
     pygame.display.update()
