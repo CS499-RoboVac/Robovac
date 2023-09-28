@@ -45,7 +45,7 @@ TopBar = TopBar.TopBar(
     canvas=canvas,
     x_pos=0,
     y_pos=0,
-    width=1,
+    width=screen_resolution[1],
     height=0.075,
 )
 drawables.append(TopBar)
@@ -55,8 +55,8 @@ eventables.append(TopBar)
 SideBar = SideBar.SideBar(
     canvas=canvas,
     x_pos=0,
-    y_pos=0.071,
-    width=0.2,
+    y_pos=0.070,
+    width=0.5,
     height=0.93,
 )
 drawables.append(SideBar)
@@ -77,5 +77,12 @@ while not exit:
             exit = True
         elif event.type == pygame.VIDEORESIZE:
             screen_resolution = (event.w, event.h)
+
+            screen_resolution_list = list(screen_resolution)
+            
+            if screen_resolution_list[0] < 400:
+                screen_resolution_list[0] = 400
+
+            screen_resolution = tuple(screen_resolution_list)
             canvas = pygame.display.set_mode(screen_resolution, pygame.RESIZABLE)
     pygame.display.update()
