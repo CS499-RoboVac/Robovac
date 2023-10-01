@@ -9,7 +9,7 @@
 
 
 class floorTile:
-    def __init__(self, dirtiness=0.0, carpetType = 0, parentRoomName="Default Room"):
+    def __init__(self, dirtiness=0.0, carpetType=0, parentRoomName="Default Room"):
         self.dirtiness = dirtiness
         self.carpetType = carpetType
         self.parentRoomName = parentRoomName
