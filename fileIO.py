@@ -9,10 +9,10 @@ import floorTile
 import json
 
 
-def NewBlankFloor(l):
+def NewBlankFloor(SideLength):
     floorPlan = dict()
-    for x in range(0, l):
-        for y in range(0, l):
+    for x in range(0, SideLength):
+        for y in range(0, SideLength):
             floorPlan[(x, y)] = floorTile.floorTile()
     return floorPlan
 
@@ -26,5 +26,5 @@ def importFloorPlan(fileName):
     with open(fileName, 'r') as fid:
         for line in fid.readlines():
             k1, k2, dirt, carp, name = line.split(" ", 4)# split 4 times, peeling the 4 initial items off and leaving ewveryhting else as "name"
-            floorPlan[(int(k1), int(k2))] = floorTile.floorTile(dirt=float(dirt), carp=int(carp), room=name.strip())
+            floorPlan[(int(k1), int(k2))] = floorTile.floorTile(dirtiness=float(dirt), carpetType=int(carp), parentRoomName=name.strip())
     return floorPlan
