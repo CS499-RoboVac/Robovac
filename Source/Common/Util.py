@@ -16,6 +16,7 @@ def scale_value(portion_of_screen, minimum_res, scale_value, maximum_res=None):
     else:
         return max(scaled_value, minimum_res)
 
+
 class Vec2:
     def __init__(self, x, y=None):
         if isinstance(x, (tuple, list, Vec2)):
