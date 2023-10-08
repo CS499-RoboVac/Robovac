@@ -17,3 +17,7 @@ Backup of *.doc*
 
 # Visio autosave temporary files
 *.~vsd*
+
+# Python cache
+__pycache__/
+*.pyc

@@ -23,7 +23,7 @@ Currently the only Package we have to install seperately is:
 In your terminal, run 
 
 ```
-conda create --name robovac -c conda-forge Pygame
+conda create --name robovac -c conda-forge Pygame black
 ```
 Confirm with `y`
 
@@ -43,3 +43,68 @@ and
 python -m tkinter
 ```
 If both of these work, you are good to go!
+
+## How to push your code
+
+### 1. Make sure you are on the correct branch
+You will do all of your work in your own branch. To create a new branch, run
+
+```
+git checkout -b <your branch name>
+```
+
+This will create a new branch and switch to it. 
+
+To switch to an existing branch, run
+
+```
+git checkout <branch name>
+```
+
+If you want to switch to a branch that is not on your computer, run
+
+```
+git fetch origin
+```
+and then try to switch to the branch again
+
+### 2. Make sure your code is formatted correctly
+From the root of the project, run
+
+```
+black .
+```
+Note that this must be run from a terminal that has the conda robovac environment activated. On Windows, this will be the Anaconda Prompt. On Mac and Linux, this will be your default terminal.
+
+Black will format your code to make sure it is consistent with the rest of the project. If you have any errors, you will need to fix them before you can merge your code.
+
+### 3. Add your changes
+
+Once you have made changes to your code, you will need to add them to a commit. To do this, run
+
+```
+git add *
+```
+from the root of the project. This will add all of your changes to the commit
+
+### 4. Commit your changes
+
+Once you have added your changes, you will need to commit them. To do this, run
+
+```
+git commit -m "<your commit message>"
+```
+
+### 5. Push your changes
+Finally, you will push your changes to the remote repository. To do this, run
+
+```
+git push
+```
+## Adding Black to your conda environment
+If you created your conda environment before we added black to the requirements, you will need to add it manually. To do this, run
+
+```
+conda install -c conda-forge black
+```
+And confirm with `y`
