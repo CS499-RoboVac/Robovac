@@ -1,6 +1,7 @@
 # Utility functions
 import math
 
+
 # Scale a single value with a min and max
 # portion_of_screen: How much of the screen should the button take up?
 # min: The minimum value the button can be
@@ -74,8 +75,8 @@ class Vec2:
         return self / math.sqrt(self.x**2 + self.y**2)
 
 
-def Collision(pos : Vec2, r : float, FloorPlan : dict):  
-    """ function that takes a position and radius, and a floorplan dict, returns True if a collision happens or False if the position is clear
+def Collision(pos: Vec2, r: float, FloorPlan: dict):
+    """function that takes a position and radius, and a floorplan dict, returns True if a collision happens or False if the position is clear
     pos : Vec2 of the vacuum's position,
     r : float raduis of the vacuum,
     FloorPlan : dict with entries of the form (int, int): FloorTile"""
