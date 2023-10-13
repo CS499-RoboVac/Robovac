@@ -53,11 +53,10 @@ screen_resolution = canvas.get_size()
 pygame.display.set_caption(f"RoboSim {version}")
 exit = False
 
+
 # Open the windows in a new process with popen
 buttonFunctions = {
-    "open_floorplan_designer": lambda: Popen(
-        ["python", "Source/RunFloorPlanDesigner.py"]
-    ),
+    "open_floorplan_designer": lambda: Util.open_floorplan_designer(),
     "open_simulator": lambda: print("Open Simulator"),
     "open_view_previous_runs": lambda: print("Open View Previous Runs"),
 }
