@@ -1,6 +1,7 @@
 # The main toolbar on the top of the FloorPlanDesigner
 
 from Common import Colors, UI
+import Common.Furniture as Furniture
 import pygame
 
 
@@ -22,6 +23,19 @@ class SideBar(UI.ToolBar):
     def append_drawable_eventable(self, element):
         self.drawables.append(element)
         self.eventables.append(element)
+
+    # Create a new chest with the given dimensions
+    def add_chest(self, width=15, height=15):
+        chest = Furniture.Chest(
+            parent=self,
+            x_pos=0.1,
+            y_pos=0.6,
+            width=width,
+            height=height,
+            width_scale=0.8,
+        )
+        self.append_drawable_eventable(chest)
+
 
     def add_ui_elements(self):
         # Add the input boxes to the toolbar
@@ -111,3 +125,16 @@ class SideBar(UI.ToolBar):
             action=lambda: print("Create New Floorplan"),
         )
         self.append_drawable_eventable(new_floorplan_button)
+
+        add_chest_button = UI.Button(
+            parent=self,
+            x_pos=0.066,
+            y_pos=0.10,
+            width=0.40,
+            height=0.05,
+            text="Add Chest",
+            border_thickness=2,
+            rounded=True,
+            action= lambda: self.add_chest( int(chest_width.text), int(chest_height.text) ),
+        )
+        self.append_drawable_eventable(add_chest_button)
