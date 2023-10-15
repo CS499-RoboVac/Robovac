@@ -12,32 +12,29 @@
 # The whiskers have a diameter, and a position relative to the robot they are attached to
 class Whisker:
     # Constructor
-    # x_pos: The x position of the whisker
-    # y_pos: The y position of the whisker
+    # pos: a Vec2 representing the position of the whisker relative to the center
     # diameter: The diameter of the whisker
-    def __init__(self, x_pos, y_pos, diameter):
-        self.x_pos = x_pos
-        self.y_pos = y_pos
+    def __init__(self, pos:Vec2, diameter:float):
+        self.pos=pos,
         self.diameter = diameter
 
 
 class Robot:
     # Constructor
-    # x_pos: The x position of the robot
-    # y_pos: The y position of the robot
-    # diameter: The diameter of the robot in inches
-    # whisker_length: The length of the whiskers on the robot
-    # vaccum_width: The width of the vaccum on the robot
+    # pos: the position of the robot
+    # facing: the angle the robot is facing, in radians, 
+    # diameter: The diameter of the robot in centimeters
+    # whisker_length: The length of the whiskers on the robot (cm)
+    # vaccum_width: The width of the vaccum on the robot (cm)
     def __init__(
         self,
-        x_pos,
-        y_pos,
+        pos: Vec2,
+        facing=0,
         diameter=12.8,
         whisker_length=13.5,
         vaccum_width=5.8,
     ):
-        self.x_pos = x_pos
-        self.y_pos = y_pos
+        self.pos=pos
         self.diameter = diameter
         self.whisker_length = whisker_length
         self.whiskers = []
@@ -47,8 +44,7 @@ class Robot:
         # Create the whiskers
         self.whiskers.append(
             Whisker(
-                x_pos + self.diameter / 2,
-                y_pos + self.diameter / 2,
+                pos + Vec2(self.diameter/2, self.diameter/2),
                 self.whisker_length,
             )
         )

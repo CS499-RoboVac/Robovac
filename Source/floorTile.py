@@ -3,7 +3,7 @@
 #   Author: Ryan Corob (rac0026@uah.edu)
 #   Date Created: 08 September 2023
 #   This file contains the class for the map's Floor Tiles.
-#   These objects will be held my a Map dictionary, which holds
+#   These objects will be held by a Map dictionary, which holds
 #       an x and y coordinate alongside this class
 #
 
