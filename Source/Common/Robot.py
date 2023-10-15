@@ -20,22 +20,31 @@ class Whisker:
 
 
 class Robot:
+    """
     # Constructor
     # pos: the position of the robot
     # facing: the angle the robot is facing, in radians, 
     # diameter: The diameter of the robot in centimeters
+    # maxSpeed: value in cm/s
+    # maxTurn: value in rad/s
     # whisker_length: The length of the whiskers on the robot (cm)
     # vaccum_width: The width of the vaccum on the robot (cm)
+    """
     def __init__(
         self,
         pos: Vec2,
         facing=0,
         diameter=12.8,
+        maxSpeed = 50,
+        maxTurn = 2*math.pi/3,
         whisker_length=13.5,
         vaccum_width=5.8,
     ):
         self.pos=pos
+        self.facing = facing
         self.diameter = diameter
+        self.maxSpeed = maxSpeed
+        self.maxTurn = maxTurn
         self.whisker_length = whisker_length
         self.whiskers = []
         self.vaccum_width = vaccum_width
@@ -50,8 +59,7 @@ class Robot:
         )
         self.whiskers.append(
             Whisker(
-                x_pos - self.diameter / 2,
-                y_pos + self.diameter / 2,
+                pos + Vec2(-self.diameter/2, self.diameter/2),
                 self.whisker_length,
             )
         )
@@ -66,8 +74,9 @@ class Robot:
 
         # Are the centers of the whiskers outside of the robot?
         for whisker in self.whiskers:
-            dx = abs(whisker.x_pos - self.x_pos)
-            dy = abs(whisker.y_pos - self.y_pos)
+            delta = whisker.pos - self.pos
+            dx = abs(delta.x)
+            dy = abs(delta.y)
             radius = self.diameter / 2
             if dx * dx + dy * dy <= radius * radius:
                 continue
@@ -98,3 +107,7 @@ class Robot:
     def update_vaccum_width(self, vaccum_width):
         self.vaccum_width = vaccum_width
         return self.validate()
+
+    def doCleaning(floor, dT):
+        """ floor is a dict like normal; the robot should handle its own shape and whisker efficiencies and whatnot"""
+        pass #TODO IMPLEMEMNT LATER 
