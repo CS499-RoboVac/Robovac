@@ -22,6 +22,7 @@ class SideBar(UI.ToolBar):
     # Get width and height of side bar
     def get_width(self):
         return super().get_width()
+
     def get_height(self):
         return super().get_height()
 
@@ -83,7 +84,7 @@ class SideBar(UI.ToolBar):
             parent=self,
             x_pos=0.066,
             y_pos=0,
-            width=0.868 ,
+            width=0.868,
             height=0.05,
             text="Save",
             border_thickness=2,

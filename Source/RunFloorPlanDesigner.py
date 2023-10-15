@@ -77,17 +77,18 @@ def run():
                 screen_resolution = (event.w, event.h)
 
                 screen_resolution_list = list(screen_resolution)
-                
+
                 if screen_resolution_list[0] < 400:
                     screen_resolution = (400, screen_resolution[1])
                 if screen_resolution_list[1] < 500:
                     screen_resolution = (screen_resolution[0], 500)
 
-                #screen_resolution = tuple(screen_resolution_list)
+                # screen_resolution = tuple(screen_resolution_list)
                 canvas = pygame.display.set_mode(screen_resolution, pygame.RESIZABLE)
             for eventable in eventables:
                 eventable.handle_events(event)
         pygame.display.update()
+
 
 if __name__ == "__main__":
     run()
