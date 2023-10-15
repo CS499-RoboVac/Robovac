@@ -19,6 +19,13 @@ class SideBar(UI.ToolBar):
         super().__init__(canvas, x_pos, y_pos, width, height, bg_color, scale)
         self.add_ui_elements()
 
+    # Get width and height of side bar
+    def get_width(self):
+        return super().get_width()
+
+    def get_height(self):
+        return super().get_height()
+
     def append_drawable_eventable(self, element):
         self.drawables.append(element)
         self.eventables.append(element)
@@ -79,7 +86,7 @@ class SideBar(UI.ToolBar):
             y_pos=0,
             width=0.868,
             height=0.05,
-            text="Save Floorplan",
+            text="Save",
             border_thickness=2,
             rounded=True,
             action=lambda: print("Save Floorplan"),
@@ -92,7 +99,7 @@ class SideBar(UI.ToolBar):
             y_pos=0.05,
             width=0.40,
             height=0.05,
-            text="Load Floorplan",
+            text="Load",
             border_thickness=2,
             rounded=True,
             action=lambda: print("Load Floorplan"),
@@ -105,7 +112,7 @@ class SideBar(UI.ToolBar):
             y_pos=0.05,
             width=0.40,
             height=0.05,
-            text="Create New Floorplan",
+            text="New",
             border_thickness=2,
             rounded=True,
             action=lambda: print("Create New Floorplan"),

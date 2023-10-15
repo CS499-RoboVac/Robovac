@@ -41,7 +41,8 @@ class scalable:
     def get_x(self):
         if self.scale:
             if isinstance(self.parent, scalable):
-                return (self.x * self.parent.get_width()) + self.parent.get_x()
+                x_limit = self.x * self.parent.get_width() + self.parent.get_x()
+                return x_limit
             else:
                 return self.x * self.parent_resolution[0]
         return self.x
