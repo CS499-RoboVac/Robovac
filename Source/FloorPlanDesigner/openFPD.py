@@ -1,9 +1,17 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, QtTest
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import (
+    QApplication,
+    QMainWindow,
+    QPushButton,
+    QLabel,
+    QVBoxLayout,
+    QWidget,
+)
 
 import sys
 
 from Views.ui_fpd import Ui_FPDWindow
+
 
 class Room:
     def __init__(self, name, x, y, w, h, overview, fpv, combo):
@@ -14,7 +22,9 @@ class Room:
         self.width = w
         self.height = h
         self.ovRoomView = QtWidgets.QFrame(overview)
-        self.ovRoomView.setGeometry(QtCore.QRect(self.x, self.y, self.width, self.height))
+        self.ovRoomView.setGeometry(
+            QtCore.QRect(self.x, self.y, self.width, self.height)
+        )
         font = QtGui.QFont()
         font.setKerning(True)
         self.ovRoomView.setFont(font)
@@ -22,7 +32,7 @@ class Room:
         self.ovRoomView.setFrameShadow(QtWidgets.QFrame.Plain)
         self.ovRoomView.setLineWidth(1)
         self.ovRoomView.setObjectName(name)
-        self.roomTab =  QtWidgets.QWidget()
+        self.roomTab = QtWidgets.QWidget()
         fpv.addTab(self.roomTab, name)
         self.tabRoomView = QtWidgets.QFrame(self.roomTab)
         self.tabRoomScale = 1
@@ -31,7 +41,11 @@ class Room:
                 self.tabRoomScale = int(600 / self.width)
             else:
                 self.tabRoomScale = int(480 / self.height)
-        self.tabRoomView.setGeometry(QtCore.QRect(20, 20, self.width * self.tabRoomScale, self.height * self.tabRoomScale))
+        self.tabRoomView.setGeometry(
+            QtCore.QRect(
+                20, 20, self.width * self.tabRoomScale, self.height * self.tabRoomScale
+            )
+        )
         font = QtGui.QFont()
         font.setKerning(True)
         self.tabRoomView.setFont(font)
@@ -41,6 +55,7 @@ class Room:
         self.tabRoomView.setObjectName(name)
         combo.addItem(name)
         fpv.setCurrentIndex(0)
+
 
 class fpdWindowApp(QMainWindow, Ui_FPDWindow):
     def __init__(self, parent=None):
@@ -65,8 +80,12 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         for room in self.rooms:
             if room.roomName == self.roomOptionsComboBox.currentText():
                 self.floorplanView.setCurrentIndex(1)
-                room.ovRoomView.move(int(self.roomXBox.value()), (self.roomYBox.value()))
-                room.ovRoomView.resize(int(self.roomWBox.value()), (self.roomHBox.value()))
+                room.ovRoomView.move(
+                    int(self.roomXBox.value()), (self.roomYBox.value())
+                )
+                room.ovRoomView.resize(
+                    int(self.roomWBox.value()), (self.roomHBox.value())
+                )
                 self.floorplanView.setCurrentIndex(0)
 
     def updateRoomOptions(self):
@@ -81,12 +100,23 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         newRoomText = self.textEdit.toPlainText()
         dupeFlag = False
         for room in self.rooms:
-            if room.roomName == newRoomText or newRoomText == '':
+            if room.roomName == newRoomText or newRoomText == "":
                 dupeFlag = True
         if not dupeFlag:
             self.floorplanView.setCurrentIndex(1)
-            self.rooms.append(Room(newRoomText, 100, 100, 300, 180, self.overviewTab, self.floorplanView, self.roomOptionsComboBox))
-        '''
+            self.rooms.append(
+                Room(
+                    newRoomText,
+                    100,
+                    100,
+                    300,
+                    180,
+                    self.overviewTab,
+                    self.floorplanView,
+                    self.roomOptionsComboBox,
+                )
+            )
+        """
         self.r3 = QtWidgets.QFrame(self.overviewTab)
         self.r3.setGeometry(QtCore.QRect(100, 100, 301, 181))
         font = QtGui.QFont()
@@ -111,8 +141,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.roomFull.setObjectName(newRoomText + "_full")
         self.floorplanView.addTab(self.room, newRoomText)
         self.rooms.append(self.room)
-        '''
-        
+        """
 
     def connectButtons(self):
         self.addRoomButton.clicked.connect(self.addRoom)

@@ -1,5 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, QtTest
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import (
+    QApplication,
+    QMainWindow,
+    QPushButton,
+    QLabel,
+    QVBoxLayout,
+    QWidget,
+)
 
 import sys
 
@@ -31,11 +38,13 @@ class mainWindowApp(QMainWindow, Ui_IntroWindow):
         self.openSIMButton.clicked.connect(self.openSIM)
         self.openOPRButton.clicked.connect(self.openOPR)
 
+
 def main():
     app = QApplication(sys.argv)
     win = mainWindowApp()
     win.show()
     app.exec()
+
 
 if __name__ == "__main__":
     main()

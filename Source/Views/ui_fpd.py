@@ -128,8 +128,13 @@ class Ui_FPDWindow(object):
         self.saveFloorplanButton.setText(_translate("FPDWindow", "Save Floorplan"))
         self.loadFloorplanButton.setText(_translate("FPDWindow", "Load Floorplan"))
         self.newFloorplanButton.setText(_translate("FPDWindow", "Create New Floorplan"))
-        self.floorplanView.setTabText(self.floorplanView.indexOf(self.overviewTab), _translate("FPDWindow", "Overview"))
-        self.floorplanView.setTabText(self.floorplanView.indexOf(self.room1), _translate("FPDWindow", "Room 1"))
+        self.floorplanView.setTabText(
+            self.floorplanView.indexOf(self.overviewTab),
+            _translate("FPDWindow", "Overview"),
+        )
+        self.floorplanView.setTabText(
+            self.floorplanView.indexOf(self.room1), _translate("FPDWindow", "Room 1")
+        )
         self.optionsBox.setTitle(_translate("FPDWindow", "Overview Options"))
         self.addRoomButton.setText(_translate("FPDWindow", "Add Room"))
         self.roomOptions.setTitle(_translate("FPDWindow", "Room Options"))
