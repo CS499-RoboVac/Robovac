@@ -7,7 +7,7 @@ from Views.ui_intro import Ui_IntroWindow
 from FloorPlanDesigner.openFPD import fpdWindowApp
 
 
-class mainWindowApp(QMainWindow, Ui_MainWindow):
+class mainWindowApp(QMainWindow, Ui_IntroWindow):
     def __init__(self, parent=None):
         super(mainWindowApp, self).__init__(parent)
         self.setupUi(self)
@@ -31,9 +31,11 @@ class mainWindowApp(QMainWindow, Ui_MainWindow):
         self.openSIMButton.clicked.connect(self.openSIM)
         self.openOPRButton.clicked.connect(self.openOPR)
 
-
-if __name__ == "__main__":
+def main():
     app = QApplication(sys.argv)
     win = mainWindowApp()
     win.show()
     app.exec()
+
+if __name__ == "__main__":
+    main()
