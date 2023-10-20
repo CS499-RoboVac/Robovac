@@ -1,6 +1,5 @@
 # Furniture obstructions that the robot will run into
 from typing import Any
-import pygame
 import Common.Colors as Colors
 
 
@@ -27,12 +26,6 @@ class Chest:
         else:
             draw_x = self.x
             draw_y = self.y
-
-        pygame.draw.rect(
-            canvas,
-            Colors.CHEST,
-            (draw_x, draw_y, self.width, self.height),
-        )
 
     # Change the position of the chest
     # x_pos: the new x position of the chest
