@@ -27,3 +27,4 @@ DARK_MAGENTA = (128, 0, 128)
 
 # Furniture colors
 CHEST = (71, 37, 2)
+TABLE = (117, 71, 1)

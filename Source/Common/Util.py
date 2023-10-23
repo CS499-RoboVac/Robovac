@@ -75,14 +75,15 @@ class Vec2:
         return self / math.sqrt(self.x**2 + self.y**2)
 
 
+# TODO: make this work with the new robot class, also this will probably need to be changed and or moved to the floorplan class once that exists
 def Collision(pos: Vec2, r: float, FloorPlan: dict):
     """function that takes a position and radius, and a floorplan dict, returns True if a collision happens or False if the position is clear
     pos : Vec2 of the vacuum's position,
     r : float raduis of the vacuum,
     FloorPlan : dict with entries of the form (int, int): FloorTile"""
 
-    for x in range(floor(pos.x - r), ceil(pos.x + r) + 1):
-        for y in range(floor(pos.y - r), ceil(pos.y + r) + 1):
+    for x in range(math.floor(pos.x - r), math.ceil(pos.x + r) + 1):
+        for y in range(math.floor(pos.y - r), math.ceil(pos.y + r) + 1):
             if (
                 Vec2(x, y) - pos
             ).length() < r:  # we looped over a square; now we're using the ones within a radius in that square
