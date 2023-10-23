@@ -11,9 +11,6 @@ from PyQt5.QtWidgets import (
 import sys
 
 from Views.ui_intro import Ui_IntroWindow
-
-# from FloorPlanDesigner.openFPD import fpdWindowApp
-# from Simulation import OpenSimulation
 import FloorPlanDesigner.openFPD as OpenFPD
 import Simulation.OpenSimulation as OpenSim
 import OpenPreviousResult.OpenOPR as OpenOPR
