@@ -15,7 +15,7 @@ class Whisker:
     # pos: a Vec2 representing the position of the whisker relative to the center
     # diameter: The diameter of the whisker
     def __init__(self, pos: Vec2, diameter: float):
-        self.pos = (pos,)
+        self.pos = pos
         self.diameter = diameter
 
 
