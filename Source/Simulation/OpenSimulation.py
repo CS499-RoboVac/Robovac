@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import (
 import sys
 from Views.ui_sim import Ui_SimWindow
 
-# from FloorPlanDesigner.openFPD import fpdWindowApp
+# from FloorPlanDesigner.openFPD import fpdWindowApp #
 import FloorPlanDesigner.openFPD as OpenFPD
 import IntroWindow.openIntro as OpenIntro
 
