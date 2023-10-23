@@ -1,6 +1,5 @@
-import Util.py
-import floorTile
-import Robot
+from Common.Util import Collision
+from Common.Robot import Robot
 
 
 class Simulation:
@@ -22,7 +21,7 @@ class Simulation:
         self.SimSpeed = 1
         self.DefaultHertz = 60
 
-    def update(dT):
+    def update(self, dT):
         """dT, in seconds, is the real time since the last Update call"""
         self.robot.doCleaning(self.FloorPlan, dT)
         # these values are in the [-1, 1] range, representing fraction of the robot's maximum ability
