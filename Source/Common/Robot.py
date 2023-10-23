@@ -26,7 +26,7 @@ class Robot:
     # facing: the angle the robot is facing, in radians,
     # diameter: The diameter of the robot in centimeters
     # maxSpeed: value in cm/s
-    # maxTurn: value in rad/s
+    # maxTurn: value in rad/s, the unit's maximum rotation speed around it's own center
     # whisker_length: The length of the whiskers on the robot (cm)
     # vaccum_width: The width of the vaccum on the robot (cm)
     """
