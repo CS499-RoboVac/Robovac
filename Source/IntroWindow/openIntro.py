@@ -16,6 +16,7 @@ from Views.ui_intro import Ui_IntroWindow
 # from Simulation import OpenSimulation
 import FloorPlanDesigner.openFPD as OpenFPD
 import Simulation.OpenSimulation as OpenSim
+import OpenPreviousResult.OpenOPR as OpenOPR
 
 
 class mainWindowApp(QMainWindow, Ui_IntroWindow):
@@ -36,7 +37,8 @@ class mainWindowApp(QMainWindow, Ui_IntroWindow):
         self.sims[-1].show()
 
     def openOPR(self):
-        1
+        self.sims.append(OpenOPR.oprWindowApp())
+        self.sims[-1].show()
 
     def connectButtons(self):
         self.openFPDButton.clicked.connect(self.openFPD)
