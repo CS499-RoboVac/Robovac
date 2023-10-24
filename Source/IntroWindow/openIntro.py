@@ -11,7 +11,10 @@ from PyQt5.QtWidgets import (
 import sys
 
 from Views.ui_intro import Ui_IntroWindow
-from FloorPlanDesigner.openFPD import fpdWindowApp
+
+import FloorPlanDesigner.openFPD as OpenFPD
+import Simulation.OpenSimulation as OpenSim
+import OpenPreviousResult.OpenOPR as OpenOPR
 
 
 class mainWindowApp(QMainWindow, Ui_IntroWindow):
@@ -24,14 +27,16 @@ class mainWindowApp(QMainWindow, Ui_IntroWindow):
         self.oprs = []
 
     def openFPD(self):
-        self.fpds.append(fpdWindowApp())
+        self.fpds.append(OpenFPD.fpdWindowApp())
         self.fpds[-1].show()
 
     def openSIM(self):
-        1
+        self.sims.append(OpenSim.simWindowApp())
+        self.sims[-1].show()
 
     def openOPR(self):
-        1
+        self.oprs.append(OpenOPR.oprWindowApp())
+        self.oprs[-1].show()
 
     def connectButtons(self):
         self.openFPDButton.clicked.connect(self.openFPD)
