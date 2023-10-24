@@ -1,3 +1,6 @@
+from Common.Util import Vec2
+import math
+
 # This class will represent the robot in the simulation
 # It will only handle information about the robot, not the actual drawing of the robot
 # that will be handled by the RobotDrawer class
@@ -11,58 +14,62 @@
 
 # The whiskers have a diameter, and a position relative to the robot they are attached to
 class Whisker:
-    # Constructor
-    # x_pos: The x position of the whisker
-    # y_pos: The y position of the whisker
-    # diameter: The diameter of the whisker
-    def __init__(self, x_pos, y_pos, diameter):
-        self.x_pos = x_pos
-        self.y_pos = y_pos
+    def __init__(self, pos: Vec2, diameter: float):
+        """
+        Constructor
+        pos: Vec2, the position of the whisker relative to the center
+        diameter: float, the diameter of the whisker
+        """
+        self.pos = pos
         self.diameter = diameter
 
 
 class Robot:
-    # Constructor
-    # x_pos: The x position of the robot
-    # y_pos: The y position of the robot
-    # diameter: The diameter of the robot in inches
-    # whisker_length: The length of the whiskers on the robot
-    # vaccum_width: The width of the vaccum on the robot
+    """
+    Constructor
+    pos: Vec2, the position of the robot
+    facing: float, the angle the robot is facing, in radians
+    diameter: float, The diameter of the robot in centimeters
+    maxSpeed: float, value in cm/s
+    maxTurn: float, value in rad/s, the unit's maximum rotation speed around it's own center
+    whisker_length: float, The length of the whiskers on the robot (cm)
+    vaccum_width: float, The width of the vaccum on the robot (cm)
+    """
+
     def __init__(
         self,
-        x_pos,
-        y_pos,
-        diameter=12.8,
-        whisker_length=13.5,
-        vaccum_width=5.8,
+        pos: Vec2,
+        facing: float = 0,
+        diameter: float = 12.8,
+        maxSpeed: float = 50,
+        maxTurn: float = 2 * math.pi / 3,
+        whisker_length: float = 13.5,
+        vaccum_width: float = 5.8,
     ):
-        self.x_pos = x_pos
-        self.y_pos = y_pos
+        self.pos = pos
+        self.facing = facing
         self.diameter = diameter
+        self.maxSpeed = maxSpeed
+        self.maxTurn = maxTurn
         self.whisker_length = whisker_length
-        self.whiskers = []
         self.vaccum_width = vaccum_width
         self.is_valid = True
-
-        # Create the whiskers
-        self.whiskers.append(
+        self.whiskers = [
             Whisker(
-                x_pos + self.diameter / 2,
-                y_pos + self.diameter / 2,
+                pos + Vec2(self.diameter / 2, self.diameter / 2),
                 self.whisker_length,
-            )
-        )
-        self.whiskers.append(
+            ),
             Whisker(
-                x_pos - self.diameter / 2,
-                y_pos + self.diameter / 2,
+                pos + Vec2(-self.diameter / 2, self.diameter / 2),
                 self.whisker_length,
-            )
-        )
+            ),
+        ]
 
-    # Validate the robot
-    # @return: True if the robot is valid, False otherwise
     def validate(self):
+        """
+        Check if the robot is valid
+        return: True if the robot is valid, False otherwise
+        """
         # Is the vaccum width larger than the robot's diameter?
         if self.vaccum_width > self.diameter:
             self.is_valid = False
@@ -70,8 +77,9 @@ class Robot:
 
         # Are the centers of the whiskers outside of the robot?
         for whisker in self.whiskers:
-            dx = abs(whisker.x_pos - self.x_pos)
-            dy = abs(whisker.y_pos - self.y_pos)
+            delta = whisker.pos - self.pos
+            dx = abs(delta.x)
+            dy = abs(delta.y)
             radius = self.diameter / 2
             if dx * dx + dy * dy <= radius * radius:
                 continue
@@ -102,3 +110,16 @@ class Robot:
     def update_vaccum_width(self, vaccum_width):
         self.vaccum_width = vaccum_width
         return self.validate()
+
+    def doCleaning(floor, dT):
+        """floor is a dict like normal; the robot should handle its own shape and whisker efficiencies and whatnot"""
+        pass  # TODO IMPLEMEMNT LATER
+
+    def __str__(self) -> str:
+        return (
+            f"Robot(pos={self.pos}, \n"
+            f"facing={self.facing}, diameter={self.diameter},\n"
+            f"maxSpeed={self.maxSpeed}, maxTurn={self.maxTurn},\n"
+            f"whisker_length={self.whisker_length}, vaccum_width={self.vaccum_width},\n"
+            f"is_valid={self.is_valid}, whiskers={self.whiskers}"
+        )
