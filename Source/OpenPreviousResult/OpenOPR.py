@@ -39,6 +39,6 @@ class oprWindowApp(QMainWindow, Ui_OPRWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    win = simWindowApp()
+    win = oprWindowApp()
     win.show()
     app.exec()
