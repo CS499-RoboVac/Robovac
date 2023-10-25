@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_SimWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1044, 691)
+        MainWindow.resize(1060, 708)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.BacktoMainButton = QtWidgets.QPushButton(self.centralwidget)
@@ -33,7 +33,7 @@ class Ui_SimWindow(object):
         self.SimSpeedButton.setGeometry(QtCore.QRect(60, 540, 101, 21))
         self.SimSpeedButton.setObjectName("SimSpeedButton")
         self.verticalLayoutWidget_2 = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(10, 150, 162, 361))
+        self.verticalLayoutWidget_2.setGeometry(QtCore.QRect(10, 160, 162, 361))
         self.verticalLayoutWidget_2.setObjectName("verticalLayoutWidget_2")
         self.VacuumLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_2)
         self.VacuumLayout.setContentsMargins(0, 0, 0, 0)
@@ -53,9 +53,7 @@ class Ui_SimWindow(object):
         self.DiameterLabel = QtWidgets.QLabel(self.verticalLayoutWidget_2)
         self.DiameterLabel.setObjectName("DiameterLabel")
         self.DiameterHLayout.addWidget(self.DiameterLabel)
-        spacerItem = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.DiameterHLayout.addItem(spacerItem)
         self.Stat_Diameter = QtWidgets.QLabel(self.verticalLayoutWidget_2)
         self.Stat_Diameter.setObjectName("Stat_Diameter")
@@ -70,9 +68,7 @@ class Ui_SimWindow(object):
         self.EfficiencyLabel = QtWidgets.QLabel(self.verticalLayoutWidget_2)
         self.EfficiencyLabel.setObjectName("EfficiencyLabel")
         self.VacuumEfficiencyHLayout.addWidget(self.EfficiencyLabel)
-        spacerItem1 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.VacuumEfficiencyHLayout.addItem(spacerItem1)
         self.Stat_VacuumEfficiency = QtWidgets.QLabel(self.verticalLayoutWidget_2)
         self.Stat_VacuumEfficiency.setObjectName("Stat_VacuumEfficiency")
@@ -87,9 +83,7 @@ class Ui_SimWindow(object):
         self.WhiskerLabel = QtWidgets.QLabel(self.verticalLayoutWidget_2)
         self.WhiskerLabel.setObjectName("WhiskerLabel")
         self.WhiskerHLayout.addWidget(self.WhiskerLabel)
-        spacerItem2 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.WhiskerHLayout.addItem(spacerItem2)
         self.Stat_Whisker = QtWidgets.QLabel(self.verticalLayoutWidget_2)
         self.Stat_Whisker.setObjectName("Stat_Whisker")
@@ -104,9 +98,7 @@ class Ui_SimWindow(object):
         self.WhiskerEfficiencyLabel = QtWidgets.QLabel(self.verticalLayoutWidget_2)
         self.WhiskerEfficiencyLabel.setObjectName("WhiskerEfficiencyLabel")
         self.WhiskerEfficiencyHLayout.addWidget(self.WhiskerEfficiencyLabel)
-        spacerItem3 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.WhiskerEfficiencyHLayout.addItem(spacerItem3)
         self.Stat_WhiskerEfficiency = QtWidgets.QLabel(self.verticalLayoutWidget_2)
         self.Stat_WhiskerEfficiency.setObjectName("Stat_WhiskerEfficiency")
@@ -121,9 +113,7 @@ class Ui_SimWindow(object):
         self.SpeedLabel = QtWidgets.QLabel(self.verticalLayoutWidget_2)
         self.SpeedLabel.setObjectName("SpeedLabel")
         self.SpeedHLayout.addWidget(self.SpeedLabel)
-        spacerItem4 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.SpeedHLayout.addItem(spacerItem4)
         self.Stat_Speed = QtWidgets.QLabel(self.verticalLayoutWidget_2)
         self.Stat_Speed.setObjectName("Stat_Speed")
@@ -138,9 +128,7 @@ class Ui_SimWindow(object):
         self.BatteryLifeLabel = QtWidgets.QLabel(self.verticalLayoutWidget_2)
         self.BatteryLifeLabel.setObjectName("BatteryLifeLabel")
         self.BatteryLifeHLayout.addWidget(self.BatteryLifeLabel)
-        spacerItem5 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.BatteryLifeHLayout.addItem(spacerItem5)
         self.Stat_BatteryLife = QtWidgets.QLabel(self.verticalLayoutWidget_2)
         self.Stat_BatteryLife.setObjectName("Stat_BatteryLife")
@@ -168,16 +156,12 @@ class Ui_SimWindow(object):
         self.GraphicLayout.setObjectName("GraphicLayout")
         self.FloorPlanLayout = QtWidgets.QHBoxLayout()
         self.FloorPlanLayout.setObjectName("FloorPlanLayout")
-        spacerItem6 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.FloorPlanLayout.addItem(spacerItem6)
         self.FloorPlanNameLabel = QtWidgets.QLabel(self.verticalLayoutWidget_3)
         self.FloorPlanNameLabel.setObjectName("FloorPlanNameLabel")
         self.FloorPlanLayout.addWidget(self.FloorPlanNameLabel)
-        spacerItem7 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
+        spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.FloorPlanLayout.addItem(spacerItem7)
         self.GraphicLayout.addLayout(self.FloorPlanLayout)
         self.graphicsView = QtWidgets.QGraphicsView(self.verticalLayoutWidget_3)
@@ -192,9 +176,12 @@ class Ui_SimWindow(object):
         self.Stat_SimulationTime = QtWidgets.QLabel(self.centralwidget)
         self.Stat_SimulationTime.setGeometry(QtCore.QRect(80, 570, 61, 20))
         self.Stat_SimulationTime.setObjectName("Stat_SimulationTime")
+        self.AddVacuumButton = QtWidgets.QPushButton(self.centralwidget)
+        self.AddVacuumButton.setGeometry(QtCore.QRect(10, 120, 111, 21))
+        self.AddVacuumButton.setObjectName("AddVacuumButton")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1044, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1060, 21))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -222,9 +209,7 @@ class Ui_SimWindow(object):
         self.Stat_VacuumEfficiency.setText(_translate("MainWindow", "70%"))
         self.WhiskerLabel.setText(_translate("MainWindow", "Whisker:"))
         self.Stat_Whisker.setText(_translate("MainWindow", "5 in"))
-        self.WhiskerEfficiencyLabel.setText(
-            _translate("MainWindow", "Whisker Efficiency:")
-        )
+        self.WhiskerEfficiencyLabel.setText(_translate("MainWindow", "Whisker Efficiency:"))
         self.Stat_WhiskerEfficiency.setText(_translate("MainWindow", "30%"))
         self.SpeedLabel.setText(_translate("MainWindow", "Speed:"))
         self.Stat_Speed.setText(_translate("MainWindow", "5 in/s"))
@@ -236,3 +221,4 @@ class Ui_SimWindow(object):
         self.SpeedTextLabel.setText(_translate("MainWindow", "Speed:"))
         self.TimeTextLabel.setText(_translate("MainWindow", "Time:"))
         self.Stat_SimulationTime.setText(_translate("MainWindow", "00:00:00"))
+        self.AddVacuumButton.setText(_translate("MainWindow", "Add Vacuum"))

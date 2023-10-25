@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1044</width>
-    <height>691</height>
+    <width>1060</width>
+    <height>708</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -83,7 +83,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>150</y>
+      <y>160</y>
       <width>162</width>
       <height>361</height>
      </rect>
@@ -459,13 +459,26 @@
      <string>00:00:00</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="AddVacuumButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>120</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Add Vacuum</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1044</width>
+     <width>1060</width>
      <height>21</height>
     </rect>
    </property>
