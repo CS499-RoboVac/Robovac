@@ -16,14 +16,10 @@ On Windows, launch the program called Anaconda prompt. This will be your termina
 On Mac and Linux, just use your default terminal for all terminal commands
 
 ### Create a new Conda environment
-This will create a new conda enviroment with all of the packages that we will use
-Currently the only Package we have to install seperately is:
--   Pygame
-
-In your terminal, run 
+This will create a new conda enviroment that we can install our packages in. To do this, run
 
 ```
-conda create --name robovac -c conda-forge Pygame black
+conda create --name QTrobovac -c conda-forge black
 ```
 Confirm with `y`
 
@@ -33,16 +29,20 @@ Then to switch to the new environment, run
 conda activate robovac
 ```
 
-to test that it worked, run
+Now you are in the new environment. To install the rest of the packages, run
 
 ```
-python -m pygame.examples.aliens
+pip install pyqt5
+pip install PyQt5Designer
 ```
-and 
+## How to run pyqt5 designer
+To run pyqt5 designer, run
+
 ```
-python -m tkinter
+designer.exe
 ```
-If both of these work, you are good to go!
+If this doesn't work, make sure that your
+Python.xxScripts is in your PATH environment
 
 ## How to push your code
 
