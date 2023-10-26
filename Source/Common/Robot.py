@@ -31,7 +31,7 @@ class Robot:
     facing: float, the angle the robot is facing, in radians
     diameter: float, The diameter of the robot in centimeters
     maxSpeed: float, value in cm/s
-    maxTurn: float, value in rad/s, the unit's maximum rotation speed around it's own center
+    maxTurn: float, value in rad/s, the unit's maximum rotation speed around its own center
     whisker_length: float, The length of the whiskers on the robot (cm)
     vaccum_width: float, The width of the vaccum on the robot (cm)
     """
