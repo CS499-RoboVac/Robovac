@@ -19,6 +19,22 @@ from Common.FloorTile import FloorTile
 
 class Room:
     def __init__(self, name, x, y, w, h, overview, fpv, combo):
+        """
+        Initializes a Room object with the given parameters.
+
+        Args:
+        - name (str): the name of the room
+        - x (int): the x-coordinate of the room's top-left corner
+        - y (int): the y-coordinate of the room's top-left corner
+        - w (int): the width of the room
+        - h (int): the height of the room
+        - overview (QtWidgets.QWidget): the widget that displays an overview of the floor plan
+        - fpv (QtWidgets.QTabWidget): the tab widget that displays the room's details
+        - combo (QtWidgets.QComboBox): the combo box that displays the list of rooms
+
+        Returns:
+        - None
+        """
         fpv.setCurrentIndex(1)
         self.roomName = name
         self.x = x
@@ -61,6 +77,15 @@ class Room:
         fpv.setCurrentIndex(0)
 
     def tabViewResize(self):
+        """
+        Resizes the tab view of the room based on the room's dimensions.
+
+        Args:
+        - None
+
+        Returns:
+        - None
+        """
         self.tabRoomScale = 1
         if self.width < 600 and self.height < 480:
             if self.width / 600 > self.height / 480:
