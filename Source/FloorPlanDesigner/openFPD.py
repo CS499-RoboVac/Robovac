@@ -81,31 +81,40 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.connectButtons()
         self.numRooms = 1
         self.rooms = []
-        self.floorplansDir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/Floor Plans/"
-        #self.floorplanView.removeTab(1)
-        #self.r1.setLineWidth(0)
+        self.floorplansDir = (
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            + "/Floor Plans/"
+        )
+        # self.floorplanView.removeTab(1)
+        # self.r1.setLineWidth(0)
         # self.rooms.append(Room('Room 1', 20, 20, 120, 80, self.overviewTab, self.floorplanView, self.roomOptionsComboBox))
 
     def saveFloorplan(self):
         _translate = QtCore.QCoreApplication.translate
-        #*************************************************************
+        # *************************************************************
         #
-        #**************   NEEDS UPDATING, TEMPORARY   ****************
+        # **************   NEEDS UPDATING, TEMPORARY   ****************
         #
-        #*************************************************************
-        #adding some temporary boo-boo math here
-        #assuming size of floorplan is 600 units wide by 480 units tall
-        #this is based on current FloorPlan tab size, using math to adjust
-        #this ratio to fit the 8000 square foot requirement per the project requirements
-        #for this ratio to be 8000 sqft, 600*480 = 288000 / 36 = 8000
-        # 600 / 6 = 100 foot wide x 480 / 6 = 80 foot tall 
+        # *************************************************************
+        # adding some temporary boo-boo math here
+        # assuming size of floorplan is 600 units wide by 480 units tall
+        # this is based on current FloorPlan tab size, using math to adjust
+        # this ratio to fit the 8000 square foot requirement per the project requirements
+        # for this ratio to be 8000 sqft, 600*480 = 288000 / 36 = 8000
+        # 600 / 6 = 100 foot wide x 480 / 6 = 80 foot tall
         opts = QFileDialog.Options()
-        fileName, _ = QFileDialog.getSaveFileName(self, "Floorplan Designer - Save Floorplan", self.floorplansDir, "Floor Plan Designer Files (*.fpd)", options=opts)
+        fileName, _ = QFileDialog.getSaveFileName(
+            self,
+            "Floorplan Designer - Save Floorplan",
+            self.floorplansDir,
+            "Floor Plan Designer Files (*.fpd)",
+            options=opts,
+        )
         if fileName:
             if ".fpd" not in fileName:
-                fileName = fileName + '.fpd'
+                fileName = fileName + ".fpd"
             fp = dict()
-            roomCount = 1             
+            roomCount = 1
             for room in self.rooms:
                 key = str(roomCount)
                 fp[key] = dict()
@@ -121,25 +130,32 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             jsonObj = json.dumps(fp)
             with open(fileName, "w") as outFile:
                 outFile.write(jsonObj)
-            self.saveFloorplanButton.setText(_translate("MainWindow", "Floorplan Saved!"))
+            self.saveFloorplanButton.setText(
+                _translate("MainWindow", "Floorplan Saved!")
+            )
             QtTest.QTest.qWait(5000)
             self.saveFloorplanButton.setText(_translate("MainWindow", "Save Floorplan"))
         else:
-            self.saveFloorplanButton.setText(_translate("MainWindow", "Error - Floorplan Not Saved!"))
+            self.saveFloorplanButton.setText(
+                _translate("MainWindow", "Error - Floorplan Not Saved!")
+            )
             QtTest.QTest.qWait(5000)
             self.saveFloorplanButton.setText(_translate("MainWindow", "Save Floorplan"))
 
-
-
-
     def loadFloorplan(self):
         opts = QFileDialog.Options()
-        fileName, _ = QFileDialog.getOpenFileName(self, "Floorplan Designer - Load Floorplan", self.floorplansDir, "Floor Plan Designer Files (*.fpd)", options=opts)
+        fileName, _ = QFileDialog.getOpenFileName(
+            self,
+            "Floorplan Designer - Load Floorplan",
+            self.floorplansDir,
+            "Floor Plan Designer Files (*.fpd)",
+            options=opts,
+        )
         if fileName:
             self.floorplanView.setCurrentIndex(1)
-            with open(fileName, 'r') as inFile:
+            with open(fileName, "r") as inFile:
                 fp = json.load(inFile)
-            #self, name, x, y, w, h, overview, fpv, combo
+            # self, name, x, y, w, h, overview, fpv, combo
             i = self.floorplanView.count()
             while i > 1:
                 self.floorplanView.removeTab(i)
@@ -158,7 +174,18 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                 w = int(int(fp[key]["width"]) / 182)
                 h = int(int(fp[key]["height"]) / 182)
                 furniture = fp[key]["furniture"]
-                self.rooms.append(Room(n, x, y, w, h, self.overviewTab, self.floorplanView, self.roomOptionsComboBox))
+                self.rooms.append(
+                    Room(
+                        n,
+                        x,
+                        y,
+                        w,
+                        h,
+                        self.overviewTab,
+                        self.floorplanView,
+                        self.roomOptionsComboBox,
+                    )
+                )
             self.floorplanView.setCurrentIndex(0)
 
     def newFloorplan(self):
