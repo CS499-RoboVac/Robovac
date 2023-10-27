@@ -1,6 +1,7 @@
 # imports
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Room:
     def tabViewResize(self):
         """
