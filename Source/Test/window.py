@@ -111,9 +111,12 @@ class Ui_MainWindow(object):
         ball.setFlag(QGraphicsItem.ItemIsMovable)
 
     def addwithparameter(self):
-
+        inputx = int(self.Input1.text())
+        inputy = int(self.Input2.text())
+        inputh = int(self.Input3.text())
+        inputl = int(self.Input4.text())
         # has error
-        ball2 = self.scene.addEllipse(self.Input1,self.Input2,self.Input3,self.Input4)
+        ball2 = self.scene.addEllipse(inputx, inputy, inputl, inputh)
         # generate ball based on input from text box
         ball2.setFlag(QGraphicsItem.ItemIsMovable)
 
