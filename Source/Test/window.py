@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import (
     QGraphicsView,
     QGraphicsScene, QGraphicsItem
 )
-
+ 
 
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtGui import QColor, QPen, QPainter,QBrush
@@ -37,6 +37,9 @@ class Ui_MainWindow(object):
         # Take in central widget as a scene
         # self.scene = QGraphicsScene(self.centralwidget)
         self.scene = QGraphicsScene()
+        self.scene.setSceneRect(0,0,500,500) # makes scene a fixed size 
+        # self.setFixedSize(500,500)
+
         # apparently QGScene() does not hard need central widget, but uncertain about with and without it
         
         self.gv1 = QtWidgets.QGraphicsView(self.scene, self)
@@ -111,10 +114,10 @@ class Ui_MainWindow(object):
         ball.setFlag(QGraphicsItem.ItemIsMovable)
 
     def addwithparameter(self):
-        inputx = int(self.Input1.text())
-        inputy = int(self.Input2.text())
-        inputh = int(self.Input3.text())
-        inputl = int(self.Input4.text())
+        inputx = float(self.Input1.text())
+        inputy = float(self.Input2.text())
+        inputh = float(self.Input3.text())
+        inputl = float(self.Input4.text())
         # has error
         ball2 = self.scene.addEllipse(inputx, inputy, inputl, inputh)
         # generate ball based on input from text box
