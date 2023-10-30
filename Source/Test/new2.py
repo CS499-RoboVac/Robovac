@@ -9,7 +9,16 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from PyQt5.QtWidgets import (
+    QApplication,
+    QMainWindow,
+    QPushButton,
+    QLabel,
+    QVBoxLayout,
+    QWidget,
+    QGraphicsView,
+    QGraphicsScene, QGraphicsItem, QSizePolicy
+)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -75,11 +84,16 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.addWidget(self.label)
         self.verticalLayout_8 = QtWidgets.QVBoxLayout()
         self.verticalLayout_8.setObjectName("verticalLayout_8")
+
         self.Input1 = QtWidgets.QLineEdit(self.verticalWidget_2)
         self.Input1.setObjectName("Input1")
+        self.Button1.clicked.connect(self.addshape)
+
         self.verticalLayout_8.addWidget(self.Input1)
         self.Input2 = QtWidgets.QLineEdit(self.verticalWidget_2)
         self.Input2.setObjectName("Input2")
+        self.Button2.clicked.connect(self.addwithparameter)
+
         self.verticalLayout_8.addWidget(self.Input2)
         self.Input3 = QtWidgets.QLineEdit(self.verticalWidget_2)
         self.Input3.setObjectName("Input3")
@@ -97,7 +111,17 @@ class Ui_MainWindow(object):
         spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout_7.addItem(spacerItem3)
         self.horizontalLayout.addWidget(self.verticalWidget_2)
-        self.gv1 = QtWidgets.QGraphicsView(self.centralwidget)
+        
+        self.scene = QGraphicsScene(self.centralwidget)
+        #self.scene = QGraphicsScene()
+        self.scene.setSceneRect(0,0,500,500) # makes scene a fixed size 
+        # self.setFixedSize(500,500)
+
+        # apparently QGScene() does not hard need central widget, but uncertain about with and without it
+        self.ball = self.scene.addEllipse(10,0,20,80)
+
+
+        self.gv1 = QtWidgets.QGraphicsView(self.scene, self)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -116,6 +140,21 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+    def addshape(self):
+        ball = self.scene.addEllipse(20,20,50,50)
+        
+        # makes item movable by mouse
+        ball.setFlag(QGraphicsItem.ItemIsMovable)
+
+    def addwithparameter(self):
+        inputx = float(self.Input1.text())
+        inputy = float(self.Input2.text())
+        inputh = float(self.Input3.text())
+        inputl = float(self.Input4.text())
+        # has error
+        ball2 = self.scene.addEllipse(inputx, inputy, inputl, inputh)
+        # generate ball based on input from text box
+        ball2.setFlag(QGraphicsItem.ItemIsMovable)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -126,8 +165,8 @@ class Ui_MainWindow(object):
         self.Button4.setText(_translate("MainWindow", "4"))
         self.Button5.setText(_translate("MainWindow", "5"))
         self.label.setText(_translate("MainWindow", "X, Y, L,H"))
-        self.Input1.setText(_translate("MainWindow", "X"))
-        self.Input2.setText(_translate("MainWindow", "Y"))
-        self.Input3.setText(_translate("MainWindow", "L"))
-        self.Input4.setText(_translate("MainWindow", "H"))
+        self.Input1.setText(_translate("MainWindow", "0"))
+        self.Input2.setText(_translate("MainWindow", "0"))
+        self.Input3.setText(_translate("MainWindow", "50"))
+        self.Input4.setText(_translate("MainWindow", "50"))
         self.Input5.setText(_translate("MainWindow", "temp"))
