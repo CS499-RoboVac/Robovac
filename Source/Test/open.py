@@ -10,9 +10,13 @@ from PyQt5.QtWidgets import (
     QGraphicsScene
 )
 import sys
-import window
 
-class simWindowApp(QMainWindow, window.Ui_MainWindow):
+
+# switch new2/new/window as needed 
+# new2 added sensible sizing to graphic view and fixed size to vertical menu
+import new2 as windows
+
+class simWindowApp(QMainWindow, windows.Ui_MainWindow):
     def __init__(self, parent=None):
         super(simWindowApp, self).__init__(parent)
         self.setupUi(self)

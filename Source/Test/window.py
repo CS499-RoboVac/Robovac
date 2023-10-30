@@ -15,7 +15,7 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QWidget,
     QGraphicsView,
-    QGraphicsScene, QGraphicsItem
+    QGraphicsScene, QGraphicsItem, QSizePolicy
 )
  
 
@@ -37,7 +37,7 @@ class Ui_MainWindow(object):
         # Take in central widget as a scene
         # self.scene = QGraphicsScene(self.centralwidget)
         self.scene = QGraphicsScene()
-        self.scene.setSceneRect(0,0,500,500) # makes scene a fixed size 
+        self.scene.setSceneRect(0,0,2500,2500) # makes scene a fixed size 
         # self.setFixedSize(500,500)
 
         # apparently QGScene() does not hard need central widget, but uncertain about with and without it
