@@ -1,7 +1,7 @@
-from Test import openTest
+from Test.openTest import main
 
 # This file exists to run the project.
 # It has to be in the root directory so that python can find the other files.
 
 if __name__ == "__main__":
-    openTest.main()
+    main()

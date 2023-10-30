@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -23,8 +24,8 @@ import sys
 # sys.path.append("/Users/M/Documents/Github/Robovac/Source/Common/")
 import json
 import os
-
-from Commons.RobotVacuum import Robot
+from PyQt5.QtCore import Qt
+from Common.Robot import Robot
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -109,8 +110,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_8.addWidget(self.Input3)
         self.Button3.clicked.connect(self.addRobot)
 
-
-
         self.Input4 = QtWidgets.QLineEdit(self.verticalWidget_2)
         self.Input4.setObjectName("Input4")
         self.verticalLayout_8.addWidget(self.Input4)
@@ -158,7 +157,9 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
     def addshape(self):
+        
         ball = self.scene.addEllipse(20,20,50,50)
+        ball.set
         
         # makes item movable by mouse
         ball.setFlag(QGraphicsItem.ItemIsMovable)
@@ -178,6 +179,7 @@ class Ui_MainWindow(object):
         
         self.scene.addItem(robo)
         robo.setFlag(QGraphicsItem.ItemIsMovable)
+        
         
 
     def retranslateUi(self, MainWindow):
