@@ -10,7 +10,7 @@
 
 
 # The whiskers have a diameter, and a position relative to the robot they are attached to
-class Whisker:
+class Whisker: 
     # Constructor
     # x_pos: The x position of the whisker
     # y_pos: The y position of the whisker
@@ -30,8 +30,8 @@ class Robot:
     # vaccum_width: The width of the vaccum on the robot
     def __init__(
         self,
-        x_pos,
-        y_pos,
+        x_pos=0,
+        y_pos=0,
         diameter=12.8,
         whisker_length=13.5,
         vaccum_width=5.8,

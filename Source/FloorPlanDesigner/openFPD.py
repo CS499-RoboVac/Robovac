@@ -72,7 +72,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
 
     def loadFloorplan(self):
         1
-
+ 
     def newFloorplan(self):
         1
 

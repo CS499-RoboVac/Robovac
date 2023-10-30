@@ -19,6 +19,12 @@ from PyQt5.QtWidgets import (
     QGraphicsView,
     QGraphicsScene, QGraphicsItem, QSizePolicy
 )
+import sys
+# sys.path.append("/Users/M/Documents/Github/Robovac/Source/Common/")
+import json
+import os
+
+from Commons.RobotVacuum import Robot
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -85,25 +91,36 @@ class Ui_MainWindow(object):
         self.verticalLayout_8 = QtWidgets.QVBoxLayout()
         self.verticalLayout_8.setObjectName("verticalLayout_8")
 
+        #button 1 generate circle at fixed spot
         self.Input1 = QtWidgets.QLineEdit(self.verticalWidget_2)
         self.Input1.setObjectName("Input1")
         self.Button1.clicked.connect(self.addshape)
 
+        # button 2 generate circle with parameters
         self.verticalLayout_8.addWidget(self.Input1)
         self.Input2 = QtWidgets.QLineEdit(self.verticalWidget_2)
         self.Input2.setObjectName("Input2")
         self.Button2.clicked.connect(self.addwithparameter)
 
+        # button 3 generate a roomba
         self.verticalLayout_8.addWidget(self.Input2)
         self.Input3 = QtWidgets.QLineEdit(self.verticalWidget_2)
         self.Input3.setObjectName("Input3")
         self.verticalLayout_8.addWidget(self.Input3)
+        self.Button3.clicked.connect(self.addRobot)
+
+
+
         self.Input4 = QtWidgets.QLineEdit(self.verticalWidget_2)
         self.Input4.setObjectName("Input4")
         self.verticalLayout_8.addWidget(self.Input4)
+
+
         self.Input5 = QtWidgets.QLineEdit(self.verticalWidget_2)
         self.Input5.setObjectName("Input5")
         self.verticalLayout_8.addWidget(self.Input5)
+
+
         self.horizontalLayout_3.addLayout(self.verticalLayout_8)
         spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_3.addItem(spacerItem2)
@@ -155,6 +172,13 @@ class Ui_MainWindow(object):
         ball2 = self.scene.addEllipse(inputx, inputy, inputl, inputh)
         # generate ball based on input from text box
         ball2.setFlag(QGraphicsItem.ItemIsMovable)
+
+    def addRobot(self):
+        robo = Robot()
+        
+        self.scene.addItem(robo)
+        robo.setFlag(QGraphicsItem.ItemIsMovable)
+        
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

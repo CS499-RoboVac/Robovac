@@ -1,6 +1,6 @@
 # Furniture obstructions that the robot will run into
 from typing import Any
-import Common.Colors as Colors
+import Commons.Colors as Colors
 
 
 # Chest object. This is a furniture object that the robot cannot pass through
