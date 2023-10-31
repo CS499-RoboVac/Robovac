@@ -18,14 +18,17 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QWidget,
     QGraphicsView,
-    QGraphicsScene, QGraphicsItem, QSizePolicy
+    QGraphicsScene, QGraphicsItem, QSizePolicy, QGraphicsItemGroup, QGraphicsScene, QGraphicsView, QApplication
+
 )
 import sys
 # sys.path.append("/Users/M/Documents/Github/Robovac/Source/Common/")
 import json
 import os
 from PyQt5.QtCore import Qt
-from Common.Robot import Robot
+# from Common.Robot import Robot
+from PyQt5.QtGui import QPainter, QBrush, QPen
+from Test.robotview import Robot, Whisker
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -108,7 +111,7 @@ class Ui_MainWindow(object):
         self.Input3 = QtWidgets.QLineEdit(self.verticalWidget_2)
         self.Input3.setObjectName("Input3")
         self.verticalLayout_8.addWidget(self.Input3)
-        self.Button3.clicked.connect(self.addRobot)
+        
 
         self.Input4 = QtWidgets.QLineEdit(self.verticalWidget_2)
         self.Input4.setObjectName("Input4")
@@ -133,6 +136,7 @@ class Ui_MainWindow(object):
         self.scene.setSceneRect(0,0,500,500) # makes scene a fixed size 
         # self.setFixedSize(500,500)
 
+        self.Button3.clicked.connect(lambda: self.addRobot(self.scene))
         # apparently QGScene() does not hard need central widget, but uncertain about with and without it
         self.ball = self.scene.addEllipse(10,0,20,80)
 
@@ -156,10 +160,10 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
     def addshape(self):
         
         ball = self.scene.addEllipse(20,20,50,50)
-        ball.set
         
         # makes item movable by mouse
         ball.setFlag(QGraphicsItem.ItemIsMovable)
@@ -174,11 +178,19 @@ class Ui_MainWindow(object):
         # generate ball based on input from text box
         ball2.setFlag(QGraphicsItem.ItemIsMovable)
 
-    def addRobot(self):
-        robo = Robot()
+    def addRobot(self, scene):
+        roomba = QGraphicsItemGroup()
+        roombaBody = Robot(100,100)
+        roombawhisker1 = Whisker(125,125,10)
+        roombawhisker2 = Whisker(75,125,10)
+
+        roomba.addToGroup(roombawhisker1)
+        roomba.addToGroup(roombawhisker2)
+        roomba.addToGroup(roombaBody)
+        roomba.setFlag(QGraphicsItem.ItemIsMovable)
+        scene.addItem(roomba)
         
-        self.scene.addItem(robo)
-        robo.setFlag(QGraphicsItem.ItemIsMovable)
+
         
         
 
