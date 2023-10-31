@@ -1,8 +1,8 @@
 # imports
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-
 class Room:
+    
     def tabViewResize(self):
         """
         Resizes the tab view of the room based on the room's dimensions.
@@ -59,6 +59,7 @@ class Room:
         self.ovRoomView.setFrameShadow(QtWidgets.QFrame.Plain)
         self.ovRoomView.setLineWidth(1)
         self.ovRoomView.setObjectName(name)
+        self.ovRoomView.set
         self.roomTab = QtWidgets.QWidget()
         fpv.addTab(self.roomTab, name)
         self.tabRoomView = QtWidgets.QFrame(self.roomTab)

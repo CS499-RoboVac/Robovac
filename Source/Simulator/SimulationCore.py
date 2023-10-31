@@ -1,4 +1,4 @@
-from Common.Util import Collision
+import Common.Primitives as Primitives
 from Common.Robot import Robot
 
 
@@ -11,7 +11,7 @@ class Simulation:
         """
         self.ai = ai
         self.floor_plan = floor
-        if robot.validate() and not Collision(robot.pos, robot.diameter / 2, floor):
+        if robot.validate() and not Primitives.Collision(robot.pos, robot.diameter / 2, floor):
             self.robot = robot
         else:
             raise ValueError("Robot not valid, or collides with terrain")
@@ -22,7 +22,7 @@ class Simulation:
         self.default_tickrate = 60
 
     def update(self, dT):
-        """dT, in seconds, is the real time since the last Update call"""
+        """dT, in seconds, is the simulation time since the last Update call"""
         self.robot.doCleaning(self.floor_plan, dT)
         # these values are in the [-1, 1] range, representing fraction of the robot's maximum ability
         speed, dTheta = self.ai.update(self.is_colliding)
@@ -30,7 +30,7 @@ class Simulation:
         ProspectivePosition = (
             self.robot.pos + speed * self.robot.maxSpeed * dT * self.sim_speed
         )
-        self.is_colliding = Collision(
+        self.is_colliding = Primitives.Collision(
             ProspectivePosition, self.robot.diameter / 2, self.floor_plan
         )
         if not self.is_colliding:
