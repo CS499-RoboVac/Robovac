@@ -1,5 +1,7 @@
 from Common.Util import Vec2
 import math
+
+
 class Rectangle:
     def __init__(self, minCorner: Vec2, maxCorner: Vec2, exclusion: bool):
         self.minCorner = minCorner
@@ -9,40 +11,48 @@ class Rectangle:
     def BoundingBox(self):
         return (self.minCorner, self.maxCorner)
 
-    def isValid(self,point : Vec2):
+    def isValid(self, point: Vec2):
         """Checks to see if point is inside of the rectangle, returns inverted result if the rectangle is an exclusion primitive
         point: Vec2
         returns: boolean
         """
-        inside = point.x > self.minCorner.x and point.y > self.minCorner.y and point.x < self.maxCorner.x and point.y < self.maxCorner.y
-        return inside^self.exclusion # ^ is XOR (inverts result if exclusion is true)
+        inside = (
+            point.x > self.minCorner.x
+            and point.y > self.minCorner.y
+            and point.x < self.maxCorner.x
+            and point.y < self.maxCorner.y
+        )
+        return inside ^ self.exclusion  # ^ is XOR (inverts result if exclusion is true)
+
 
 class Circle:
-    def __init__(self, center: Vec2, radius : float, exclusion: bool):
+    def __init__(self, center: Vec2, radius: float, exclusion: bool):
         self.center = center
         self.radius = radius
         self.exclusion = exclusion
 
-    def BoundingBox(self): 
-        #returns vec2s representing the top left and bottom right corners of the bounds of the shape
+    def BoundingBox(self):
+        # returns vec2s representing the top left and bottom right corners of the bounds of the shape
         diag = Vec2(self.radius, self.radius)
-        return (self.center-diag, self.center+diag)
+        return (self.center - diag, self.center + diag)
 
-    def isValid(self,point : Vec2):
+    def isValid(self, point: Vec2):
         """Checks to see if point is inside of the circle, returns inverted result if the circle is an exclusion primitive
         point: Vec2
         returns: boolean
         """
-        inside = (self.center-point).length()<self.radius
-        return inside^self.exclusion # ^ is XOR (inverts result if exclusion is true)
+        inside = (self.center - point).length() < self.radius
+        return inside ^ self.exclusion  # ^ is XOR (inverts result if exclusion is true)
 
-def PrimitiveInclusion(shapes,point):
+
+def PrimitiveInclusion(shapes, point):
     """function that inputs a list of primitive shapes and a point and returns true if the point in a valid zone for all primitives in the list
     point: Vec2
     shapes: list<shapes>
     return: boolean"""
     return all([primitive.isValid(point) for primitive in shapes])
-    
+
+
 # TODO: make this work with the new robot class, also this will probably need to be changed and or moved to the floorplan class once that exists
 def Collision(pos: Vec2, r: float, FloorPlan: dict):
     """function that takes a position and radius, and a floorplan dict, returns True if a collision happens or False if the position is clear

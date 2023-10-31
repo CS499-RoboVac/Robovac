@@ -1,8 +1,8 @@
 # imports
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Room:
-    
     def tabViewResize(self):
         """
         Resizes the tab view of the room based on the room's dimensions.

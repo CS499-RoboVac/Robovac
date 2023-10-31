@@ -13,7 +13,9 @@ class Simulation:
         """
         self.ai = ai
         self.floor_plan = floor
-        if robot.validate() and not Primitives.Collision(robot.pos, robot.diameter / 2, floor):
+        if robot.validate() and not Primitives.Collision(
+            robot.pos, robot.diameter / 2, floor
+        ):
             self.robot = robot
         else:
             raise ValueError("Robot not valid, or collides with terrain")

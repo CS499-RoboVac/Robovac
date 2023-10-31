@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import (
     QWidget,
     QGraphicsItem,
     QMessageBox,
-    QFileDialog
+    QFileDialog,
 )
 
 import sys
@@ -25,13 +25,14 @@ import Common.Colors as Colors
 import Simulation.AI as AI
 import numpy as np
 
-#import Simulator.SimulationCore as SimulationCore 
+# import Simulator.SimulationCore as SimulationCore
 
 from Views.ui_sim import Ui_SimWindow
 
 # from FloorPlanDesigner.openFPD import fpdWindowApp
 import FloorPlanDesigner.openFPD as OpenFPD
 import IntroWindow.openIntro as OpenIntro
+
 
 class RectangleItem(QGraphicsItem):
     def __init__(self, x, y, width, height):
@@ -44,6 +45,7 @@ class RectangleItem(QGraphicsItem):
     def paint(self, painter, option, widget):
         painter.setBrush(QColor(200, 0, 0))  # Set the fill color
         painter.drawRect(self.rect)
+
 
 class CircleItem(QGraphicsItem):
     def __init__(self, x, y, width, height):
@@ -67,7 +69,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         self.oprs = []
         self.main = []
         self.shapes = []
-        #MAKE SPEED VALUE HERE TODO
+        # MAKE SPEED VALUE HERE TODO
         self.SimSpeed = 1
         self.Robot = None
         self.dirt = None
@@ -75,7 +77,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             + "/Floor Plans/"
         )
-        
+
         self.graphicsView.scene = QGraphicsScene()
         self.graphicsView.setScene(self.graphicsView.scene)
 
@@ -83,17 +85,21 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
     class Worker(QObject):
         def __init__(self, parent):
             self.parent = parent
+
         finished = pyqtSignal()
+
         def run(self):
             """Simulation thread/run loop"""
             # Use the currently loaded floor plan?
             tl, br = self.BoundingBox()
             self.parent.robot = self.parent.InstanceRobot()
-            self.parent.dirt = np.zeros((math.ceil(abs(tl.x-br.x)), math.ceil(abs(tl.y-br.y))))
-            #Sim = Simulation(self.parent.shapes, self.parent.InsanceAI(), self.parent.InstanceRobot())
-            while(False):
+            self.parent.dirt = np.zeros(
+                (math.ceil(abs(tl.x - br.x)), math.ceil(abs(tl.y - br.y)))
+            )
+            # Sim = Simulation(self.parent.shapes, self.parent.InsanceAI(), self.parent.InstanceRobot())
+            while False:
                 # Read the simulation rate to control the run loop
-                #dT = self.parent.SimSpeed
+                # dT = self.parent.SimSpeed
                 Sim.update()
                 pass
             self.finished.emit()
@@ -109,7 +115,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
     def beginSimulation(self):
         """Simulation initialization logic"""
         # Check to see if all values are valid for starting the simulation:
-        if (len(self.shapes)):
+        if len(self.shapes):
             # Create a QThread object
             self.thread = QThread()
             # Create a worker object
@@ -121,14 +127,12 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             self.worker.finished.connect(self.thread.quit)
             self.worker.finished.connect(self.worker.deleteLater)
             self.thread.finished.connect(self.thread.deleteLater)
-            
+
             # Start the thread
             self.thread.start()
 
             self.SimulationButton.setEnabled(False)
-            self.thread.finished.connect(
-                lambda: self.SimulationButton.setEnabled(True)
-            )
+            self.thread.finished.connect(lambda: self.SimulationButton.setEnabled(True))
             self.thread.finished.connect(
                 lambda: self.SimulationButton.setText("Finished Simulation")
             )
@@ -137,21 +141,21 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Critical)
             msg.setText("Simulation Parameter Invalid or Floor Plan not loaded")
-            msg.setInformativeText('TMP, replace with informative information')
+            msg.setInformativeText("TMP, replace with informative information")
             msg.setWindowTitle("Error")
             msg.exec_()
             pass
 
     def InstanceRobot(self):
-        #return Robot() #TODO read sliders
+        # return Robot() #TODO read sliders
         pass
 
     def BoundingBox(self):
-        """ returns bounds of the whole floorplan, as top-left and bottom-right Vec2s"""
-        left =  min(self.shapes, key=lambda s:s.BoundingBox()[0].x)
-        top = min(self.shapes, key=lambda s:s.BoundingBox()[0].y)
-        right =  max(self.shapes, key=lambda s:s.BoundingBox()[1].x)
-        bottom = max(self.shapes, key=lambda s:s.BoundingBox()[1].y)
+        """returns bounds of the whole floorplan, as top-left and bottom-right Vec2s"""
+        left = min(self.shapes, key=lambda s: s.BoundingBox()[0].x)
+        top = min(self.shapes, key=lambda s: s.BoundingBox()[0].y)
+        right = max(self.shapes, key=lambda s: s.BoundingBox()[1].x)
+        bottom = max(self.shapes, key=lambda s: s.BoundingBox()[1].y)
         return (Vec2(left, top), Vec2(right, bottom))
 
     def loadFloorPlan(self):
@@ -179,13 +183,15 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
                 y = int(int(fp[key]["y1"]) / 182)
                 w = int(int(fp[key]["width"]) / 182)
                 h = int(int(fp[key]["height"]) / 182)
-                furniture = fp[key]["furniture"] # What even is this parameter???
+                furniture = fp[key]["furniture"]  # What even is this parameter???
                 # EVERYTHING IS A RECTANGLE YAY\s TODO
                 # EVERYTHING IS AN INCLUSION YAY (eventually there will need to be a conditional on the isExclusion variable)
-                isExclusion = False # TODO
-                self.shapes.append(Primitives.Rectangle(Vec2(x,y),Vec2(x+w,y+h),isExclusion))    
+                isExclusion = False  # TODO
+                self.shapes.append(
+                    Primitives.Rectangle(Vec2(x, y), Vec2(x + w, y + h), isExclusion)
+                )
                 # TODO deal with not rectangles for rendering
-                # This renders the rectangle to the screen 
+                # This renders the rectangle to the screen
                 rect = RectangleItem(x, y, w, h)  # parameters are x, y, width, height
                 # Add the rectangle to the scene
                 self.graphicsView.scene.addItem(rect)
