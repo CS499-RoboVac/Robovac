@@ -1,12 +1,14 @@
 import Common.Primitives as Primitives
 from Common.Robot import Robot
+import sys
 
 
 class Simulation:
-    def __init__(self, floor: dict, ai, robot: Robot):
+    def __init__(self, floor, dirt, ai, robot: Robot):
         """
-        floor: dict of (int, int):floorTile representing the floorplan
-        ai: any object with a method that matches the update(bool) -> (float, float) signature. Outputs should both be in the range [-1, 1].
+        floor: our floorplan
+        dirt: a 2d array
+        ai: any object with a method that matches the update(bool, float) -> (float, float) signature. Outputs should both be in the range [-1, 1].
         robot: the Robot object
         """
         self.ai = ai

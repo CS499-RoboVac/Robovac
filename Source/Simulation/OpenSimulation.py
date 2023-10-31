@@ -1,35 +1,62 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, QtTest
-from PyQt5.QtCore import QObject, QThread, pyqtSignal
+from PyQt5.QtCore import QObject, QThread, pyqtSignal, QRectF
 from PyQt5.QtWidgets import QWidget, QApplication
 from PyQt5.QtGui import QPainter, QColor, QBrush
-
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
+    QGraphicsScene,
     QPushButton,
     QLabel,
     QVBoxLayout,
     QWidget,
+    QGraphicsItem,
     QMessageBox,
     QFileDialog
 )
 
 import sys
 import time
-import sys
 import json
-
+import os
 import Common.Primitives as Primitives
 from Common.Util import Vec2
 import Common.Colors as Colors
 import Simulation.AI as AI
-import Simulator.SimulationCore as SimulationCore 
+import numpy as np
+
+#import Simulator.SimulationCore as SimulationCore 
 
 from Views.ui_sim import Ui_SimWindow
 
 # from FloorPlanDesigner.openFPD import fpdWindowApp
 import FloorPlanDesigner.openFPD as OpenFPD
 import IntroWindow.openIntro as OpenIntro
+
+class RectangleItem(QGraphicsItem):
+    def __init__(self, x, y, width, height):
+        super().__init__()
+        self.rect = QRectF(x, y, width, height)
+
+    def boundingRect(self):
+        return self.rect
+
+    def paint(self, painter, option, widget):
+        painter.setBrush(QColor(200, 0, 0))  # Set the fill color
+        painter.drawRect(self.rect)
+
+class CircleItem(QGraphicsItem):
+    def __init__(self, x, y, width, height):
+        super().__init__()
+        self.rect = QRectF(x, y, width, height)
+
+    def boundingRect(self):
+        return self.rect
+
+    def paint(self, painter, option, widget):
+        painter.setBrush(QColor(200, 0, 0))  # Set the fill color
+        painter.drawRect(self.rect)
+
 
 class simWindowApp(QMainWindow, Ui_SimWindow):
     def __init__(self, parent=None):
@@ -42,24 +69,15 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         self.shapes = []
         #MAKE SPEED VALUE HERE TODO
         self.SimSpeed = 1
-
-    def drawShapes(self, qp):
-        #Right now now everything is a rectangle TODO 
-        for shape in self.shapes:
-            # Eventually a check will need to be performed to see which shape it is, this is placeholder for that
-            if type(shape) == Primitives.rectangle:
-                # Render rectangle
-                # Rectangle Fill
-                qp.setBrush(Colors.GRAY)
-                width = shape.maxCorner.x - shape.minCorner.x
-                height = shape.maxCorner.y - shape.minCorner.y
-                qp.drawRect(shape.minCorner.x, shape.minCorner.y, width, height)
-
-    def paintEvent(self, e):
-            qp = QPainter()
-            qp.begin(self)
-            self.drawShapes(qp)
-            qp.end()
+        self.Robot = None
+        self.dirt = None
+        self.floorplansDir = (
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            + "/Floor Plans/"
+        )
+        
+        self.graphicsView.scene = QGraphicsScene()
+        self.graphicsView.setScene(self.graphicsView.scene)
 
     # Create a worker class to run the simulation in a seperate thread
     class Worker(QObject):
@@ -69,11 +87,14 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         def run(self):
             """Simulation thread/run loop"""
             # Use the currently loaded floor plan?
-            Sim = Simulation()
-            while(True):
+            tl, br = self.BoundingBox()
+            self.parent.robot = self.parent.InstanceRobot()
+            self.parent.dirt = np.zeros((math.ceil(abs(tl.x-br.x)), math.ceil(abs(tl.y-br.y))))
+            #Sim = Simulation(self.parent.shapes, self.parent.InsanceAI(), self.parent.InstanceRobot())
+            while(False):
                 # Read the simulation rate to control the run loop
-                dT = self.parent.SimSpeed
-                
+                #dT = self.parent.SimSpeed
+                Sim.update()
                 pass
             self.finished.emit()
 
@@ -87,9 +108,8 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
 
     def beginSimulation(self):
         """Simulation initialization logic"""
-        floorplanloaded = True #TODO figure out this check
         # Check to see if all values are valid for starting the simulation:
-        if (floorplanloaded):
+        if (len(self.shapes)):
             # Create a QThread object
             self.thread = QThread()
             # Create a worker object
@@ -122,6 +142,18 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             msg.exec_()
             pass
 
+    def InstanceRobot(self):
+        #return Robot() #TODO read sliders
+        pass
+
+    def BoundingBox(self):
+        """ returns bounds of the whole floorplan, as top-left and bottom-right Vec2s"""
+        left =  min(self.shapes, key=lambda s:s.BoundingBox()[0].x)
+        top = min(self.shapes, key=lambda s:s.BoundingBox()[0].y)
+        right =  max(self.shapes, key=lambda s:s.BoundingBox()[1].x)
+        bottom = max(self.shapes, key=lambda s:s.BoundingBox()[1].y)
+        return (Vec2(left, top), Vec2(right, bottom))
+
     def loadFloorPlan(self):
         """
         Loads a floorplan from a file selected by the user using a file dialog.
@@ -136,6 +168,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             options=opts,
         )
         if fileName:
+            self.graphicsView.scene.clear()
             self.shapes = []
             with open(fileName, "r") as inFile:
                 fp = json.load(inFile)
@@ -151,6 +184,11 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
                 # EVERYTHING IS AN INCLUSION YAY (eventually there will need to be a conditional on the isExclusion variable)
                 isExclusion = False # TODO
                 self.shapes.append(Primitives.Rectangle(Vec2(x,y),Vec2(x+w,y+h),isExclusion))    
+                # TODO deal with not rectangles for rendering
+                # This renders the rectangle to the screen 
+                rect = RectangleItem(x, y, w, h)  # parameters are x, y, width, height
+                # Add the rectangle to the scene
+                self.graphicsView.scene.addItem(rect)
 
     def connectButtons(self):
         self.BacktoMainButton.clicked.connect(self.openMain)

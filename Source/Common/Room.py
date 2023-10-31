@@ -59,7 +59,6 @@ class Room:
         self.ovRoomView.setFrameShadow(QtWidgets.QFrame.Plain)
         self.ovRoomView.setLineWidth(1)
         self.ovRoomView.setObjectName(name)
-        self.ovRoomView.set
         self.roomTab = QtWidgets.QWidget()
         fpv.addTab(self.roomTab, name)
         self.tabRoomView = QtWidgets.QFrame(self.roomTab)

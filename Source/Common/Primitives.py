@@ -1,11 +1,13 @@
 from Common.Util import Vec2
 import math
-
 class Rectangle:
     def __init__(self, minCorner: Vec2, maxCorner: Vec2, exclusion: bool):
         self.minCorner = minCorner
         self.maxCorner = maxCorner
         self.exclusion = exclusion
+
+    def BoundingBox(self):
+        return (self.minCorner, self.maxCorner)
 
     def isValid(self,point : Vec2):
         """Checks to see if point is inside of the rectangle, returns inverted result if the rectangle is an exclusion primitive
@@ -20,6 +22,11 @@ class Circle:
         self.center = center
         self.radius = radius
         self.exclusion = exclusion
+
+    def BoundingBox(self): 
+        #returns vec2s representing the top left and bottom right corners of the bounds of the shape
+        diag = Vec2(self.radius, self.radius)
+        return (self.center-diag, self.center+diag)
 
     def isValid(self,point : Vec2):
         """Checks to see if point is inside of the circle, returns inverted result if the circle is an exclusion primitive
