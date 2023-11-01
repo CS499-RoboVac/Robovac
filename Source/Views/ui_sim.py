@@ -25,7 +25,7 @@ import json
 import os
 from PyQt5.QtCore import Qt
 # from Common.Robot import Robot
-from PyQt5.QtGui import QPainter, QBrush, QPen
+from PyQt5.QtGui import QPainter, QBrush, QPen, QColor
 from Common.Robot import Robot, Whisker
 
 class Ui_SimWindow(object):
@@ -253,8 +253,9 @@ class Ui_SimWindow(object):
         self.GraphicLayout.addLayout(self.FloorPlanLayout)
 
         # initialize Scene
-        self.scene = QGraphicsScene(self.centralwidget)
-        self.scene.setSceneRect(0,0,700,700)
+        self.scene = QGraphicsScene()
+        self.scene.setSceneRect(0,0,60,60)
+        self.scene.setBackgroundBrush(QColor(125,125,125))
 
         # initialize GraphicsView and add scene into GView
         self.graphicsView = QtWidgets.QGraphicsView(self.centralwidget)
@@ -280,16 +281,16 @@ class Ui_SimWindow(object):
     def AddVacuum(self, scene):
         robotItem = QGraphicsItemGroup()
         sceneCenter = scene.sceneRect().center()
-        diameterValue = self.DiameterSlide.value()
-        VacWidthValue = self.EfficiencySlide.value()
+        diameterValue = (self.DiameterSlide.value())
+        VacWidthValue = (self.EfficiencySlide.value())
         batteryValue = self.BatteryLifeSlide.value()
         speedValue = self.SpeedSlide.value()
         whiskerEffValue = self.WhiskerEffSlide.value()
-        whiskerLengthValue = self.WhiskerSlide.value()
+        whiskerLengthValue = self.WhiskerSlide.value() * 10
 
         robotBody = Robot(sceneCenter.x(),sceneCenter.y(),diameterValue,whiskerLengthValue,VacWidthValue)
         robotWhisker1 = Whisker(robotBody.x_pos, robotBody.y_pos, whiskerLengthValue)
-        robotWhisker2 = Whisker(robotBody.x_pos, robotBody.y_pos, whiskerLengthValue)
+        robotWhisker2 = Whisker(robotBody.x_pos, -robotBody.y_pos, whiskerLengthValue)
 
         robotItem.addToGroup(robotBody)
         robotItem.addToGroup(robotWhisker1)
