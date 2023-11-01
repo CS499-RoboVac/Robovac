@@ -180,9 +180,9 @@ class Ui_MainWindow(object):
 
     def addRobot(self, scene):
         roomba = QGraphicsItemGroup()
-        roombaBody = Robot(100,100)
-        roombawhisker1 = Whisker(125,125,10)
-        roombawhisker2 = Whisker(75,125,10)
+        roombaBody = Robot(100,100,10,50,60)
+        roombawhisker1 = Whisker(100,100,10)
+        roombawhisker2 = Whisker(100,100,10)
 
         roomba.addToGroup(roombawhisker1)
         roomba.addToGroup(roombawhisker2)

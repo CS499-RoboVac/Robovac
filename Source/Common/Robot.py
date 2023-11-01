@@ -7,21 +7,34 @@
 # The whiskers center points cannot be outside of the robot's circle
 # The robot also has a vaccum that is a rectangle that is under the robot
 # The vaccum's width cannot be larger than the robot's diameter
-
+from PyQt5.QtCore import QRectF, Qt
+from PyQt5.QtGui import QPainter
+from PyQt5.QtWidgets import QGraphicsItem
 
 # The whiskers have a diameter, and a position relative to the robot they are attached to
-class Whisker: 
+whsikerColor = Qt.blue 
+RobotColor = Qt.red
+
+class Whisker(QGraphicsItem): 
     # Constructor
     # x_pos: The x position of the whisker
     # y_pos: The y position of the whisker
     # diameter: The diameter of the whisker
     def __init__(self, x_pos, y_pos, diameter):
+        super().__init__()
         self.x_pos = x_pos
         self.y_pos = y_pos
         self.diameter = diameter
 
+    def boundingRect(self):
+        return QRectF(self.x_pos, self.y_pos, self.diameter, self.diameter)
 
-class Robot:
+    def paint(self, painter, option, widget):
+        painter.setBrush(whsikerColor)
+        painter.drawEllipse(self.boundingRect())
+
+
+class Robot(QGraphicsItem):
     # Constructor
     # x_pos: The x position of the robot
     # y_pos: The y position of the robot
@@ -36,6 +49,7 @@ class Robot:
         whisker_length=13.5,
         vaccum_width=5.8,
     ):
+        super().__init__()
         self.x_pos = x_pos
         self.y_pos = y_pos
         self.diameter = diameter
@@ -45,21 +59,27 @@ class Robot:
         self.is_valid = True
 
         # Create the whiskers
-        self.whiskers.append(
-            Whisker(
-                x_pos + self.diameter / 2,
-                y_pos + self.diameter / 2,
-                self.whisker_length,
-            )
-        )
-        self.whiskers.append(
-            Whisker(
-                x_pos - self.diameter / 2,
-                y_pos + self.diameter / 2,
-                self.whisker_length,
-            )
-        )
+        # self.whiskers.append(
+        #     Whisker(
+        #         x_pos + self.diameter / 2,
+        #         y_pos + self.diameter / 2,
+        #         self.whisker_length,
+        #     )
+        # )
+        # self.whiskers.append(
+        #     Whisker(
+        #         x_pos - self.diameter / 2,
+        #         y_pos + self.diameter / 2,
+        #         self.whisker_length,
+        #     )
+        # )
 
+    def boundingRect(self):
+        return QRectF(self.x_pos - self.diameter / 2, self.y_pos - self.diameter / 2, self.diameter, self.diameter)
+
+    def paint(self, painter, option, widget):
+        painter.setBrush(Qt.red)
+        painter.drawEllipse(self.boundingRect())
     # Validate the robot
     # @return: True if the robot is valid, False otherwise
     def validate(self):
