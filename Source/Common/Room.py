@@ -25,7 +25,7 @@ class Room:
             )
         )
 
-    def __init__(self, name, x, y, w, h, overview, fpv, combo):
+    def __init__(self, name, x, y, w, h, overview, fpv, combo, color = "rgb(255, 255, 255)"):
         """
         Initializes a Room object with the given parameters.
 
@@ -48,6 +48,7 @@ class Room:
         self.y = y
         self.width = w
         self.height = h
+        self.linewidth = 1
         self.ovRoomView = QtWidgets.QFrame(overview)
         self.ovRoomView.setGeometry(
             QtCore.QRect(self.x, self.y, self.width, self.height)
@@ -57,7 +58,8 @@ class Room:
         self.ovRoomView.setFont(font)
         self.ovRoomView.setFrameShape(QtWidgets.QFrame.Box)
         self.ovRoomView.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.ovRoomView.setLineWidth(1)
+        self.ovRoomView.setLineWidth(self.linewidth)
+        self.ovRoomView.setStyleSheet("background-color: " + color)
         self.ovRoomView.setObjectName(name)
         self.roomTab = QtWidgets.QWidget()
         fpv.addTab(self.roomTab, name)
@@ -68,7 +70,21 @@ class Room:
         self.tabRoomView.setFont(font)
         self.tabRoomView.setFrameShape(QtWidgets.QFrame.Box)
         self.tabRoomView.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.tabRoomView.setLineWidth(1)
+        self.tabRoomView.setLineWidth(self.linewidth)
         self.tabRoomView.setObjectName(name)
         combo.addItem(name)
         fpv.setCurrentIndex(0)
+
+    def set_line_width(self, width):
+        """
+        Sets the line width of the room's overview and tab view.
+
+        Args:
+        - width (int): the new line width
+
+        Returns:
+        - None
+        """
+        self.linewidth = width
+        self.ovRoomView.setLineWidth(width)
+        self.tabRoomView.setLineWidth(width)

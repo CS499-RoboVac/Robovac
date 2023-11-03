@@ -43,12 +43,14 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         super(fpdWindowApp, self).__init__(parent)
         self.setupUi(self)
         self.connectButtons()
-        self.numRooms = 1
+        self.numRooms = 0
         self.rooms = []
+        self.door_count = 0
         self.floorplansDir = (
             os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             + "/Floor Plans/"
         )
+        self.addRoom("livingRoom")
 
     def saveFloorplan(self):
         """
@@ -216,41 +218,25 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                 self.rooms[roomIndex].width = self.roomWBox.value()
                 self.rooms[roomIndex].height = self.roomHBox.value()
                 self.rooms[roomIndex].tabViewResize()
+                # If the room name contains "Door", then it is a door and should be rendered below all other rooms.
+                # If the room name does not contain "Door", then it is a normal room and should be rendered above all
+                # other rooms.
+                # If the room name does not contain "Door", then it's minimum size is 20x20.
+                if "Door" in self.rooms[roomIndex].roomName:
+                    self.rooms[roomIndex].ovRoomView.lower()
+                else:
+                    if self.rooms[roomIndex].width < 20:
+                        self.rooms[roomIndex].width = 20
+                        self.roomWBox.setValue(20)
+                    if self.rooms[roomIndex].height < 20:
+                        self.rooms[roomIndex].height = 20
+                        self.roomHBox.setValue(20)
+                    self.rooms[roomIndex].ovRoomView.raise_()
+                
             roomIndex += 1
         self.floorplanView.setCurrentIndex(0)
 
-    def updateRoomOptions(self):
-        """
-        Updates the room options in the GUI based on the current selection in the roomOptionsComboBox.
-
-        This function sets the values of the roomXBox, roomYBox, roomWBox, and roomHBox widgets to the values of the
-        currently selected room in the self.rooms list. This function is called whenever the user selects a new room
-        from the roomOptionsComboBox.
-
-        Args:
-            self: The FloorPlanDesigner object.
-
-        Returns:
-            None
-        """
-        self.roomXBox.blockSignals(True)
-        self.roomYBox.blockSignals(True)
-        self.roomWBox.blockSignals(True)
-        self.roomHBox.blockSignals(True)
-
-        for room in self.rooms:
-            if room.roomName == self.roomOptionsComboBox.currentText():
-                self.roomXBox.setProperty("value", room.x)
-                self.roomYBox.setProperty("value", room.y)
-                self.roomWBox.setProperty("value", room.width)
-                self.roomHBox.setProperty("value", room.height)
-
-        self.roomXBox.blockSignals(False)
-        self.roomYBox.blockSignals(False)
-        self.roomWBox.blockSignals(False)
-        self.roomHBox.blockSignals(False)
-
-    def addRoom(self):
+    def addRoom(self, roomName = None):
         """
         Adds a new room to the floorplan.
 
@@ -263,7 +249,14 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         Returns:
             None
         """
-        newRoomText = self.textEdit.toPlainText()
+        if roomName is None:
+            newRoomText = self.textEdit.toPlainText()
+        else:
+            newRoomText = roomName
+            # If the type of the room name is not a string, then set it to a default value.
+            if type(newRoomText) != str:
+                newRoomText = "Room " + str(self.numRooms)
+
         self.textEdit.setText("")
         dupeFlag = False
         for room in self.rooms:
@@ -283,13 +276,94 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                     self.roomOptionsComboBox,
                 )
             )
+            self.roomOptionsComboBox.setCurrentIndex(len(self.rooms) - 1)
+
+
+    def addDoor(self):
+        """
+        Adds a door to the floorplan.
+        A door is a 5x5 room that is brown in color.
+        It is also rendered below all other rooms.
+        """
+        self.door_count += 1
+        self.floorplanView.setCurrentIndex(1)
+        door = Room(
+                "Door" + str(self.door_count),
+                100,
+                100,
+                5,
+                5,
+                self.overviewTab,
+                self.floorplanView,
+                self.roomOptionsComboBox,
+                "rgb(139, 69, 19)",
+            )
+
+        self.rooms.append(door)
+        self.roomOptionsComboBox.setCurrentIndex(len(self.rooms) - 1)
+
+
+
+    def on_room_selected(self):
+        """
+        This function is called whenever the user selects a new room
+        from the roomOptionsComboBox.
+        Updates the room options and the rest of the GUI based on the current selection in the roomOptionsComboBox.
+        Also handles any other housekeeping tasks that need to be done when a new room is selected.
+
+        Removes the border from all rooms, then adds a border to the currently selected room.
+
+        Sets the values of the roomXBox, roomYBox, roomWBox, and roomHBox widgets to the values of the
+        currently selected room in the self.rooms list. 
+        Args:
+            self: The FloorPlanDesigner object.
+
+        Returns:
+            None
+        """
+        # Find the room that is currently selected in the combo box.
+        try:
+            selected_room = self.rooms[self.roomOptionsComboBox.currentIndex()]
+        except:
+            # If there are no rooms, then return.
+            # This occurs on startup.
+            return
+        
+        # Set all rooms to have no line width.
+        for room in self.rooms:
+            room.ovRoomView.setLineWidth(0)
+        
+        # Set the selected room to have a line width of 1.
+        selected_room.set_line_width(1)
+
+        # Bring the selected room to the front by putting it at the end of the list.
+        self.rooms.remove(selected_room)
+        self.rooms.append(selected_room)
+
+        self.roomXBox.blockSignals(True)
+        self.roomYBox.blockSignals(True)
+        self.roomWBox.blockSignals(True)
+        self.roomHBox.blockSignals(True)
+
+        self.roomXBox.setProperty("value", selected_room.x)
+        self.roomYBox.setProperty("value", selected_room.y)
+        self.roomWBox.setProperty("value", selected_room.width)
+        self.roomHBox.setProperty("value", selected_room.height)
+
+        self.roomXBox.blockSignals(False)
+        self.roomYBox.blockSignals(False)
+        self.roomWBox.blockSignals(False)
+        self.roomHBox.blockSignals(False)
+
 
     def connectButtons(self):
         self.addRoomButton.clicked.connect(self.addRoom)
+        self.addDoorButton.clicked.connect(self.addDoor)
         self.saveFloorplanButton.clicked.connect(self.saveFloorplan)
         self.loadFloorplanButton.clicked.connect(self.loadFloorplan)
         self.newFloorplanButton.clicked.connect(self.newFloorplan)
-        self.roomOptionsComboBox.currentIndexChanged.connect(self.updateRoomOptions)
+        self.roomOptionsComboBox.currentIndexChanged.connect(self.on_room_selected)
+        self.roomOptionsComboBox.highlighted.connect(self.on_room_selected)
         self.roomXBox.valueChanged.connect(self.updateRoomDimensions)
         self.roomYBox.valueChanged.connect(self.updateRoomDimensions)
         self.roomWBox.valueChanged.connect(self.updateRoomDimensions)
