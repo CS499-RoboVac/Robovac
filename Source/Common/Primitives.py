@@ -60,7 +60,6 @@ def PrimitiveInclusion(shapes, point):
             else:
                 insideAnyInclusion = True
                 
-
     return insideAnyInclusion and outsideEveryExclusion
 
 
@@ -71,6 +70,7 @@ def Collision(pos: Vec2, d: float, shapes: list):
     r : float radius of the vacuum,
     FloorPlan : dict with entries of the form (int, int): FloorTile"""
     maxDistance = 1 # Maximum distance between collision check points in cm
-    n =int((math.pi*d)//maxDistance)
-    points  = [Vec2(math.cos((2*math.pi/n)*i)*(d/2),math.sin((2*math.pi/n)*i)*(d/2)) for i in range(n)]
-    return all([PrimitiveInclusion(shapes,point) for point in points])
+    n = int((math.pi*d)//maxDistance)
+    points  = [Vec2(math.cos((2*math.pi/n)*i)*(d/2)+pos.x,math.sin((2*math.pi/n)*i)*(d/2)+pos.y) for i in range(n)]
+
+    return not all([PrimitiveInclusion(shapes,point) for point in points])

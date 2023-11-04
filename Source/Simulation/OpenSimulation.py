@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QGraphicsScene,
     QGraphicsPixmapItem, 
+    QGraphicsEllipseItem,
     QPushButton,
     QLabel,
     QVBoxLayout,
@@ -81,58 +82,43 @@ class CircleItem(QGraphicsItem):
         painter.drawEllipse(self.rect)
 
 class RobotSprite(QGraphicsItem):
-    def __init__(self, x, y, radius, wRadius, facing):
-        super().__init__()
-        self.radius = radius
-        self.whiskerRadius = wRadius
-        self.facing = facing
-
-        self.x = x
-        self.y = y
-
-        self.rect = QRectF(x - radius, y - radius, 2*radius, 2*radius)
-        self.whiskers = [QRectF(x - self.whiskerRadius, y - self.whiskerRadius, 2*self.whiskerRadius, 2*self.whiskerRadius) for wh in range(2)]
-        pos = Vec2(self.x, self.y)
-        for i, wh in enumerate(self.whiskers):
-            p = pos + Vec2((-1)**i * self.radius*2/3, self.radius*2/3)
-            wh.setRect(p.x - self.whiskerRadius, p.y - self.whiskerRadius, 2*self.whiskerRadius, 2*self.whiskerRadius)
-
-        self.setFlag(QGraphicsItem.ItemIsSelectable)
+    def __init__(self, x, y, radius, wRadius, facing, parent=None):
+        super(RobotSprite, self).__init__(parent)
         self.setFlag(QGraphicsItem.ItemIsMovable)
+        self.setFlag(QGraphicsItem.ItemIsSelectable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
 
-        self.setPos(100,100)
+        # Create three QGraphicsEllipseItems as child items
+        self.center_circle = QGraphicsEllipseItem(0, 0, 2*radius, 2*radius, self)
+        self.center_circle.setPos(-radius,-radius)
+        l = (2/3)*radius-wRadius
 
-
-    def itemChange(self, change, value):
-        if change == QGraphicsItem.ItemPositionChange:
-            self.x = value.x()
-            self.y = value.y()
-        return super().itemChange(change, value)
-        
-    def boundingRect(self):
-        return self.rect
-
-    def updateRobot(self, robot):
-        for i, wh in enumerate(robot.whiskers):
-            center = robot.pos + wh.pos.turn(robot.facing)
-            self.whiskers[i].moveCenter(QPointF(center.x,center.y))
-            
-        self.rect.moveCenter(QPointF(center.x, center.y))
-
-    def updateDimensions(self):
-        self.rect.setRect(self.x - self.radius, self.y - self.radius, 2*self.radius, 2*self.radius)
-        pos = Vec2(self.x, self.y)
-        for i, wh in enumerate(self.whiskers):
-            p = pos + Vec2((-1)**i * self.radius*2/3, self.radius*2/3)
-            wh.setRect(p.x - self.whiskerRadius, p.y - self.whiskerRadius, 2*self.whiskerRadius, 2*self.whiskerRadius)
-
+        g = (2/3)*radius+wRadius
+        self.left_circle = QGraphicsEllipseItem(0, 0, 2*wRadius, 2*wRadius, self)
+        self.left_circle.setPos(-g,l)
+        self.right_circle = QGraphicsEllipseItem(0, 0, 2*wRadius, 2*wRadius, self)
+        self.right_circle.setPos(l,l)
+        self.setRotation(facing)
+        self.center_circle.setBrush(QColor(0,0,255))
+        self.left_circle.setBrush(QColor(0,0,255))
+        self.right_circle.setBrush(QColor(0,0,255))
     def paint(self, painter, option, widget):
-        painter.setBrush(QColor(0, 150, 200))  # Set the fill color
-        painter.drawEllipse(self.rect)
-        painter.setBrush(QColor(255, 255, 255))
-        for wh in self.whiskers:
-            painter.drawEllipse(wh)
+        pass
+    def boundingRect(self):
+        # Return a QRectF that contains all child items
+        return self.childrenBoundingRect()
+
+    def setRadius(self, radius, wRadius):
+        # Set the radius of the circles
+        self.center_circle.setRect(0, 0, 2*radius, 2*radius)
+        self.center_circle.setPos(-radius,-radius)
+        l = (2/3)*radius-wRadius
+        g = (2/3)*radius+wRadius
+        self.left_circle.setRect(0, 0, 2*wRadius, 2*wRadius)
+        self.left_circle.setPos(-g,l)
+        self.right_circle.setRect(-0, 0, 2*wRadius, 2*wRadius)
+        self.right_circle.setPos(l,l)
+
 
 
 from PyQt5.QtWidgets import QGraphicsItem
@@ -172,16 +158,17 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
     # Create a worker class to run the simulation in a seperate thread
     class Worker(QObject):
         finished = pyqtSignal()
-        
+        frameUpdated = pyqtSignal()
+
         def __init__(self, parent):
             super().__init__()
             self.parent = parent
 
         def run(self):
             """Simulation thread/run loop"""
-            self.parent.robot = self.parent.InstanceRobot()
+            self.parent.Robot = self.parent.InstanceRobot()
                     
-            Sim = SimulationCore.Simulation(self.parent.shapes, self.parent.dirt, self.parent.InstanceAI(), self.parent.robot)
+            Sim = SimulationCore.Simulation(self.parent.shapes, self.parent.dirt, self.parent.InstanceAI(), self.parent.Robot)
 
             MaxT = 5
             T=0
@@ -192,16 +179,18 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
                 if T>MaxT:
                     break
                 time.sleep(1/60)
-                self.parent.RobotRenderObject.updateRobot(self.parent.robot)
-                self.parent.graphicsView.update()
+                self.frameUpdated.emit()
                 
             self.finished.emit()
 
     def robotSizeChange(self):
         if self.RobotRenderObject:
             self.RobotRenderObject.radius = self.DiameterSlide.value()/2
-            self.RobotRenderObject.updateDimensions()
-            self.graphicsView.update()
+            self.RobotRenderObject.setRadius(self.DiameterSlide.value()/2,self.WhiskerSlide.value())
+    
+    def updateFrame(self):
+        self.RobotRenderObject.setPos(self.Robot.pos[0],self.Robot.pos[1])
+        self.RobotRenderObject.setRotation((self.Robot.facing*180)/math.pi)
 
     def openFPD(self):
         self.fpds.append(OpenFPD.fpdWindowApp())
@@ -224,6 +213,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             # Connect signals and slots
             self.thread.started.connect(self.worker.run)
             self.worker.finished.connect(self.thread.quit)
+            self.worker.frameUpdated.connect(self.updateFrame)
             self.worker.finished.connect(self.worker.deleteLater)
             self.thread.finished.connect(self.thread.deleteLater)
 

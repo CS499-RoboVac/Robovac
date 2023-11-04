@@ -2,6 +2,7 @@ import sys
 import os
 
 import Common.Primitives as Primitives
+from Common.Util import Vec2
 from Common.Robot import Robot
 
 
@@ -26,7 +27,6 @@ class Simulation:
         self.elapsed_time = 0
         self.max_time = 0
         self.is_colliding = False
-        self.sim_speed = 1
         self.default_tickrate = 60
 
     def update(self, dT):
@@ -34,9 +34,11 @@ class Simulation:
         self.robot.doCleaning(self.dirt, dT)
         # these values are in the [-1, 1] range, representing fraction of the robot's maximum ability
         speed, dΘ = self.ai.update(self.is_colliding, dT)
-        self.robot.facing += dΘ * self.robot.maxTurn * dT * self.sim_speed
-        ProspectivePosition = self.robot.pos + speed * self.robot.maxSpeed * dT * self.sim_speed
-        self.is_colliding = Primitives.Collision(ProspectivePosition, self.robot.diameter / 2, self.floor_plan)
+        self.robot.facing += dΘ * self.robot.maxTurn * dT
+        
+        ProspectivePosition =self.robot.pos + Vec2(0,speed * self.robot.maxSpeed * dT).turn(self.robot.facing)
+        
+        self.is_colliding = Primitives.Collision(ProspectivePosition, self.robot.diameter, self.floor_plan)
         if not self.is_colliding:
             # the robot's motion is valid
             self.robot.pos = ProspectivePosition
