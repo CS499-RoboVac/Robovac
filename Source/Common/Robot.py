@@ -14,7 +14,7 @@ import math
 
 # The whiskers have a diameter, and a position relative to the robot they are attached to
 class Whisker:
-    def __init__(self, pos: Vec2, diameter: float):
+    def __init__(self, pos: Vec2, diameter: float, eff: float):
         """
         Constructor
         pos: Vec2, the position of the whisker relative to the center
@@ -22,6 +22,7 @@ class Whisker:
         """
         self.pos = pos
         self.diameter = diameter
+        self.efficiency = eff
 
 
 class Robot:
@@ -38,13 +39,15 @@ class Robot:
 
     def __init__(
         self,
-        pos: Vec2,
+        pos: Vec2 = Vec2(0,0),
         facing: float = 0,
         diameter: float = 12.8,
         maxSpeed: float = 50,
         maxTurn: float = 2 * math.pi / 3,
         whisker_length: float = 13.5,
         vaccum_width: float = 5.8,
+        efficiency = 0.5,
+        whisker_eff = 0.5
     ):
         self.pos = pos
         self.facing = facing
@@ -54,14 +57,15 @@ class Robot:
         self.whisker_length = whisker_length
         self.vaccum_width = vaccum_width
         self.is_valid = True
+        self.efficiency = efficiency
         self.whiskers = [
             Whisker(
-                pos + Vec2(self.diameter / 2, self.diameter / 2),
-                self.whisker_length,
+                self.pos + Vec2(self.diameter / 3, self.diameter / 3),
+                self.whisker_length, whisker_eff
             ),
             Whisker(
-                pos + Vec2(-self.diameter / 2, self.diameter / 2),
-                self.whisker_length,
+                self.pos + Vec2(-self.diameter / 3, self.diameter / 3),
+                self.whisker_length, whisker_eff
             ),
         ]
 
@@ -111,9 +115,46 @@ class Robot:
         self.vaccum_width = vaccum_width
         return self.validate()
 
-    def doCleaning(floor, dT):
-        """floor is a dict like normal; the robot should handle its own shape and whisker efficiencies and whatnot"""
-        pass  # TODO IMPLEMEMNT LATER
+    def doCleaning(self,dirt,dT): #NOTE we are assuming small movement relative to timestep 
+        #circles:
+        for whisker in self.whiskers:
+            p = self.pos + whisker.pos.turn(self.facing)
+            for x in range(math.floor(-whisker.diameter/2), math.ceil(whisker.diameter/2)+1):
+                for y in range(math.floor(-whisker.diameter/2), math.ceil(whisker.diameter/2)+1):
+                    if x*x + y*y <= whisker.diameter * whisker.diameter/4:
+                        dirt[x, y] *= (1-whisker.efficiency*dT)
+        #line:
+        # Calculate the start and end points of the line
+        length = max(dirt.shape)
+        x1 = int(self.pos.x - length/2 * math.cos(self.facing))
+        y1 = int(self.pos.y - length/2 * math.sin(self.facing))
+        x2 = int(self.pos.x + length/2 * math.cos(self.facing))
+        y2 = int(self.pos.y + length/2 * math.sin(self.facing))
+
+        # Bresenham's line algorithm
+        dx = abs(x2 - x1)
+        dy = abs(y2 - y1)
+        x, y = x1, y1
+        sx = -1 if x1 > x2 else 1
+        sy = -1 if y1 > y2 else 1
+        if dx > dy:
+            err = dx / 2.0
+            while x != x2:
+                dirt[max(0, min(y, dirt.shape[0]-1)), max(0, min(x, dirt.shape[1]-1))] *= (1-self.efficiency*dT) 
+                err -= dy
+                if err < 0:
+                    y += sy
+                    err += dx
+                x += sx
+        else:
+            err = dy / 2.0
+            while y != y2:
+                dirt[max(0, min(y, dirt.shape[0]-1)), max(0, min(x, dirt.shape[1]-1))] *= (1-self.efficiency*dT)
+                err -= dx
+                if err < 0:
+                    x += sx
+                    err += dy
+                y += sy
 
     def __str__(self) -> str:
         return (
