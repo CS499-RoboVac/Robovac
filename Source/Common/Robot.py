@@ -12,9 +12,15 @@ import numpy as np
 # The robot also has a vaccum that is a rectangle that is under the robot
 # The vaccum's width cannot be larger than the robot's diameter
 
-def Within(pos : Vec2, arr) -> bool:
+
+def Within(pos: Vec2, arr) -> bool:
     s = arr.shape
-    return (type(pos.x)==int and type(pos.y)==int) and (0 <= pos.x and pos.x < s[0]) and (0 <= pos.y and pos.y < s[1])
+    return (
+        (type(pos.x) == int and type(pos.y) == int)
+        and (0 <= pos.x and pos.x < s[0])
+        and (0 <= pos.y and pos.y < s[1])
+    )
+
 
 # The whiskers have a diameter, and a position relative to the robot they are attached to
 class Whisker:
@@ -27,6 +33,7 @@ class Whisker:
         self.pos = pos
         self.diameter = diameter
         self.efficiency = eff
+
 
 class Robot:
     """
@@ -42,15 +49,15 @@ class Robot:
 
     def __init__(
         self,
-        pos: Vec2 = Vec2(0,0),
+        pos: Vec2 = Vec2(0, 0),
         facing: float = 0,
         diameter: float = 12.8,
         maxSpeed: float = 50,
         maxTurn: float = 2 * math.pi / 3,
         whisker_length: float = 13.5,
         vaccum_width: float = 5.8,
-        efficiency = 0.5,
-        whisker_eff = 0.5
+        efficiency=0.5,
+        whisker_eff=0.5,
     ):
         self.pos = pos
         self.facing = facing
@@ -64,11 +71,13 @@ class Robot:
         self.whiskers = [
             Whisker(
                 Vec2(self.diameter / 3, self.diameter / 3),
-                self.whisker_length, whisker_eff
+                self.whisker_length,
+                whisker_eff,
             ),
             Whisker(
                 Vec2(-self.diameter / 3, self.diameter / 3),
-                self.whisker_length, whisker_eff
+                self.whisker_length,
+                whisker_eff,
             ),
         ]
 
@@ -115,26 +124,41 @@ class Robot:
         self.vaccum_width = vaccum_width
         return self.validate()
 
-    def doCleaning(self,dirt,dT): #NOTE we are assuming small movement relative to timestep 
-        #circles:
+    def doCleaning(
+        self, dirt, dT
+    ):  # NOTE we are assuming small movement relative to timestep
+        # circles:
         for whisker in self.whiskers:
             p = self.pos + whisker.pos.turn(self.facing)
-            for x in range(math.floor(-whisker.diameter/2), math.ceil(whisker.diameter/2)+1):
-                for y in range(math.floor(-whisker.diameter/2), math.ceil(whisker.diameter/2)+1):
-                    if Within(Vec2(math.floor(p.y)+y, math.floor(p.x)+x), dirt) and (x*x + y*y <= whisker.diameter * whisker.diameter/4):
-                        dirt[math.floor(p.y)+y, math.floor(p.x)+x] *= (1-whisker.efficiency*dT)
-        RV = Vec2(self.diameter/2, 0).turn(self.facing)
-        
-        for point in self.bresenham_line(self.pos.x+RV.x,self.pos.y+RV.y,self.pos.x-(RV.x),self.pos.y-(RV.y)):
-            if Within(Vec2(point[1], point[0]),dirt):
-                dirt[point[1], point[0]] *= (1-self.efficiency*dT)
-        
+            for x in range(
+                math.floor(-whisker.diameter / 2), math.ceil(whisker.diameter / 2) + 1
+            ):
+                for y in range(
+                    math.floor(-whisker.diameter / 2),
+                    math.ceil(whisker.diameter / 2) + 1,
+                ):
+                    if Within(
+                        Vec2(math.floor(p.y) + y, math.floor(p.x) + x), dirt
+                    ) and (x * x + y * y <= whisker.diameter * whisker.diameter / 4):
+                        dirt[math.floor(p.y) + y, math.floor(p.x) + x] *= (
+                            1 - whisker.efficiency * dT
+                        )
+        RV = Vec2(self.diameter / 2, 0).turn(self.facing)
+
+        for point in self.bresenham_line(
+            self.pos.x + RV.x,
+            self.pos.y + RV.y,
+            self.pos.x - (RV.x),
+            self.pos.y - (RV.y),
+        ):
+            if Within(Vec2(point[1], point[0]), dirt):
+                dirt[point[1], point[0]] *= 1 - self.efficiency * dT
 
     def bresenham_line(self, x1, y1, x2, y2):
         """Bresenham's Line Algorithm
         Produces a list of tuples from start and end (x, y) points
         """
-        
+
         # Setup initial conditions
         x1, y1 = int(round(x1)), int(round(y1))
         x2, y2 = int(round(x2)), int(round(y2))

@@ -20,6 +20,7 @@ class Turner:
         self.lastdT = dT
         return (False, (0, self.sign))
 
+
 class SnakeAI:
     class State(Enum):
         Long = 0
@@ -59,14 +60,17 @@ class SnakeAI:
                 self.TurnHelp = Turner(pi / 2 * self.turnDir, self.robot.maxTurn)
             return (1, 0)
 
+
 class BiasedRandomAI:
     def __init__(self, robit: Robot):
         pass
+
     def update(self, isColliding: bool, dT: float):
         """takes in the normal inputs for an AI: bool for if collision occurred on the last frame, and float for what fraction of a second has elapsed since last frame
         returns two values: the percentage of full forwards speed to use, and the percentage of turn speed to use
         """
         return (random.uniform(-0.5, 1), random.uniform(-0.5, 1))
+
 
 class RandomBounceAI:
     class State(Enum):
@@ -95,6 +99,7 @@ class RandomBounceAI:
                 return (0, 0)
             else:
                 return out
+
 
 class SpiralAI:
     class State(Enum):
@@ -143,8 +148,16 @@ class SpiralAI:
             dxdt = d * cos(2 * pi * t) + 2 * pi * d * t * sin(2 * pi * t)
             dydt = d * sin(2 * pi * t) - 2 * pi * d * t * cos(2 * pi * t)
             drdt = sqrt(dxdt**2 + dydt**2)
-            dθdt = atan2(dydt, dxdt)
-            LineRatio = self.robot.maxSpeed / drdt
-            TurnRatio = self.robot.maxTurn / dθdt
-            MinRatio = min(LineRatio, TurnRatio)
-            return (MinRatio * drdt/self.robot.maxSpeed, MinRatio * dθdt/self.robot.maxTurn)
+            dθdt = atan2(dydt, dxdt) - self.robot.facing
+            LineRatio = self.robot.maxSpeed * dT / drdt
+            TurnRatio = self.robot.maxTurn * dT / dθdt
+            MinRatio = 0
+            if abs(LineRatio) > abs(TurnRatio):
+                MinRatio = TurnRatio
+            else:
+                MinRatio = LineRatio
+            o = (
+                MinRatio * drdt / (self.robot.maxSpeed * dT),
+                MinRatio * dθdt / (self.robot.maxTurn * dT),
+            )
+            return o
