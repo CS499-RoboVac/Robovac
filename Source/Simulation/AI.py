@@ -1,6 +1,7 @@
 import random
 from enum import Enum
 import Common.Robot as Robot
+
 from math import sin, cos, pi, sqrt, atan2
 
 
@@ -42,6 +43,7 @@ class SnakeAI:
             if self.state == self.State.Long:
                 self.turnDir *= -1
                 self.TimeShort = 0
+
             self.state = self.State.Turning
             self.TurnHelp = Turner(pi / 2 * self.turnDir, self.robot.maxTurn)
         if self.state == self.State.Long:
@@ -58,6 +60,7 @@ class SnakeAI:
             if self.TimeShort > self.robot.diameter / self.robot.maxSpeed:
                 self.state = self.State.Turning
                 self.TurnHelp = Turner(pi / 2 * self.turnDir, self.robot.maxTurn)
+
             return (1, 0)
 
 
@@ -69,7 +72,9 @@ class BiasedRandomAI:
         """takes in the normal inputs for an AI: bool for if collision occurred on the last frame, and float for what fraction of a second has elapsed since last frame
         returns two values: the percentage of full forwards speed to use, and the percentage of turn speed to use
         """
+
         return (random.uniform(-0.5, 1), random.uniform(-0.5, 1))
+
 
 
 class RandomBounceAI:
@@ -78,11 +83,14 @@ class RandomBounceAI:
         Turning = 1
 
     def __init__(self, robit: Robot):
+
         self.state = self.State.Going
+
         self.robot = robit
         self.TurnHelp = None
 
     def update(self, isColliding: bool, dT: float):
+
         if self.state == self.State.Going:
             if isColliding:
                 self.TurnHelp = Turner(
@@ -96,6 +104,7 @@ class RandomBounceAI:
             end, out = self.TurnHelp.Turn(dT)
             if end:
                 self.state = self.State.Going
+
                 return (0, 0)
             else:
                 return out
@@ -108,23 +117,28 @@ class SpiralAI:
         Spiraling = 2
 
     def __init__(self, robit: Robot):
+
         self.state = self.State.Spiraling
+
         self.robot = robit
         self.TurnHelp = None
         self.SpiralTimer = 0
         self.LinearCountdown = 0
 
     def update(self, isColliding: bool, dT: float):
+
         if self.state == self.State.Linear:
             if isColliding:
                 self.TurnHelp = Turner(
                     (random.random() - 0.5) * 2 * pi, self.robot.maxTurn
                 )
                 self.state = self.State.Turning
+
                 return (0, 0)
             self.LinearCountdown -= dT
             if self.LinearCountdown < 0:
                 SpiralTimer = 0
+
                 self.state = self.State.Spiraling
                 return (0, 0)
             return (1, 0)
@@ -141,12 +155,14 @@ class SpiralAI:
                     (random.random() - 0.5) * 2 * pi, self.robot.maxTurn
                 )
                 self.state = self.State.Turning
+
                 return (0, 0)
             self.SpiralTimer += dT
             d = self.robot.diameter
             t = self.SpiralTimer
             dxdt = d * cos(2 * pi * t) + 2 * pi * d * t * sin(2 * pi * t)
             dydt = d * sin(2 * pi * t) - 2 * pi * d * t * cos(2 * pi * t)
+
             drdt = sqrt(dxdt**2 + dydt**2)
             dθdt = atan2(dydt, dxdt) - self.robot.facing
             LineRatio = self.robot.maxSpeed * dT / drdt

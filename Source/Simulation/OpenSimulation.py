@@ -1,11 +1,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, QtTest
+
 from PyQt5.QtCore import QObject, QThread, pyqtSignal, QRectF, QPointF
 from PyQt5.QtWidgets import QWidget, QApplication
 from PyQt5.QtGui import QPainter, QColor, QBrush, QImage, QPixmap
+
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
     QGraphicsScene,
+
     QGraphicsPixmapItem,
     QGraphicsEllipseItem,
     QPushButton,
@@ -24,12 +27,14 @@ import os
 import Common.Primitives as Primitives
 from Common.Util import Vec2
 import Common.Colors as Colors
+
 import Common.Robot as Robot
 import Simulation.AI as AI
 import numpy as np
 import math
 
 import Simulator.SimulationCore as SimulationCore
+
 
 from Views.ui_sim import Ui_SimWindow
 
@@ -42,6 +47,7 @@ class RectangleItem(QGraphicsItem):
     def __init__(self, x, y, width, height):
         super().__init__()
         self.rect = QRectF(x, y, width, height)
+
         self.x = x
         self.y = y
         self._brush = QBrush(QColor(230, 255, 230))
@@ -49,6 +55,7 @@ class RectangleItem(QGraphicsItem):
     def setBrush(self, brush):
         self._brush = brush
         self.update()
+
 
     def boundingRect(self):
         return self.rect
@@ -69,6 +76,7 @@ class CircleItem(QGraphicsItem):
         return self.rect
 
     def paint(self, painter, option, widget):
+
         painter.setBrush(QColor(0, 0, 200))  # Set the fill color
         painter.drawEllipse(self.rect)
 
@@ -119,6 +127,7 @@ from PyQt5.QtGui import QPainter, QColor
 from PyQt5.QtCore import QRectF
 
 
+
 class simWindowApp(QMainWindow, Ui_SimWindow):
     def __init__(self, parent=None):
         super(simWindowApp, self).__init__(parent)
@@ -129,6 +138,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         self.main = []
         self.shapes = []
         # MAKE SPEED VALUE HERE TODO
+
         self.simSpeedOptions = [1, 5, 50]
         self.simSpeedIndex = 0
         self.SimSpeed = 1
@@ -136,6 +146,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         self.RobotRenderObject = None
         self.dirtRenderObject = None
         self.maxT = 30
+
         self.dirt = None
         self.floorplansDir = (
             os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -144,6 +155,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
 
         self.graphicsView.scene = QGraphicsScene()
         self.graphicsView.setScene(self.graphicsView.scene)
+
         self.robotSizeChange()
         self.sliderChange()
 
@@ -298,6 +310,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         msg.setWindowTitle("Error")
         msg.exec_()
 
+
     def openFPD(self):
         self.fpds.append(OpenFPD.fpdWindowApp())
         self.fpds[-1].show()
@@ -319,8 +332,10 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             # Connect signals and slots
             self.thread.started.connect(self.worker.run)
             self.worker.finished.connect(self.thread.quit)
+
             self.worker.frameUpdated.connect(self.updateFrame)
             self.worker.simulationError.connect(self.simulateErrorMessage)
+
             self.worker.finished.connect(self.worker.deleteLater)
             self.thread.finished.connect(self.thread.deleteLater)
 
@@ -341,6 +356,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             msg.setWindowTitle("Error")
             msg.exec_()
             pass
+
 
     def InstanceAI(self):
         textSelected = self.PathAlgorithmBox.currentText()
@@ -372,6 +388,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         top = min(self.shapes, key=lambda s: s.BoundingBox()[0].y).BoundingBox()[0].y
         right = max(self.shapes, key=lambda s: s.BoundingBox()[1].x).BoundingBox()[1].x
         bottom = max(self.shapes, key=lambda s: s.BoundingBox()[1].y).BoundingBox()[1].y
+
         return (Vec2(left, top), Vec2(right, bottom))
 
     def loadFloorPlan(self):
@@ -388,7 +405,9 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             options=opts,
         )
 
+
         sizeConversion = 182  # was 182
+
 
         if fileName:
             self.graphicsView.scene.clear()
@@ -398,10 +417,12 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
 
             for key in fp.keys():
                 # The fact that there is a hard coded dimension like this hurts my soul
+
                 x = int(int(fp[key]["x1"]) / sizeConversion)
                 y = int(int(fp[key]["y1"]) / sizeConversion)
                 w = int(int(fp[key]["width"]) / sizeConversion)
                 h = int(int(fp[key]["height"]) / sizeConversion)
+
                 furniture = fp[key]["furniture"]  # What even is this parameter???
                 # EVERYTHING IS A RECTANGLE YAY\s TODO
                 # EVERYTHING IS AN INCLUSION YAY (eventually there will need to be a conditional on the isExclusion variable)
@@ -414,6 +435,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
                 rect = RectangleItem(x, y, w, h)  # parameters are x, y, width, height
                 # Add the rectangle to the scene
                 self.graphicsView.scene.addItem(rect)
+
 
             # Initializes dirt 2D array, zeros are temporary
 
@@ -463,11 +485,13 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         pixmap = QPixmap.fromImage(image)
         return pixmap
 
+
     def connectButtons(self):
         self.BacktoMainButton.clicked.connect(self.openMain)
         self.EditFloorPlanButton.clicked.connect(self.openFPD)
         self.SimulationButton.clicked.connect(self.beginSimulation)
         self.LoadFloorPlanButton.clicked.connect(self.loadFloorPlan)
+
         self.DiameterSlide.valueChanged.connect(self.robotSizeChange)
         self.WhiskerSlide.valueChanged.connect(self.robotSizeChange)
 
@@ -481,6 +505,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         self.VacuumLoadButton.clicked.connect(self.loadVacuum)
         self.VacuumSaveButton.clicked.connect(self.saveVacuum)
         self.SimSpeedButton.clicked.connect(self.simSpeedChange)
+
         # self.SimSpeedButton.clicked.connect()
         # self.VacuumLoadButton.clicked.connect()
         # self.VacuumSaveButton.clicked.connect()

@@ -78,3 +78,4 @@ class Vec2:
         new_x = self.x * math.cos(Θ) - self.y * math.sin(Θ)
         new_y = self.x * math.sin(Θ) + self.y * math.cos(Θ)
         return Vec2(new_x, new_y)
+

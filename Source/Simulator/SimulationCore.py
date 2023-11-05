@@ -1,13 +1,18 @@
+
 import sys
 import os
 
 import Common.Primitives as Primitives
 from Common.Util import Vec2
+
 from Common.Robot import Robot
+import sys
 
 
 class Simulation:
+
     def __init__(self, floor, dirt, ai, robot: Robot, tl: Vec2):
+
         """
         floor: our floorplan
         dirt: a 2d array
@@ -16,10 +21,12 @@ class Simulation:
         """
         self.ai = ai
         self.floor_plan = floor
+
         self.tl = tl
         self.dirt = dirt
         if robot.validate() and not Primitives.Collision(
             robot.pos + tl, robot.diameter / 2, floor
+
         ):
             self.robot = robot
         else:
@@ -32,6 +39,7 @@ class Simulation:
 
     def update(self, dT):
         """dT, in seconds, is the simulation time since the last Update call"""
+
         self.robot.doCleaning(self.dirt, dT)
         # these values are in the [-1, 1] range, representing fraction of the robot's maximum ability
         speed, dΘ = self.ai.update(self.is_colliding, dT)
@@ -43,6 +51,7 @@ class Simulation:
 
         self.is_colliding = Primitives.Collision(
             ProspectivePosition + self.tl, self.robot.diameter, self.floor_plan
+
         )
         if not self.is_colliding:
             # the robot's motion is valid
