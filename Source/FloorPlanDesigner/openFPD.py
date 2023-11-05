@@ -232,11 +232,11 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                         self.rooms[roomIndex].height = 20
                         self.roomHBox.setValue(20)
                     self.rooms[roomIndex].ovRoomView.raise_()
-                
+
             roomIndex += 1
         self.floorplanView.setCurrentIndex(0)
 
-    def addRoom(self, roomName = None):
+    def addRoom(self, roomName=None):
         """
         Adds a new room to the floorplan.
 
@@ -278,7 +278,6 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             )
             self.roomOptionsComboBox.setCurrentIndex(len(self.rooms) - 1)
 
-
     def addDoor(self):
         """
         Adds a door to the floorplan.
@@ -288,21 +287,19 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.door_count += 1
         self.floorplanView.setCurrentIndex(1)
         door = Room(
-                "Door" + str(self.door_count),
-                100,
-                100,
-                5,
-                5,
-                self.overviewTab,
-                self.floorplanView,
-                self.roomOptionsComboBox,
-                "rgb(139, 69, 19)",
-            )
+            "Door" + str(self.door_count),
+            100,
+            100,
+            5,
+            5,
+            self.overviewTab,
+            self.floorplanView,
+            self.roomOptionsComboBox,
+            "rgb(139, 69, 19)",
+        )
 
         self.rooms.append(door)
         self.roomOptionsComboBox.setCurrentIndex(len(self.rooms) - 1)
-
-
 
     def on_room_selected(self):
         """
@@ -314,7 +311,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         Removes the border from all rooms, then adds a border to the currently selected room.
 
         Sets the values of the roomXBox, roomYBox, roomWBox, and roomHBox widgets to the values of the
-        currently selected room in the self.rooms list. 
+        currently selected room in the self.rooms list.
         Args:
             self: The FloorPlanDesigner object.
 
@@ -328,17 +325,13 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             # If there are no rooms, then return.
             # This occurs on startup.
             return
-        
+
         # Set all rooms to have no line width.
         for room in self.rooms:
             room.ovRoomView.setLineWidth(0)
-        
+
         # Set the selected room to have a line width of 1.
         selected_room.set_line_width(1)
-
-        # Bring the selected room to the front by putting it at the end of the list.
-        self.rooms.remove(selected_room)
-        self.rooms.append(selected_room)
 
         self.roomXBox.blockSignals(True)
         self.roomYBox.blockSignals(True)
@@ -354,7 +347,6 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.roomYBox.blockSignals(False)
         self.roomWBox.blockSignals(False)
         self.roomHBox.blockSignals(False)
-
 
     def connectButtons(self):
         self.addRoomButton.clicked.connect(self.addRoom)

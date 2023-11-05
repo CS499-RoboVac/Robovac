@@ -110,7 +110,10 @@ class Ui_FPDWindow(object):
         self.saveFloorplanButton.setText(_translate("FPDWindow", "Save Floorplan"))
         self.loadFloorplanButton.setText(_translate("FPDWindow", "Load Floorplan"))
         self.newFloorplanButton.setText(_translate("FPDWindow", "Create New Floorplan"))
-        self.floorplanView.setTabText(self.floorplanView.indexOf(self.overviewTab), _translate("FPDWindow", "Overview"))
+        self.floorplanView.setTabText(
+            self.floorplanView.indexOf(self.overviewTab),
+            _translate("FPDWindow", "Overview"),
+        )
         self.optionsBox.setTitle(_translate("FPDWindow", "Overview Options"))
         self.addRoomButton.setText(_translate("FPDWindow", "Add Room"))
         self.roomOptions.setTitle(_translate("FPDWindow", "Room Options"))
@@ -123,6 +126,7 @@ class Ui_FPDWindow(object):
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     FPDWindow = QtWidgets.QMainWindow()
     ui = Ui_FPDWindow()

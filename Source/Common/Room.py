@@ -25,7 +25,9 @@ class Room:
             )
         )
 
-    def __init__(self, name, x, y, w, h, overview, fpv, combo, color = "rgb(255, 255, 255)"):
+    def __init__(
+        self, name, x, y, w, h, overview, fpv, combo, color="rgb(255, 255, 255)"
+    ):
         """
         Initializes a Room object with the given parameters.
 
