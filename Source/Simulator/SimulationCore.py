@@ -7,7 +7,7 @@ from Common.Robot import Robot
 
 
 class Simulation:
-    def __init__(self, floor, dirt, ai, robot: Robot):
+    def __init__(self, floor, dirt, ai, robot: Robot, tl : Vec2):
         """
         floor: our floorplan
         dirt: a 2d array
@@ -16,13 +16,12 @@ class Simulation:
         """
         self.ai = ai
         self.floor_plan = floor
+        self.tl = tl
         self.dirt = dirt
-        if robot.validate() and not Primitives.Collision(
-            robot.pos, robot.diameter / 2, floor
-        ):
+        if robot.validate() and not Primitives.Collision(robot.pos, robot.diameter / 2, floor):
             self.robot = robot
         else:
-            raise ValueError("Robot not valid, or collides with terrain")
+            raise RuntimeError("Robot Validation failed")
 
         self.elapsed_time = 0
         self.max_time = 0
@@ -38,7 +37,7 @@ class Simulation:
         
         ProspectivePosition =self.robot.pos + Vec2(0,speed * self.robot.maxSpeed * dT).turn(self.robot.facing)
         
-        self.is_colliding = Primitives.Collision(ProspectivePosition, self.robot.diameter, self.floor_plan)
+        self.is_colliding = Primitives.Collision(ProspectivePosition + self.tl, self.robot.diameter, self.floor_plan)
         if not self.is_colliding:
             # the robot's motion is valid
             self.robot.pos = ProspectivePosition

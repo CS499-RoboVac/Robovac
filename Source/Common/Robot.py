@@ -1,5 +1,6 @@
 from Common.Util import Vec2
 import math
+import numpy as np
 
 # This class will represent the robot in the simulation
 # It will only handle information about the robot, not the actual drawing of the robot
@@ -11,6 +12,9 @@ import math
 # The robot also has a vaccum that is a rectangle that is under the robot
 # The vaccum's width cannot be larger than the robot's diameter
 
+def Within(pos : Vec2, arr) -> bool:
+    s = arr.shape
+    return (type(pos.x)==int and type(pos.y)==int) and (0 <= pos.x and pos.x < s[0]) and (0 <= pos.y and pos.y < s[1])
 
 # The whiskers have a diameter, and a position relative to the robot they are attached to
 class Whisker:
@@ -23,7 +27,6 @@ class Whisker:
         self.pos = pos
         self.diameter = diameter
         self.efficiency = eff
-
 
 class Robot:
     """
@@ -60,11 +63,11 @@ class Robot:
         self.efficiency = efficiency
         self.whiskers = [
             Whisker(
-                self.pos + Vec2(self.diameter / 3, self.diameter / 3),
+                Vec2(self.diameter / 3, self.diameter / 3),
                 self.whisker_length, whisker_eff
             ),
             Whisker(
-                self.pos + Vec2(-self.diameter / 3, self.diameter / 3),
+                Vec2(-self.diameter / 3, self.diameter / 3),
                 self.whisker_length, whisker_eff
             ),
         ]
@@ -81,11 +84,8 @@ class Robot:
 
         # Are the centers of the whiskers outside of the robot?
         for whisker in self.whiskers:
-            delta = whisker.pos - self.pos
-            dx = abs(delta.x)
-            dy = abs(delta.y)
             radius = self.diameter / 2
-            if dx * dx + dy * dy <= radius * radius:
+            if whisker.pos.length() <= radius:
                 continue
             else:
                 self.is_valid = False
@@ -121,40 +121,58 @@ class Robot:
             p = self.pos + whisker.pos.turn(self.facing)
             for x in range(math.floor(-whisker.diameter/2), math.ceil(whisker.diameter/2)+1):
                 for y in range(math.floor(-whisker.diameter/2), math.ceil(whisker.diameter/2)+1):
-                    if x*x + y*y <= whisker.diameter * whisker.diameter/4:
-                        dirt[x, y] *= (1-whisker.efficiency*dT)
-        #line:
-        # Calculate the start and end points of the line
-        length = max(dirt.shape)
-        x1 = int(self.pos.x - length/2 * math.cos(self.facing))
-        y1 = int(self.pos.y - length/2 * math.sin(self.facing))
-        x2 = int(self.pos.x + length/2 * math.cos(self.facing))
-        y2 = int(self.pos.y + length/2 * math.sin(self.facing))
+                    if Within(Vec2(math.floor(p.y)+y, math.floor(p.x)+x), dirt) and (x*x + y*y <= whisker.diameter * whisker.diameter/4):
+                        dirt[math.floor(p.y)+y, math.floor(p.x)+x] *= (1-whisker.efficiency*dT)
+        RV = Vec2(self.diameter/2, 0).turn(self.facing)
+        
+        for point in self.bresenham_line(self.pos.x+RV.x,self.pos.y+RV.y,self.pos.x-(RV.x),self.pos.y-(RV.y)):
+            if Within(Vec2(point[1], point[0]),dirt):
+                dirt[point[1], point[0]] *= (1-self.efficiency*dT)
+        
 
-        # Bresenham's line algorithm
-        dx = abs(x2 - x1)
-        dy = abs(y2 - y1)
-        x, y = x1, y1
-        sx = -1 if x1 > x2 else 1
-        sy = -1 if y1 > y2 else 1
-        if dx > dy:
-            err = dx / 2.0
-            while x != x2:
-                dirt[max(0, min(y, dirt.shape[0]-1)), max(0, min(x, dirt.shape[1]-1))] *= (1-self.efficiency*dT) 
-                err -= dy
-                if err < 0:
-                    y += sy
-                    err += dx
-                x += sx
-        else:
-            err = dy / 2.0
-            while y != y2:
-                dirt[max(0, min(y, dirt.shape[0]-1)), max(0, min(x, dirt.shape[1]-1))] *= (1-self.efficiency*dT)
-                err -= dx
-                if err < 0:
-                    x += sx
-                    err += dy
-                y += sy
+    def bresenham_line(self, x1, y1, x2, y2):
+        """Bresenham's Line Algorithm
+        Produces a list of tuples from start and end (x, y) points
+        """
+        
+        # Setup initial conditions
+        x1, y1 = int(round(x1)), int(round(y1))
+        x2, y2 = int(round(x2)), int(round(y2))
+        dx = x2 - x1
+        dy = y2 - y1
+
+        # Determine how steep the line is
+        is_steep = abs(dy) > abs(dx)
+
+        # Rotate line
+        if is_steep:
+            x1, y1 = y1, x1
+            x2, y2 = y2, x2
+
+        # Swap start and end points if necessary and store swap state
+        if x1 > x2:
+            x1, x2 = x2, x1
+            y1, y2 = y2, y1
+
+        # Recalculate differentials
+        dx = x2 - x1
+        dy = y2 - y1
+
+        # Calculate error
+        error = int(dx / 2.0)
+        ystep = 1 if y1 < y2 else -1
+
+        # Iterate over bounding box generating points between start and end
+        y = y1
+        points = []
+        for x in range(x1, x2 + 1):
+            coord = (y, x) if is_steep else (x, y)
+            points.append(coord)
+            error -= abs(dy)
+            if error < 0:
+                y += ystep
+                error += dx
+        return points
 
     def __str__(self) -> str:
         return (

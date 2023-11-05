@@ -63,7 +63,6 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         - height: the height of the room
         - furniture: a string representing the furniture in the room (currently not implemented)
         """
-        _translate = QtCore.QCoreApplication.translate
         # *************************************************************
         #
         # **************   NEEDS UPDATING, TEMPORARY   ****************
@@ -103,17 +102,13 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             jsonObj = json.dumps(fp)
             with open(fileName, "w") as outFile:
                 outFile.write(jsonObj)
-            self.saveFloorplanButton.setText(
-                _translate("MainWindow", "Floorplan Saved!")
-            )
+            self.saveFloorplanButton.setText("Floorplan Saved!")
             QtTest.QTest.qWait(5000)
-            self.saveFloorplanButton.setText(_translate("MainWindow", "Save Floorplan"))
+            self.saveFloorplanButton.setText("Save Floorplan")
         else:
-            self.saveFloorplanButton.setText(
-                _translate("MainWindow", "Error - Floorplan Not Saved!")
-            )
+            self.saveFloorplanButton.setText("Error - Floorplan Not Saved!")
             QtTest.QTest.qWait(5000)
-            self.saveFloorplanButton.setText(_translate("MainWindow", "Save Floorplan"))
+            self.saveFloorplanButton.setText("Save Floorplan")
 
     def loadFloorplan(self):
         """
