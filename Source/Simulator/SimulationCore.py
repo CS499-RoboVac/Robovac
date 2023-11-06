@@ -1,4 +1,3 @@
-
 import sys
 import os
 
@@ -10,9 +9,7 @@ import sys
 
 
 class Simulation:
-
     def __init__(self, floor, dirt, ai, robot: Robot, tl: Vec2):
-
         """
         floor: our floorplan
         dirt: a 2d array
@@ -26,7 +23,6 @@ class Simulation:
         self.dirt = dirt
         if robot.validate() and not Primitives.Collision(
             robot.pos + tl, robot.diameter / 2, floor
-
         ):
             self.robot = robot
         else:
@@ -51,7 +47,6 @@ class Simulation:
 
         self.is_colliding = Primitives.Collision(
             ProspectivePosition + self.tl, self.robot.diameter, self.floor_plan
-
         )
         if not self.is_colliding:
             # the robot's motion is valid

@@ -8,7 +8,6 @@ from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
     QGraphicsScene,
-
     QGraphicsPixmapItem,
     QGraphicsEllipseItem,
     QPushButton,
@@ -56,7 +55,6 @@ class RectangleItem(QGraphicsItem):
         self._brush = brush
         self.update()
 
-
     def boundingRect(self):
         return self.rect
 
@@ -76,7 +74,6 @@ class CircleItem(QGraphicsItem):
         return self.rect
 
     def paint(self, painter, option, widget):
-
         painter.setBrush(QColor(0, 0, 200))  # Set the fill color
         painter.drawEllipse(self.rect)
 
@@ -125,7 +122,6 @@ class RobotSprite(QGraphicsItem):
 from PyQt5.QtWidgets import QGraphicsItem
 from PyQt5.QtGui import QPainter, QColor
 from PyQt5.QtCore import QRectF
-
 
 
 class simWindowApp(QMainWindow, Ui_SimWindow):
@@ -310,7 +306,6 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         msg.setWindowTitle("Error")
         msg.exec_()
 
-
     def openFPD(self):
         self.fpds.append(OpenFPD.fpdWindowApp())
         self.fpds[-1].show()
@@ -356,7 +351,6 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             msg.setWindowTitle("Error")
             msg.exec_()
             pass
-
 
     def InstanceAI(self):
         textSelected = self.PathAlgorithmBox.currentText()
@@ -405,9 +399,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             options=opts,
         )
 
-
         sizeConversion = 182  # was 182
-
 
         if fileName:
             self.graphicsView.scene.clear()
@@ -435,7 +427,6 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
                 rect = RectangleItem(x, y, w, h)  # parameters are x, y, width, height
                 # Add the rectangle to the scene
                 self.graphicsView.scene.addItem(rect)
-
 
             # Initializes dirt 2D array, zeros are temporary
 
@@ -484,7 +475,6 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         # Create a QPixmap from the QImage
         pixmap = QPixmap.fromImage(image)
         return pixmap
-
 
     def connectButtons(self):
         self.BacktoMainButton.clicked.connect(self.openMain)

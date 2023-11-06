@@ -76,21 +76,18 @@ class BiasedRandomAI:
         return (random.uniform(-0.5, 1), random.uniform(-0.5, 1))
 
 
-
 class RandomBounceAI:
     class State(Enum):
         Going = 0
         Turning = 1
 
     def __init__(self, robit: Robot):
-
         self.state = self.State.Going
 
         self.robot = robit
         self.TurnHelp = None
 
     def update(self, isColliding: bool, dT: float):
-
         if self.state == self.State.Going:
             if isColliding:
                 self.TurnHelp = Turner(
@@ -117,7 +114,6 @@ class SpiralAI:
         Spiraling = 2
 
     def __init__(self, robit: Robot):
-
         self.state = self.State.Spiraling
 
         self.robot = robit
@@ -126,7 +122,6 @@ class SpiralAI:
         self.LinearCountdown = 0
 
     def update(self, isColliding: bool, dT: float):
-
         if self.state == self.State.Linear:
             if isColliding:
                 self.TurnHelp = Turner(

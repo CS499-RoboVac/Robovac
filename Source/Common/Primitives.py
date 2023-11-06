@@ -11,22 +11,19 @@ class Rectangle:
     def BoundingBox(self):
         return (self.minCorner, self.maxCorner)
 
-
     def isInside(self, point: Vec2):
-
         """Checks to see if point is inside of the rectangle, returns inverted result if the rectangle is an exclusion primitive
         point: Vec2
         returns: boolean
         """
         inside = (
-
             point.x >= self.minCorner.x
             and point.y >= self.minCorner.y
             and point.x <= self.maxCorner.x
             and point.y <= self.maxCorner.y
         )
         return inside
-      
+
 
 class Circle:
     def __init__(self, center: Vec2, radius: float, exclusion: bool):
@@ -39,16 +36,13 @@ class Circle:
         diag = Vec2(self.radius, self.radius)
         return (self.center - diag, self.center + diag)
 
-
     def isInside(self, point: Vec2):
-
         """Checks to see if point is inside of the circle, returns inverted result if the circle is an exclusion primitive
         point: Vec2
         returns: boolean
         """
         inside = (self.center - point).length() < self.radius
         return inside
-
 
 
 def PrimitiveInclusion(shapes, point):
@@ -88,4 +82,3 @@ def Collision(pos: Vec2, d: float, shapes: list):
     ]
 
     return not all([PrimitiveInclusion(shapes, point) for point in points])
-
