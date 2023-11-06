@@ -73,3 +73,8 @@ class Vec2:
 
     def unit(self):
         return self / math.sqrt(self.x**2 + self.y**2)
+
+    def turn(self, Θ):
+        new_x = self.x * math.cos(Θ) - self.y * math.sin(Θ)
+        new_y = self.x * math.sin(Θ) + self.y * math.cos(Θ)
+        return Vec2(new_x, new_y)
