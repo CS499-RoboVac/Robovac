@@ -95,12 +95,16 @@ class Ui_FPDWindow(object):
         self.GraphicLayout.setObjectName("GraphicLayout")
         self.FloorPlanLayout = QtWidgets.QHBoxLayout()
         self.FloorPlanLayout.setObjectName("FloorPlanLayout")
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.FloorPlanLayout.addItem(spacerItem)
         self.FloorPlanNameLabel = QtWidgets.QLabel(self.verticalLayoutWidget_3)
         self.FloorPlanNameLabel.setObjectName("FloorPlanNameLabel")
         self.FloorPlanLayout.addWidget(self.FloorPlanNameLabel)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.FloorPlanLayout.addItem(spacerItem1)
         self.GraphicLayout.addLayout(self.FloorPlanLayout)
         self.graphicsView = QtWidgets.QGraphicsView(self.verticalLayoutWidget_3)
@@ -136,6 +140,7 @@ class Ui_FPDWindow(object):
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     FPDWindow = QtWidgets.QMainWindow()
     ui = Ui_FPDWindow()

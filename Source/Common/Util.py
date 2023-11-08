@@ -16,7 +16,8 @@ def scale_value(portion_of_screen, minimum_res, scale_value, maximum_res=None):
         return max(min(scaled_value, maximum_res), minimum_res)
     else:
         return max(scaled_value, minimum_res)
-    
+
+
 def cm_to_ft(cm):
     """
     Converts centimeters to feet
@@ -26,6 +27,7 @@ def cm_to_ft(cm):
         int: Feet
     """
     return int(cm / 30.48)
+
 
 def ft_to_cm(ft):
     """

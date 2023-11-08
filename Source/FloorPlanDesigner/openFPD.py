@@ -30,6 +30,7 @@ import random
 from Views.ui_fpd import Ui_FPDWindow
 from Common.Util import cm_to_ft, ft_to_cm
 
+
 class fpdWindowApp(QMainWindow, Ui_FPDWindow):
     def __init__(self, parent=None):
         super(fpdWindowApp, self).__init__(parent)
@@ -44,7 +45,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
 
         self.graphicsView.scene = QGraphicsScene()
         self.graphicsView.setScene(self.graphicsView.scene)
-        
+
     def populateRoomOptions(self):
         """
         Populates the room options combo box with the names of the rooms in the floorplan.
@@ -58,7 +59,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         Returns:
             None.
         """
-        
+
         # remove all of the items in the combo box
         self.roomOptionsComboBox.clear()
 
@@ -72,7 +73,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         The room is added at the position (0, 0) with a width and height 10 feet.
         """
         roomname = self.textEdit.toPlainText()
-        if (roomname == "")or (type(roomname) != str):
+        if (roomname == "") or (type(roomname) != str):
             roomname = "Room " + str(len(self.graphicsView.scene.items()))
         room = Room.Room(0, 0, ft_to_cm(10), ft_to_cm(10), roomname)
         self.graphicsView.scene.addItem(room)
@@ -118,7 +119,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         _translate = QtCore.QCoreApplication.translate
         if len(self.graphicsView.scene.items()) == 0:
             return
-        
+
         opts = QFileDialog.Options()
         fileName, _ = QFileDialog.getSaveFileName(
             self,
@@ -174,7 +175,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         Updates the dimensions of a room in the floorplan.
 
         This function updates the dimensions of a room in the floorplan based on the values entered in the GUI.
-        It loops through the list of rooms to find the room with the same name as the selected room in the 
+        It loops through the list of rooms to find the room with the same name as the selected room in the
         room options combo box. Once the room is found, it updates the position and size of the room.
 
         Args:
@@ -186,10 +187,13 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         roomName = self.roomOptionsComboBox.currentText()
         for room in self.graphicsView.scene.items():
             if roomName == room.name:
-                room.changePositon(ft_to_cm(self.roomXBox.value()), ft_to_cm(self.roomYBox.value()))
-                room.changeSize(ft_to_cm(self.roomWBox.value()), ft_to_cm(self.roomHBox.value()))
+                room.changePositon(
+                    ft_to_cm(self.roomXBox.value()), ft_to_cm(self.roomYBox.value())
+                )
+                room.changeSize(
+                    ft_to_cm(self.roomWBox.value()), ft_to_cm(self.roomHBox.value())
+                )
                 self.graphicsView.scene.update()
-         
 
     def onRoomSelected(self):
         """
@@ -230,7 +234,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             else:
                 room.selected = False
                 room.setZValue(0)
-            self.graphicsView.scene.update()            
+            self.graphicsView.scene.update()
 
     def connectButtons(self):
         self.loadFloorplanButton.clicked.connect(self.loadFloorPlan)
@@ -249,4 +253,3 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.roomYBox.valueChanged.connect(self.updateRoomDimensions)
         self.roomWBox.valueChanged.connect(self.updateRoomDimensions)
         self.roomHBox.valueChanged.connect(self.updateRoomDimensions)
-        

@@ -20,7 +20,7 @@ import random
 
 
 class Room(QGraphicsItem):
-    def __init__(self, x, y, width, height, name, color = QColor(224, 222, 209)):
+    def __init__(self, x, y, width, height, name, color=QColor(224, 222, 209)):
         """
         Width and height are in CM (one cm is one pixel I think)
         """
@@ -34,9 +34,8 @@ class Room(QGraphicsItem):
 
     def boundingRect(self):
         return self.rect
-        
-    def paint(self, painter, option, widget):
 
+    def paint(self, painter, option, widget):
         if self.selected:
             painter.setPen(QColor(0, 0, 0))
         else:
@@ -52,4 +51,3 @@ class Room(QGraphicsItem):
 
     def changeSize(self, width, height):
         self.rect = QRectF(self.rect.x(), self.rect.y(), width, height)
-

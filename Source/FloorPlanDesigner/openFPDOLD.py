@@ -17,7 +17,6 @@ from Views.ui_fpd import Ui_FPDWindow
 from Common.Room import Room
 
 
-
 # class fpdWindowApp(QMainWindow, Ui_FPDWindow):
 #     """
 #     A class representing the Floor Plan Designer application window.
@@ -50,7 +49,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             + "/Floor Plans/"
         )
-        if not isLoad: 
+        if not isLoad:
             self.addRoom("livingRoom")
 
     def saveFloorplan(self):
@@ -184,7 +183,6 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.floorplanView
         self.roomOptionsComboBox.clear()
         self.addRoom("livingRoom")
-        
 
     def updateRoomDimensions(self):
         """
