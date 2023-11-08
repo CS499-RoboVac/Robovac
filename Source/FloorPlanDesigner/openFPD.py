@@ -1,82 +1,124 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, QtTest
+from PyQt5.QtCore import QObject, QThread, pyqtSignal, QRectF
+from PyQt5.QtWidgets import QWidget, QApplication
+from PyQt5.QtGui import QPainter, QColor, QBrush
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
+    QGraphicsScene,
     QPushButton,
     QLabel,
     QVBoxLayout,
     QWidget,
+    QGraphicsItem,
+    QMessageBox,
     QFileDialog,
 )
 
 import sys
+import time
 import json
 import os
+import Common.Primitives as Primitives
+import Common.Room as Room
+from Common.Util import Vec2
+import Common.Colors as Colors
+import numpy as np
+import math
+import random
 
 from Views.ui_fpd import Ui_FPDWindow
-from Common.FloorTile import FloorTile
-from Common.Room import Room
-
-
-class fpdWindowApp(QMainWindow, Ui_FPDWindow):
-    """
-    A class representing the Floor Plan Designer application window.
-
-    Inherits from QMainWindow and Ui_FPDWindow.
-
-    Attributes:
-    - numRooms (int): The number of rooms in the floor plan.
-    - rooms (list): A list of Room objects representing the rooms in the floor plan.
-    - floorplansDir (str): The directory where floor plan files are saved.
-
-    Methods:
-    - __init__(self, parent=None): Initializes the fpdWindowApp object.
-    - saveFloorplan(self): Saves the current floor plan to a file.
-    - loadFloorplan(self): Loads a floor plan from a file.
-    - newFloorplan(self): Clears the current floor plan and starts a new one.
-    - updateRoomDimensions(self): Updates the dimensions of a selected room in the floor plan.
-    """
-
+from Common.Util import cm_to_ft, ft_to_cm
 
 class fpdWindowApp(QMainWindow, Ui_FPDWindow):
     def __init__(self, parent=None):
         super(fpdWindowApp, self).__init__(parent)
         self.setupUi(self)
         self.connectButtons()
-        self.numRooms = 0
-        self.rooms = []
-        self.door_count = 0
+        self.main = []
+
         self.floorplansDir = (
             os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             + "/Floor Plans/"
         )
-        self.addRoom("livingRoom")
 
-    def saveFloorplan(self):
+        self.graphicsView.scene = QGraphicsScene()
+        self.graphicsView.setScene(self.graphicsView.scene)
+        
+    def populateRoomOptions(self):
         """
-        Saves the current floorplan to a file in JSON format. The file is selected by the user
-        using a file dialog. The floorplan is saved as a dictionary with the following keys:
-        - Room Name: the name of the room
-        - x1: the x-coordinate of the top-left corner of the room
-        - x2: the x-coordinate of the bottom-right corner of the room
-        - y1: the y-coordinate of the top-left corner of the room
-        - y2: the y-coordinate of the bottom-right corner of the room
-        - width: the width of the room
-        - height: the height of the room
-        - furniture: a string representing the furniture in the room (currently not implemented)
+        Populates the room options combo box with the names of the rooms in the floorplan.
+
+        This function loops through the list of rooms in the floorplan and adds the name of each room
+        to the room options combo box.
+
+        Args:
+            self: The FloorPlanDesigner object.
+
+        Returns:
+            None.
+        """
+        
+        # remove all of the items in the combo box
+        self.roomOptionsComboBox.clear()
+
+        # Add the names of the rooms to the combo box
+        for room in self.graphicsView.scene.items():
+            self.roomOptionsComboBox.addItem(room.name)
+
+    def addRoom(self):
+        """
+        Adds a room to the floorplan.
+        The room is added at the position (0, 0) with a width and height 10 feet.
+        """
+        roomname = self.textEdit.toPlainText()
+        if (roomname == "")or (type(roomname) != str):
+            roomname = "Room " + str(len(self.graphicsView.scene.items()))
+        room = Room.Room(0, 0, ft_to_cm(10), ft_to_cm(10), roomname)
+        self.graphicsView.scene.addItem(room)
+        self.populateRoomOptions()
+
+    def loadFloorPlan(self):
+        """
+        Loads a floorplan from a file selected by the user using a file dialog.
+        The floorplan is stored in a JSON file format.
+        """
+        opts = QFileDialog.Options()
+        fileName, _ = QFileDialog.getOpenFileName(
+            self,
+            "Floorplan Designer - Load Floorplan",
+            self.floorplansDir,
+            "Floor Plan Designer Files (*.fpd)",
+            options=opts,
+        )
+        if fileName:
+            self.graphicsView.scene.clear()
+            with open(fileName, "r") as inFile:
+                fp = json.load(inFile)
+
+            for key in fp.keys():
+                # Read the values from the JSON file
+                x = int(fp[key]["x1"])
+                y = int(fp[key]["y1"])
+                w = int(fp[key]["width"])
+                h = int(fp[key]["height"])
+                name = fp[key]["Room Name"]
+                furniture = fp[key]["furniture"]  # What even is this parameter???
+                # This renders the rectangle to the screen
+                room = Room.Room(x, y, w, h, name)  # parameters are x, y, width, height
+                # Add the rectangle to the scene
+                self.graphicsView.scene.addItem(room)
+        self.populateRoomOptions()
+
+    def saveFloorPlan(self):
+        """
+        Saves the floorplan to a file selected by the user using a file dialog.
+        The floorplan is stored in a JSON file format.
         """
         _translate = QtCore.QCoreApplication.translate
-        # *************************************************************
-        #
-        # **************   NEEDS UPDATING, TEMPORARY   ****************
-        #
-        # *************************************************************
-        # adding some temporary boo-boo math here
-        # assuming size of floorplan is 600 units wide by 480 units tall
-        # this is based on current FloorPlan tab size, using math to adjust
-        # this ratio to fit the 8000 square foot requirement per the project requirements
-        # for this ratio to be 8000 sqft, 600*480 = 288000 / 36 = 8000
-        # 600 / 6 = 100 foot wide x 480 / 6 = 80 foot tall
+        if len(self.graphicsView.scene.items()) == 0:
+            return
+        
         opts = QFileDialog.Options()
         fileName, _ = QFileDialog.getSaveFileName(
             self,
@@ -89,19 +131,15 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             if ".fpd" not in fileName:
                 fileName = fileName + ".fpd"
             fp = dict()
-            roomCount = 1
-            for room in self.rooms:
-                key = str(roomCount)
-                fp[key] = dict()
-                fp[key]["Room Name"] = room.roomName
-                fp[key]["x1"] = 182 * room.x
-                fp[key]["x2"] = 182 * (room.x + room.width)
-                fp[key]["y1"] = 182 * room.y
-                fp[key]["y2"] = 182 * (room.y * room.height)
-                fp[key]["width"] = 182 * room.width
-                fp[key]["height"] = 182 * room.height
-                fp[key]["furniture"] = ""
-                roomCount += 1
+            for room in self.graphicsView.scene.items():
+                fp[room.name] = {
+                    "Room Name": room.name,
+                    "x1": room.rect.x(),
+                    "y1": room.rect.y(),
+                    "width": room.rect.width(),
+                    "height": room.rect.height(),
+                    "furniture": "",
+                }
             jsonObj = json.dumps(fp)
             with open(fileName, "w") as outFile:
                 outFile.write(jsonObj)
@@ -117,84 +155,27 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             QtTest.QTest.qWait(5000)
             self.saveFloorplanButton.setText(_translate("MainWindow", "Save Floorplan"))
 
-    def loadFloorplan(self):
+    def createNewFloorPlan(self):
         """
-        Loads a floorplan from a file selected by the user using a file dialog.
-        The floorplan is stored in a JSON file format.
+        Empties the current floorplan and creates a new floorplan.
+        Which is really just deleting all of the items in the scene.
         """
-        opts = QFileDialog.Options()
-        fileName, _ = QFileDialog.getOpenFileName(
-            self,
-            "Floorplan Designer - Load Floorplan",
-            self.floorplansDir,
-            "Floor Plan Designer Files (*.fpd)",
-            options=opts,
-        )
-        if fileName:
-            self.floorplanView.setCurrentIndex(1)
-            with open(fileName, "r") as inFile:
-                fp = json.load(inFile)
-            # self, name, x, y, w, h, overview, fpv, combo
-            i = self.floorplanView.count()
-            while i > 1:
-                self.floorplanView.removeTab(i)
-                i -= 1
-            for room in self.rooms:
-                room.ovRoomView.setLineWidth(0)
-            self.rooms.clear()
-            self.numRooms = 1
-            self.overviewTab
-            self.floorplanView
-            self.roomOptionsComboBox.clear()
-            for key in fp.keys():
-                n = fp[key]["Room Name"]
-                x = int(int(fp[key]["x1"]) / 182)
-                y = int(int(fp[key]["y1"]) / 182)
-                w = int(int(fp[key]["width"]) / 182)
-                h = int(int(fp[key]["height"]) / 182)
-                furniture = fp[key]["furniture"]
-                self.rooms.append(
-                    Room(
-                        n,
-                        x,
-                        y,
-                        w,
-                        h,
-                        self.overviewTab,
-                        self.floorplanView,
-                        self.roomOptionsComboBox,
-                    )
-                )
-            self.floorplanView.setCurrentIndex(0)
+        self.graphicsView.scene.clear()
+        self.populateRoomOptions()
 
-    def newFloorplan(self):
-        """
-        Clears the room options combo box, sets the current index of the floorplan view to 1,
-        sets the number of rooms to 1, removes all tabs from the floorplan view except the first one,
-        and clears the list of rooms. Also sets the line width of each room's ovRoomView to 0.
-        """
-        self.roomOptionsComboBox.clear()
-        self.floorplanView.setCurrentIndex(1)
-        self.numRooms = 1
-        for room in self.rooms:
-            room.ovRoomView.setLineWidth(0)
-        self.rooms.clear()
-        i = self.floorplanView.count()
-        while i > 1:
-            self.floorplanView.removeTab(i)
-            i -= 1
-        self.floorplanView.setCurrentIndex(0)
+        # Set the room values to the default values
+        self.roomXBox.setValue(0)
+        self.roomYBox.setValue(0)
+        self.roomWBox.setValue(10)
+        self.roomHBox.setValue(10)
 
     def updateRoomDimensions(self):
         """
         Updates the dimensions of a room in the floorplan.
 
         This function updates the dimensions of a room in the floorplan based on the values entered in the GUI.
-        It first sets the current index of the floorplan view to 1, then loops through the list of rooms to find
-        the room with the same name as the selected room in the room options combo box. Once the room is found,
-        it updates the position and size of the room's view, as well as the x, y, width, and height attributes
-        of the room object. Finally, it calls the tabViewResize() method of the room object to resize the tab view
-        for the room. The function then sets the current index of the floorplan view back to 0.
+        It loops through the list of rooms to find the room with the same name as the selected room in the 
+        room options combo box. Once the room is found, it updates the position and size of the room.
 
         Args:
             self: The FloorPlanDesigner object.
@@ -202,161 +183,70 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         Returns:
             None.
         """
-        self.floorplanView.setCurrentIndex(1)
-        roomIndex = 0
-        for room in self.rooms:
-            if room.roomName == self.roomOptionsComboBox.currentText():
-                self.floorplanView.setCurrentIndex(1)
-                room.ovRoomView.move(
-                    int(self.roomXBox.value()), (self.roomYBox.value())
-                )
-                room.ovRoomView.resize(
-                    int(self.roomWBox.value()), (self.roomHBox.value())
-                )
-                self.rooms[roomIndex].x = self.roomXBox.value()
-                self.rooms[roomIndex].y = self.roomYBox.value()
-                self.rooms[roomIndex].width = self.roomWBox.value()
-                self.rooms[roomIndex].height = self.roomHBox.value()
-                self.rooms[roomIndex].tabViewResize()
-                # If the room name contains "Door", then it is a door and should be rendered below all other rooms.
-                # If the room name does not contain "Door", then it is a normal room and should be rendered above all
-                # other rooms.
-                # If the room name does not contain "Door", then it's minimum size is 20x20.
-                if "Door" in self.rooms[roomIndex].roomName:
-                    self.rooms[roomIndex].ovRoomView.lower()
-                else:
-                    if self.rooms[roomIndex].width < 20:
-                        self.rooms[roomIndex].width = 20
-                        self.roomWBox.setValue(20)
-                    if self.rooms[roomIndex].height < 20:
-                        self.rooms[roomIndex].height = 20
-                        self.roomHBox.setValue(20)
-                    self.rooms[roomIndex].ovRoomView.raise_()
+        roomName = self.roomOptionsComboBox.currentText()
+        for room in self.graphicsView.scene.items():
+            if roomName == room.name:
+                room.changePositon(ft_to_cm(self.roomXBox.value()), ft_to_cm(self.roomYBox.value()))
+                room.changeSize(ft_to_cm(self.roomWBox.value()), ft_to_cm(self.roomHBox.value()))
+                self.graphicsView.scene.update()
+         
 
-            roomIndex += 1
-        self.floorplanView.setCurrentIndex(0)
-
-    def addRoom(self, roomName=None):
+    def onRoomSelected(self):
         """
-        Adds a new room to the floorplan.
+        Updates the room options combo box when a room is selected.
 
-        Retrieves the new room name from the textEdit widget and checks if it already exists in the floorplan.
-        If the room name is unique, a new Room object is created and added to the floorplan.
+        This function updates the room options combo box when a room is selected. It updates the values
+        in the room options combo box to match the values of the selected room.
 
-        Args:
-            None
+        It also highlights the selected room in the floorplan by giving it an outline.
 
-        Returns:
-            None
-        """
-        if roomName is None:
-            newRoomText = self.textEdit.toPlainText()
-        else:
-            newRoomText = roomName
-            # If the type of the room name is not a string, then set it to a default value.
-            if type(newRoomText) != str:
-                newRoomText = "Room " + str(self.numRooms)
-
-        self.textEdit.setText("")
-        dupeFlag = False
-        for room in self.rooms:
-            if room.roomName == newRoomText or newRoomText == "":
-                dupeFlag = True
-        if not dupeFlag:
-            self.floorplanView.setCurrentIndex(1)
-            self.rooms.append(
-                Room(
-                    newRoomText,
-                    100,
-                    100,
-                    300,
-                    180,
-                    self.overviewTab,
-                    self.floorplanView,
-                    self.roomOptionsComboBox,
-                )
-            )
-            self.roomOptionsComboBox.setCurrentIndex(len(self.rooms) - 1)
-
-    def addDoor(self):
-        """
-        Adds a door to the floorplan.
-        A door is a 5x5 room that is brown in color.
-        It is also rendered below all other rooms.
-        """
-        self.door_count += 1
-        self.floorplanView.setCurrentIndex(1)
-        door = Room(
-            "Door" + str(self.door_count),
-            100,
-            100,
-            5,
-            5,
-            self.overviewTab,
-            self.floorplanView,
-            self.roomOptionsComboBox,
-            "rgb(139, 69, 19)",
-        )
-
-        self.rooms.append(door)
-        self.roomOptionsComboBox.setCurrentIndex(len(self.rooms) - 1)
-
-    def on_room_selected(self):
-        """
-        This function is called whenever the user selects a new room
-        from the roomOptionsComboBox.
-        Updates the room options and the rest of the GUI based on the current selection in the roomOptionsComboBox.
-        Also handles any other housekeeping tasks that need to be done when a new room is selected.
-
-        Removes the border from all rooms, then adds a border to the currently selected room.
-
-        Sets the values of the roomXBox, roomYBox, roomWBox, and roomHBox widgets to the values of the
-        currently selected room in the self.rooms list.
         Args:
             self: The FloorPlanDesigner object.
 
         Returns:
-            None
+            None.
         """
-        # Find the room that is currently selected in the combo box.
-        try:
-            selected_room = self.rooms[self.roomOptionsComboBox.currentIndex()]
-        except:
-            # If there are no rooms, then return.
-            # This occurs on startup.
-            return
+        roomName = self.roomOptionsComboBox.currentText()
 
-        # Set all rooms to have no line width.
-        for room in self.rooms:
-            room.ovRoomView.setLineWidth(0)
+        for room in self.graphicsView.scene.items():
+            if roomName == room.name:
+                self.roomXBox.blockSignals(True)
+                self.roomYBox.blockSignals(True)
+                self.roomWBox.blockSignals(True)
+                self.roomHBox.blockSignals(True)
 
-        # Set the selected room to have a line width of 1.
-        selected_room.set_line_width(1)
+                self.roomXBox.setValue(cm_to_ft(room.rect.x()))
+                self.roomYBox.setValue(cm_to_ft(room.rect.y()))
+                self.roomWBox.setValue(cm_to_ft(room.rect.width()))
+                self.roomHBox.setValue(cm_to_ft(room.rect.height()))
 
-        self.roomXBox.blockSignals(True)
-        self.roomYBox.blockSignals(True)
-        self.roomWBox.blockSignals(True)
-        self.roomHBox.blockSignals(True)
+                self.roomXBox.blockSignals(False)
+                self.roomYBox.blockSignals(False)
+                self.roomWBox.blockSignals(False)
+                self.roomHBox.blockSignals(False)
 
-        self.roomXBox.setProperty("value", selected_room.x)
-        self.roomYBox.setProperty("value", selected_room.y)
-        self.roomWBox.setProperty("value", selected_room.width)
-        self.roomHBox.setProperty("value", selected_room.height)
-
-        self.roomXBox.blockSignals(False)
-        self.roomYBox.blockSignals(False)
-        self.roomWBox.blockSignals(False)
-        self.roomHBox.blockSignals(False)
+                room.selected = True
+                room.setZValue(1)
+            else:
+                room.selected = False
+                room.setZValue(0)
+            self.graphicsView.scene.update()            
 
     def connectButtons(self):
+        self.loadFloorplanButton.clicked.connect(self.loadFloorPlan)
+        self.newFloorplanButton.clicked.connect(self.createNewFloorPlan)
+        self.saveFloorplanButton.clicked.connect(self.saveFloorPlan)
+
+        # Add room and add Door
         self.addRoomButton.clicked.connect(self.addRoom)
-        self.addDoorButton.clicked.connect(self.addDoor)
-        self.saveFloorplanButton.clicked.connect(self.saveFloorplan)
-        self.loadFloorplanButton.clicked.connect(self.loadFloorplan)
-        self.newFloorplanButton.clicked.connect(self.newFloorplan)
-        self.roomOptionsComboBox.currentIndexChanged.connect(self.on_room_selected)
-        self.roomOptionsComboBox.highlighted.connect(self.on_room_selected)
+
+        # Connect the room options combo box to the onRoomSelected function
+        self.roomOptionsComboBox.currentIndexChanged.connect(self.onRoomSelected)
+        self.roomOptionsComboBox.highlighted.connect(self.onRoomSelected)
+
+        # Modify room dimensions
         self.roomXBox.valueChanged.connect(self.updateRoomDimensions)
         self.roomYBox.valueChanged.connect(self.updateRoomDimensions)
         self.roomWBox.valueChanged.connect(self.updateRoomDimensions)
         self.roomHBox.valueChanged.connect(self.updateRoomDimensions)
+        

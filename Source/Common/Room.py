@@ -1,92 +1,55 @@
-# imports
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets, QtTest
+from PyQt5.QtCore import QObject, QThread, pyqtSignal, QRectF
+from PyQt5.QtWidgets import QWidget, QApplication
+from PyQt5.QtGui import QPainter, QColor, QBrush, QPen
+from PyQt5.QtWidgets import (
+    QApplication,
+    QMainWindow,
+    QGraphicsScene,
+    QPushButton,
+    QLabel,
+    QVBoxLayout,
+    QWidget,
+    QGraphicsItem,
+    QMessageBox,
+    QFileDialog,
+)
+
+# Import random for random numbers
+import random
 
 
-class Room:
-    def tabViewResize(self):
+class Room(QGraphicsItem):
+    def __init__(self, x, y, width, height, name, color = QColor(224, 222, 209)):
         """
-        Resizes the tab view of the room based on the room's dimensions.
-
-        Args:
-        - None
-
-        Returns:
-        - None
+        Width and height are in CM (one cm is one pixel I think)
         """
-        self.tabRoomScale = 1
-        if self.width < 600 and self.height < 480:
-            if self.width / 600 > self.height / 480:
-                self.tabRoomScale = int(600 / self.width)
-            else:
-                self.tabRoomScale = int(480 / self.height)
-        self.tabRoomView.setGeometry(
-            QtCore.QRect(
-                20, 20, self.width * self.tabRoomScale, self.height * self.tabRoomScale
-            )
-        )
+        super().__init__()
+        self.name = name
+        self.color = color
+        self.selected = False
+        self.rect = QRectF(x, y, width, height)
 
-    def __init__(
-        self, name, x, y, w, h, overview, fpv, combo, color="rgb(255, 255, 255)"
-    ):
-        """
-        Initializes a Room object with the given parameters.
+    from PyQt5.QtGui import QPen
 
-        Args:
-        - name (str): the name of the room
-        - x (int): the x-coordinate of the room's top-left corner
-        - y (int): the y-coordinate of the room's top-left corner
-        - w (int): the width of the room
-        - h (int): the height of the room
-        - overview (QtWidgets.QWidget): the widget that displays an overview of the floor plan
-        - fpv (QtWidgets.QTabWidget): the tab widget that displays the room's details
-        - combo (QtWidgets.QComboBox): the combo box that displays the list of rooms
+    def boundingRect(self):
+        return self.rect
+        
+    def paint(self, painter, option, widget):
 
-        Returns:
-        - None
-        """
-        fpv.setCurrentIndex(1)
-        self.roomName = name
-        self.x = x
-        self.y = y
-        self.width = w
-        self.height = h
-        self.linewidth = 1
-        self.ovRoomView = QtWidgets.QFrame(overview)
-        self.ovRoomView.setGeometry(
-            QtCore.QRect(self.x, self.y, self.width, self.height)
-        )
-        font = QtGui.QFont()
-        font.setKerning(True)
-        self.ovRoomView.setFont(font)
-        self.ovRoomView.setFrameShape(QtWidgets.QFrame.Box)
-        self.ovRoomView.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.ovRoomView.setLineWidth(self.linewidth)
-        self.ovRoomView.setStyleSheet("background-color: " + color)
-        self.ovRoomView.setObjectName(name)
-        self.roomTab = QtWidgets.QWidget()
-        fpv.addTab(self.roomTab, name)
-        self.tabRoomView = QtWidgets.QFrame(self.roomTab)
-        self.tabViewResize()
-        font = QtGui.QFont()
-        font.setKerning(True)
-        self.tabRoomView.setFont(font)
-        self.tabRoomView.setFrameShape(QtWidgets.QFrame.Box)
-        self.tabRoomView.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.tabRoomView.setLineWidth(self.linewidth)
-        self.tabRoomView.setObjectName(name)
-        combo.addItem(name)
-        fpv.setCurrentIndex(0)
+        if self.selected:
+            painter.setPen(QColor(0, 0, 0))
+        else:
+            pen = QPen()
+            pen.setStyle(QtCore.Qt.NoPen)
+            painter.setPen(pen)
 
-    def set_line_width(self, width):
-        """
-        Sets the line width of the room's overview and tab view.
+        painter.setBrush(self.color)  # Set the fill color
+        painter.drawRect(self.rect)
 
-        Args:
-        - width (int): the new line width
+    def changePositon(self, x, y):
+        self.rect = QRectF(x, y, self.rect.width(), self.rect.height())
 
-        Returns:
-        - None
-        """
-        self.linewidth = width
-        self.ovRoomView.setLineWidth(width)
-        self.tabRoomView.setLineWidth(width)
+    def changeSize(self, width, height):
+        self.rect = QRectF(self.rect.x(), self.rect.y(), width, height)
+
