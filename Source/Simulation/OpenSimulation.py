@@ -409,12 +409,11 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
 
             for key in fp.keys():
                 # The fact that there is a hard coded dimension like this hurts my soul
-
-                x = int(int(fp[key]["x1"]) / sizeConversion)
-                y = int(int(fp[key]["y1"]) / sizeConversion)
-                w = int(int(fp[key]["width"]) / sizeConversion)
-                h = int(int(fp[key]["height"]) / sizeConversion)
-
+                # Soul hurt repaired
+                x = int(fp[key]["x1"])
+                y = int(fp[key]["y1"])
+                w = int(fp[key]["width"])
+                h = int(fp[key]["height"])
                 furniture = fp[key]["furniture"]  # What even is this parameter???
                 # EVERYTHING IS A RECTANGLE YAY\s TODO
                 # EVERYTHING IS AN INCLUSION YAY (eventually there will need to be a conditional on the isExclusion variable)

@@ -18,6 +18,28 @@ def scale_value(portion_of_screen, minimum_res, scale_value, maximum_res=None):
         return max(scaled_value, minimum_res)
 
 
+def cm_to_ft(cm):
+    """
+    Converts centimeters to feet
+    Args:
+        cm (int): Centimeters
+    Returns:
+        int: Feet
+    """
+    return int(cm / 30.48)
+
+
+def ft_to_cm(ft):
+    """
+    Converts feet to centimeters
+    Args:
+        ft (int): Feet
+    Returns:
+        int: Centimeters
+    """
+    return int(ft * 30.48)
+
+
 class Vec2:
     def __init__(self, x, y=None):
         if isinstance(x, (tuple, list, Vec2)):

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1073</width>
-    <height>673</height>
+    <width>1223</width>
+    <height>695</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <widget class="QPushButton" name="saveFloorplanButton">
     <property name="geometry">
      <rect>
-      <x>80</x>
+      <x>10</x>
       <y>40</y>
       <width>161</width>
       <height>31</height>
@@ -53,89 +53,12 @@
      <string>Create New Floorplan</string>
     </property>
    </widget>
-   <widget class="QTabWidget" name="floorplanView">
-    <property name="geometry">
-     <rect>
-      <x>410</x>
-      <y>40</y>
-      <width>631</width>
-      <height>521</height>
-     </rect>
-    </property>
-    <property name="tabShape">
-     <enum>QTabWidget::Rounded</enum>
-    </property>
-    <property name="currentIndex">
-     <number>0</number>
-    </property>
-    <property name="documentMode">
-     <bool>true</bool>
-    </property>
-    <widget class="QWidget" name="overviewTab">
-     <attribute name="title">
-      <string>Overview</string>
-     </attribute>
-     <widget class="QFrame" name="r1">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>20</y>
-        <width>120</width>
-        <height>80</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <kerning>true</kerning>
-       </font>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::Box</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Plain</enum>
-      </property>
-      <property name="lineWidth">
-       <number>1</number>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="room1">
-     <attribute name="title">
-      <string>Room 1</string>
-     </attribute>
-     <widget class="QFrame" name="r1_full">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>20</y>
-        <width>600</width>
-        <height>400</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <kerning>true</kerning>
-       </font>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::Box</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Plain</enum>
-      </property>
-      <property name="lineWidth">
-       <number>1</number>
-      </property>
-     </widget>
-    </widget>
-   </widget>
    <widget class="QGroupBox" name="optionsBox">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>160</y>
-      <width>361</width>
+      <width>321</width>
       <height>461</height>
      </rect>
     </property>
@@ -167,13 +90,16 @@
        <height>31</height>
       </rect>
      </property>
+     <property name="placeholderText">
+      <string>Room Name</string>
+     </property>
     </widget>
     <widget class="QGroupBox" name="roomOptions">
      <property name="geometry">
       <rect>
        <x>0</x>
        <y>90</y>
-       <width>361</width>
+       <width>321</width>
        <height>371</height>
       </rect>
      </property>
@@ -201,21 +127,21 @@
        <rect>
         <x>121</x>
         <y>60</y>
-        <width>51</width>
+        <width>71</width>
         <height>22</height>
        </rect>
       </property>
       <property name="minimum">
-       <number>20</number>
+       <number>-99999</number>
       </property>
       <property name="maximum">
-       <number>1000</number>
+       <number>99999999</number>
       </property>
       <property name="singleStep">
-       <number>5</number>
+       <number>1</number>
       </property>
       <property name="value">
-       <number>20</number>
+       <number>0</number>
       </property>
      </widget>
      <widget class="QLabel" name="roomXLabel">
@@ -275,21 +201,21 @@
        <rect>
         <x>120</x>
         <y>90</y>
-        <width>51</width>
+        <width>71</width>
         <height>22</height>
        </rect>
       </property>
       <property name="minimum">
-       <number>20</number>
+       <number>-99999999</number>
       </property>
       <property name="maximum">
-       <number>1000</number>
+       <number>99999999</number>
       </property>
       <property name="singleStep">
-       <number>5</number>
+       <number>1</number>
       </property>
       <property name="value">
-       <number>20</number>
+       <number>0</number>
       </property>
      </widget>
      <widget class="QSpinBox" name="roomWBox">
@@ -297,21 +223,24 @@
        <rect>
         <x>120</x>
         <y>120</y>
-        <width>51</width>
+        <width>71</width>
         <height>22</height>
        </rect>
       </property>
+      <property name="suffix">
+       <string> ft</string>
+      </property>
       <property name="minimum">
-       <number>50</number>
+       <number>2</number>
       </property>
       <property name="maximum">
-       <number>1000</number>
+       <number>99999999</number>
       </property>
       <property name="singleStep">
-       <number>5</number>
+       <number>1</number>
       </property>
       <property name="value">
-       <number>120</number>
+       <number>10</number>
       </property>
      </widget>
      <widget class="QSpinBox" name="roomHBox">
@@ -319,24 +248,92 @@
        <rect>
         <x>120</x>
         <y>150</y>
-        <width>51</width>
+        <width>71</width>
         <height>22</height>
        </rect>
       </property>
+      <property name="suffix">
+       <string> ft</string>
+      </property>
       <property name="minimum">
-       <number>50</number>
+       <number>2</number>
       </property>
       <property name="maximum">
-       <number>1000</number>
+       <number>9999999</number>
       </property>
       <property name="singleStep">
-       <number>5</number>
+       <number>1</number>
       </property>
       <property name="value">
-       <number>80</number>
+       <number>10</number>
       </property>
      </widget>
     </widget>
+    <widget class="QPushButton" name="addDoorButton">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>30</y>
+       <width>75</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Add Door</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>340</x>
+      <y>10</y>
+      <width>861</width>
+      <height>651</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="GraphicLayout">
+     <item>
+      <layout class="QHBoxLayout" name="FloorPlanLayout">
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="FloorPlanNameLabel">
+         <property name="text">
+          <string>Floor Plan: </string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QGraphicsView" name="graphicsView"/>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
