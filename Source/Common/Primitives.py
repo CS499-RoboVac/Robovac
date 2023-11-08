@@ -11,18 +11,18 @@ class Rectangle:
     def BoundingBox(self):
         return (self.minCorner, self.maxCorner)
 
-    def isValid(self, point: Vec2):
+    def isInside(self, point: Vec2):
         """Checks to see if point is inside of the rectangle, returns inverted result if the rectangle is an exclusion primitive
         point: Vec2
         returns: boolean
         """
         inside = (
-            point.x > self.minCorner.x
-            and point.y > self.minCorner.y
-            and point.x < self.maxCorner.x
-            and point.y < self.maxCorner.y
+            point.x >= self.minCorner.x
+            and point.y >= self.minCorner.y
+            and point.x <= self.maxCorner.x
+            and point.y <= self.maxCorner.y
         )
-        return inside ^ self.exclusion  # ^ is XOR (inverts result if exclusion is true)
+        return inside
 
 
 class Circle:
@@ -36,13 +36,13 @@ class Circle:
         diag = Vec2(self.radius, self.radius)
         return (self.center - diag, self.center + diag)
 
-    def isValid(self, point: Vec2):
+    def isInside(self, point: Vec2):
         """Checks to see if point is inside of the circle, returns inverted result if the circle is an exclusion primitive
         point: Vec2
         returns: boolean
         """
         inside = (self.center - point).length() < self.radius
-        return inside ^ self.exclusion  # ^ is XOR (inverts result if exclusion is true)
+        return inside
 
 
 def PrimitiveInclusion(shapes, point):
@@ -50,21 +50,35 @@ def PrimitiveInclusion(shapes, point):
     point: Vec2
     shapes: list<shapes>
     return: boolean"""
-    return all([primitive.isValid(point) for primitive in shapes])
+
+    insideAnyInclusion = False
+    outsideEveryExclusion = True
+    for primitive in shapes:
+        if primitive.isInside(point):
+            if primitive.exclusion:
+                outsideEveryExclusion = False
+                break
+            else:
+                insideAnyInclusion = True
+
+    return insideAnyInclusion and outsideEveryExclusion
 
 
 # TODO: make this work with the new robot class, also this will probably need to be changed and or moved to the floorplan class once that exists
-def Collision(pos: Vec2, r: float, FloorPlan: dict):
+def Collision(pos: Vec2, d: float, shapes: list):
     """function that takes a position and radius, and a floorplan dict, returns True if a collision happens or False if the position is clear
     pos : Vec2 of the vacuum's position,
     r : float radius of the vacuum,
     FloorPlan : dict with entries of the form (int, int): FloorTile"""
 
-    for x in range(math.floor(pos.x - r), math.ceil(pos.x + r) + 1):
-        for y in range(math.floor(pos.y - r), math.ceil(pos.y + r) + 1):
-            if (
-                Vec2(x, y) - pos
-            ).length() < r:  # we looped over a square; now we're using the ones within a radius in that square
-                if not (x, y) in FloorPlan:
-                    return True  # there was a collision
-    return False  # no collisions, we can go onwards
+    maxDistance = 1  # Maximum distance between collision check points in cm
+    n = int((math.pi * d) // maxDistance)
+    points = [
+        Vec2(
+            math.cos((2 * math.pi / n) * i) * (d / 2) + pos.x,
+            math.sin((2 * math.pi / n) * i) * (d / 2) + pos.y,
+        )
+        for i in range(n)
+    ]
+
+    return not all([PrimitiveInclusion(shapes, point) for point in points])
