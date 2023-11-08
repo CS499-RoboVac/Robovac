@@ -82,7 +82,7 @@ class Ui_FPDWindow(object):
         self.roomHBox.setMinimum(2)
         self.roomHBox.setMaximum(9999999)
         self.roomHBox.setSingleStep(1)
-        self.roomHBox.setProperty("value", 11)
+        self.roomHBox.setProperty("value", 10)
         self.roomHBox.setObjectName("roomHBox")
         self.addDoorButton = QtWidgets.QPushButton(self.optionsBox)
         self.addDoorButton.setGeometry(QtCore.QRect(240, 30, 75, 31))

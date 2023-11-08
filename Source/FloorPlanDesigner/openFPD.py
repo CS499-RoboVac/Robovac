@@ -73,10 +73,33 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         The room is added at the position (0, 0) with a width and height 10 feet.
         """
         roomname = self.textEdit.toPlainText()
+        roomcount = len(
+            [
+                item
+                for item in self.graphicsView.scene.items()
+                if ("Door" not in item.name)
+            ]
+        )
         if (roomname == "") or (type(roomname) != str):
-            roomname = "Room " + str(len(self.graphicsView.scene.items()))
+            roomname = "Room " + str(roomcount + 1)
         room = Room.Room(0, 0, ft_to_cm(10), ft_to_cm(10), roomname)
         self.graphicsView.scene.addItem(room)
+        self.populateRoomOptions()
+
+    def addDoor(self):
+        """
+        Adds a door to the floorplan.
+        The door is added at the position (0, 0) with a width and height 2 feet.
+        """
+        # Find how many doors are in the scene
+        doors = len(
+            [door for door in self.graphicsView.scene.items() if ("Door" in door.name)]
+        )
+        doorname = "Door " + str(doors + 1)
+        door = Room.Room(
+            0, 0, ft_to_cm(2), ft_to_cm(2), doorname, color=QColor(139, 69, 19)
+        )
+        self.graphicsView.scene.addItem(door)
         self.populateRoomOptions()
 
     def loadFloorPlan(self):
@@ -107,6 +130,12 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                 furniture = fp[key]["furniture"]  # What even is this parameter???
                 # This renders the rectangle to the screen
                 room = Room.Room(x, y, w, h, name)  # parameters are x, y, width, height
+
+                # If the room is a door, change the color to brown, and set it's Z to 2
+                if "Door" in name:
+                    room.color = QColor(139, 69, 19)
+                    room.setZValue(2)
+
                 # Add the rectangle to the scene
                 self.graphicsView.scene.addItem(room)
         self.populateRoomOptions()
@@ -230,19 +259,21 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                 self.roomHBox.blockSignals(False)
 
                 room.selected = True
-                room.setZValue(1)
+                room.setZValue(room.zValue() + 1)
             else:
                 room.selected = False
-                room.setZValue(0)
+                room.setZValue(room.zValue() - 1)
             self.graphicsView.scene.update()
 
     def connectButtons(self):
+        # Load, new, and save buttons
         self.loadFloorplanButton.clicked.connect(self.loadFloorPlan)
         self.newFloorplanButton.clicked.connect(self.createNewFloorPlan)
         self.saveFloorplanButton.clicked.connect(self.saveFloorPlan)
 
         # Add room and add Door
         self.addRoomButton.clicked.connect(self.addRoom)
+        self.addDoorButton.clicked.connect(self.addDoor)
 
         # Connect the room options combo box to the onRoomSelected function
         self.roomOptionsComboBox.currentIndexChanged.connect(self.onRoomSelected)
