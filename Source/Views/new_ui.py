@@ -9,24 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import (
-    QApplication,
-    QMainWindow,
-    QPushButton,
-    QLabel,
-    QVBoxLayout,
-    QWidget,
-    QGraphicsView,
-    QGraphicsScene, QGraphicsItem, QSizePolicy, QGraphicsItemGroup, QGraphicsScene, QGraphicsView, QApplication
 
-)
-import sys
-import json
-import os
-from PyQt5.QtCore import Qt
-# from Common.Robot import Robot
-from PyQt5.QtGui import QPainter, QBrush, QPen, QColor
-from Common.Robot import Robot, Whisker
 
 class Ui_SimWindow(object):
     def setupUi(self, MainWindow):
@@ -99,8 +82,8 @@ class Ui_SimWindow(object):
         self.DiameterHLayout.addWidget(self.Stat_Diameter)
         self.VacuumParameterLayout.addLayout(self.DiameterHLayout)
         self.DiameterSlide = QtWidgets.QSlider(self.verticalWidget_4)
-        self.DiameterSlide.setMinimum(10)
-        self.DiameterSlide.setMaximum(15)
+        self.DiameterSlide.setMinimum(100)
+        self.DiameterSlide.setMaximum(150)
         self.DiameterSlide.setSingleStep(5)
         self.DiameterSlide.setProperty("value", 128)
         self.DiameterSlide.setOrientation(QtCore.Qt.Horizontal)
@@ -198,7 +181,7 @@ class Ui_SimWindow(object):
         self.BatteryLifeHLayout.addWidget(self.Stat_BatteryLife)
         self.VacuumParameterLayout.addLayout(self.BatteryLifeHLayout)
         self.BatteryLifeSlide = QtWidgets.QSlider(self.verticalWidget_4)
-        self.BatteryLifeSlide.setMinimum(10)
+        self.BatteryLifeSlide.setMinimum(90)
         self.BatteryLifeSlide.setMaximum(200)
         self.BatteryLifeSlide.setProperty("value", 150)
         self.BatteryLifeSlide.setOrientation(QtCore.Qt.Horizontal)

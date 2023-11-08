@@ -139,7 +139,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         self.shapes = []
         # MAKE SPEED VALUE HERE TODO
 
-        self.simSpeedOptions = [1, 5, 50]
+        self.simSpeedOptions = [1, 5, 50,100]
         self.simSpeedIndex = 0
         self.SimSpeed = 1
         self.Robot = None
@@ -158,6 +158,27 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
 
         self.robotSizeChange()
         self.sliderChange()
+    
+    def SaveSceneImage(self):
+        image = QImage(self.graphicsView.viewport().size(), QImage.Format_ARGB32)
+        painter = QPainter(image)
+        self.graphicsView.render(painter)
+        painter.end()
+        home_dir = os.path.expanduser("~")
+
+        # Define the path to the user's download folder
+        download_folder = os.path.join(home_dir, "Downloads")
+
+        # Ensure the download folder exists, and create it if not
+        if not os.path.exists(download_folder):
+            os.makedirs(download_folder)
+
+        # Specify the desired file path within the download folder
+        file_name = "scene_image.png"
+        file_path = os.path.join(download_folder, file_name)
+
+        # Save the image to the user's download folder as a PNG file
+        image.save(file_path)
 
     # Create a worker class to run the simulation in a seperate thread
     class Worker(QObject):
@@ -168,6 +189,8 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         def __init__(self, parent):
             super().__init__()
             self.parent = parent
+
+        
 
         def run(self):
             """Simulation thread/run loop"""
@@ -208,6 +231,11 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
                 time.sleep(1 / (20 * self.parent.SimSpeed))
 
             self.finished.emit()
+            self.parent.SaveSceneImage()
+           
+
+
+    
 
     def robotSizeChange(self):
         if self.RobotRenderObject:
