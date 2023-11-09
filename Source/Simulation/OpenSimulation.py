@@ -213,13 +213,16 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             )
 
     def sliderChange(self):
-        self.Stat_Speed.setText(str(self.SpeedSlide.value()) + " cm/s")
-        self.Stat_Whisker.setText(str(self.WhiskerSlide.value()) + " cm")
-        self.Stat_Diameter.setText(str(self.DiameterSlide.value()) + " cm")
-        self.Stat_VacuumEfficiency.setText(str(self.EfficiencySlide.value()) + "%")
-        self.Stat_BatteryLife.setText(str(self.BatteryLifeSlide.value()) + " min")
-        self.Stat_WhiskerEfficiency.setText(str(self.WhiskerEffSlide.value()) + "%")
 
+        self.Stat_Diameter.setText("{} in/s ({:.2f} cm)".format(self.DiameterSlide.value() / 10, self.DiameterSlide.value() * 0.254))
+        self.Stat_VacuumWidth.setText("{} in/s ({:.2f} cm)".format(self.VacWidthSlide.value()/10,self.VacWidthSlide.value() * 0.254))
+        self.Stat_VacEff.setText("{}%".format(self.EfficiencySlide.value()))
+        self.Stat_Whisker.setText("{} in/s ({:.2f} cm)".format(self.WhiskerSlide.value(), self.WhiskerSlide.value() * 2.54))
+        self.Stat_WhiskerEfficiency.setText("{}%".format(self.WhiskerEffSlide.value()))
+        self.Stat_Speed.setText("{} in/s ({:.2f} cm)".format(self.SpeedSlide.value(),self.SpeedSlide.value() * 2.54))
+        self.Stat_BatteryLife.setText("{} min".format(self.BatteryLifeSlide.value()))
+
+        
         self.maxT = self.BatteryLifeSlide.value() * 60
 
     def loadVacuum(self):
@@ -235,6 +238,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             "Robot settings file (*.rbt)",
             options=opts,
         )
+        # TODO load diameter and vac width seperately
         if fileName:
             with open(fileName, "r") as inFile:
                 fp = json.load(inFile)
@@ -245,6 +249,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
                 self.BatteryLifeSlide.setValue(fp[4]),
                 self.WhiskerEffSlide.setValue(fp[5])
 
+    # TODO save diameter and vac width seperately
     def saveVacuum(self):
         opts = QFileDialog.Options()
         fileName, _ = QFileDialog.getSaveFileName(
@@ -484,11 +489,12 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         self.DiameterSlide.valueChanged.connect(self.robotSizeChange)
         self.WhiskerSlide.valueChanged.connect(self.robotSizeChange)
 
-        self.SpeedSlide.valueChanged.connect(self.sliderChange)
-        self.WhiskerSlide.valueChanged.connect(self.sliderChange)
         self.DiameterSlide.valueChanged.connect(self.sliderChange)
+        self.VacWidthSlide.valueChanged.connect(self.sliderChange)
         self.EfficiencySlide.valueChanged.connect(self.sliderChange)
+        self.WhiskerSlide.valueChanged.connect(self.sliderChange)
         self.WhiskerEffSlide.valueChanged.connect(self.sliderChange)
+        self.SpeedSlide.valueChanged.connect(self.sliderChange)
         self.BatteryLifeSlide.valueChanged.connect(self.sliderChange)
 
         self.VacuumLoadButton.clicked.connect(self.loadVacuum)
