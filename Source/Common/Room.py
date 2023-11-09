@@ -29,6 +29,7 @@ class Room(QGraphicsItem):
         self.color = color
         self.selected = False
         self.rect = QRectF(x, y, width, height)
+        self.setFlag(QGraphicsItem.ItemIsMovable)
 
     from PyQt5.QtGui import QPen
 

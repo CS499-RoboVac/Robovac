@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, QtTest
-from PyQt5.QtCore import QObject, QThread, pyqtSignal, QRectF
+from PyQt5.QtCore import QObject, QThread, pyqtSignal, QRectF, Qt
 from PyQt5.QtWidgets import QWidget, QApplication
 from PyQt5.QtGui import QPainter, QColor, QBrush
 from PyQt5.QtWidgets import (
@@ -43,8 +43,10 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             + "/Floor Plans/"
         )
 
-        self.graphicsView.scene = QGraphicsScene()
-        self.graphicsView.setScene(self.graphicsView.scene)
+        self.FPDGraphicsView.scene = QGraphicsScene()
+        self.FPDGraphicsView.setScene(self.FPDGraphicsView.scene)
+        self.FPDGraphicsView.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.FPDGraphicsView.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
     def populateRoomOptions(self):
         """
@@ -64,7 +66,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.roomOptionsComboBox.clear()
 
         # Add the names of the rooms to the combo box
-        for room in self.graphicsView.scene.items():
+        for room in self.FPDGraphicsView.scene.items():
             self.roomOptionsComboBox.addItem(room.name)
 
     def addRoom(self):
@@ -76,14 +78,15 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         roomcount = len(
             [
                 item
-                for item in self.graphicsView.scene.items()
+                for item in self.FPDGraphicsView.scene.items()
                 if ("Door" not in item.name)
             ]
         )
         if (roomname == "") or (type(roomname) != str):
             roomname = "Room " + str(roomcount + 1)
         room = Room.Room(0, 0, ft_to_cm(10), ft_to_cm(10), roomname)
-        self.graphicsView.scene.addItem(room)
+        room.setZValue(0)
+        self.FPDGraphicsView.scene.addItem(room)
         self.populateRoomOptions()
 
     def addDoor(self):
@@ -93,13 +96,18 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         """
         # Find how many doors are in the scene
         doors = len(
-            [door for door in self.graphicsView.scene.items() if ("Door" in door.name)]
+            [
+                door
+                for door in self.FPDGraphicsView.scene.items()
+                if ("Door" in door.name)
+            ]
         )
         doorname = "Door " + str(doors + 1)
         door = Room.Room(
             0, 0, ft_to_cm(2), ft_to_cm(2), doorname, color=QColor(139, 69, 19)
         )
-        self.graphicsView.scene.addItem(door)
+        door.setZValue(1)
+        self.FPDGraphicsView.scene.addItem(door)
         self.populateRoomOptions()
 
     def loadFloorPlan(self):
@@ -116,7 +124,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             options=opts,
         )
         if fileName:
-            self.graphicsView.scene.clear()
+            self.FPDGraphicsView.scene.clear()
             with open(fileName, "r") as inFile:
                 fp = json.load(inFile)
 
@@ -137,7 +145,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                     room.setZValue(2)
 
                 # Add the rectangle to the scene
-                self.graphicsView.scene.addItem(room)
+                self.FPDGraphicsView.scene.addItem(room)
         self.populateRoomOptions()
 
     def saveFloorPlan(self):
@@ -146,7 +154,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         The floorplan is stored in a JSON file format.
         """
         _translate = QtCore.QCoreApplication.translate
-        if len(self.graphicsView.scene.items()) == 0:
+        if len(self.FPDGraphicsView.scene.items()) == 0:
             return
 
         opts = QFileDialog.Options()
@@ -161,7 +169,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             if ".fpd" not in fileName:
                 fileName = fileName + ".fpd"
             fp = dict()
-            for room in self.graphicsView.scene.items():
+            for room in self.FPDGraphicsView.scene.items():
                 fp[room.name] = {
                     "Room Name": room.name,
                     "x1": room.rect.x(),
@@ -186,7 +194,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         Empties the current floorplan and creates a new floorplan.
         Which is really just deleting all of the items in the scene.
         """
-        self.graphicsView.scene.clear()
+        self.FPDGraphicsView.scene.clear()
         self.populateRoomOptions()
 
         # Set the room values to the default values
@@ -210,7 +218,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             None.
         """
         roomName = self.roomOptionsComboBox.currentText()
-        for room in self.graphicsView.scene.items():
+        for room in self.FPDGraphicsView.scene.items():
             if roomName == room.name:
                 room.changePositon(
                     ft_to_cm(self.roomXBox.value()), ft_to_cm(self.roomYBox.value())
@@ -218,7 +226,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                 room.changeSize(
                     ft_to_cm(self.roomWBox.value()), ft_to_cm(self.roomHBox.value())
                 )
-                self.graphicsView.scene.update()
+                self.FPDGraphicsView.scene.update()
 
     def onRoomSelected(self):
         """
@@ -237,7 +245,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         """
         roomName = self.roomOptionsComboBox.currentText()
 
-        for room in self.graphicsView.scene.items():
+        for room in self.FPDGraphicsView.scene.items():
             if roomName == room.name:
                 self.roomXBox.blockSignals(True)
                 self.roomYBox.blockSignals(True)
@@ -259,7 +267,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             else:
                 room.selected = False
                 room.setZValue(room.zValue() - 1)
-            self.graphicsView.scene.update()
+            self.FPDGraphicsView.scene.update()
 
     def connectButtons(self):
         # Load, new, and save buttons
