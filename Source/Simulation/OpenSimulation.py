@@ -213,16 +213,30 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             )
 
     def sliderChange(self):
-
-        self.Stat_Diameter.setText("{} in/s ({:.2f} cm)".format(self.DiameterSlide.value() / 10, self.DiameterSlide.value() * 0.254))
-        self.Stat_VacuumWidth.setText("{} in/s ({:.2f} cm)".format(self.VacWidthSlide.value()/10,self.VacWidthSlide.value() * 0.254))
+        self.Stat_Diameter.setText(
+            "{} in/s ({:.2f} cm)".format(
+                self.DiameterSlide.value() / 10, self.DiameterSlide.value() * 0.254
+            )
+        )
+        self.Stat_VacuumWidth.setText(
+            "{} in/s ({:.2f} cm)".format(
+                self.VacWidthSlide.value() / 10, self.VacWidthSlide.value() * 0.254
+            )
+        )
         self.Stat_VacEff.setText("{}%".format(self.EfficiencySlide.value()))
-        self.Stat_Whisker.setText("{} in/s ({:.2f} cm)".format(self.WhiskerSlide.value(), self.WhiskerSlide.value() * 2.54))
+        self.Stat_Whisker.setText(
+            "{} in/s ({:.2f} cm)".format(
+                self.WhiskerSlide.value(), self.WhiskerSlide.value() * 2.54
+            )
+        )
         self.Stat_WhiskerEfficiency.setText("{}%".format(self.WhiskerEffSlide.value()))
-        self.Stat_Speed.setText("{} in/s ({:.2f} cm)".format(self.SpeedSlide.value(),self.SpeedSlide.value() * 2.54))
+        self.Stat_Speed.setText(
+            "{} in/s ({:.2f} cm)".format(
+                self.SpeedSlide.value(), self.SpeedSlide.value() * 2.54
+            )
+        )
         self.Stat_BatteryLife.setText("{} min".format(self.BatteryLifeSlide.value()))
 
-        
         self.maxT = self.BatteryLifeSlide.value() * 60
 
     def loadVacuum(self):
