@@ -1,0 +1,1 @@
+[{"Room Name": "", "x1": 69.0, "y1": 77.0, "width": 100.0, "height": 50.0, "type": "Chest", "parent": "Room 1"}, {"Room Name": "Room 1", "x1": 0.0, "y1": 0.0, "width": 305.0, "height": 305.0, "type": "Room", "parent": null}]

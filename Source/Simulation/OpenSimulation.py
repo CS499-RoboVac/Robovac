@@ -603,6 +603,8 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         jsonObj = json.dumps(rb)
         with open(folderName+ "/Robot_Settings.rbt", "w") as outFile:
             outFile.write(jsonObj)
+        with open(folderName + "/Message.txt", "w") as outFile:
+            outFile.write(f"Simulation at {datetime.datetime.now()}\n Using aglo {self.PathAlgorithmBox.currentText()}\n On floorplan {self.fileName}\n With efficiency {round(1-(np.sum(self.dirt)/self.StartDirt), 2)}\n Final duration {self.Stat_SimulationTime.text()}")
             
         with open(self.fileName, 'rb') as src, open(folderName+ "/Floor_Plan.fpd", 'wb') as dest:
             shutil.copyfileobj(src, dest)
