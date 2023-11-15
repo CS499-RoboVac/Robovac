@@ -1,6 +1,7 @@
 from Common.Util import Vec2
 import math
 import numpy as np
+import cv2
 
 # This class will represent the robot in the simulation
 # It will only handle information about the robot, not the actual drawing of the robot
@@ -55,7 +56,7 @@ class Robot:
         maxSpeed: float = 50,
         maxTurn: float = 2 * math.pi / 3,
         whisker_length: float = 13.5,
-        vaccum_width: float = 5.8,
+        vaccum_width: float = 14.7,
         efficiency=0.5,
         whisker_eff=0.5,
     ):
@@ -124,79 +125,35 @@ class Robot:
         self.vaccum_width = vaccum_width
         return self.validate()
 
-    def doCleaning(
-        self, dirt, dT
-    ):  # NOTE we are assuming small movement relative to timestep
+    def doCleaning(self, dirt, dT):
+        # NOTE we are assuming small movement relative to timestep
         # circles:
         for whisker in self.whiskers:
             p = self.pos + whisker.pos.turn(self.facing)
-            for x in range(
-                math.floor(-whisker.diameter / 2), math.ceil(whisker.diameter / 2) + 1
-            ):
-                for y in range(
-                    math.floor(-whisker.diameter / 2),
-                    math.ceil(whisker.diameter / 2) + 1,
-                ):
-                    if Within(
-                        Vec2(math.floor(p.y) + y, math.floor(p.x) + x), dirt
-                    ) and (x * x + y * y <= whisker.diameter * whisker.diameter / 4):
-                        dirt[math.floor(p.y) + y, math.floor(p.x) + x] *= (
-                            1 - whisker.efficiency * dT
-                        )
-        RV = Vec2(self.diameter / 2, 0).turn(self.facing)
+            F = math.pow(
+                (1 - whisker.efficiency),
+                dT / (math.pi / 4 * whisker.diameter / self.maxSpeed),
+            )
+            y, x = np.ogrid[: dirt.shape[0], : dirt.shape[1]]
+            mask = (x - p[0]) ** 2 + (y - p[1]) ** 2 <= (whisker.diameter / 2) ** 2
+            dirt[mask] = dirt[mask] * F
 
-        for point in self.bresenham_line(
-            self.pos.x + RV.x,
-            self.pos.y + RV.y,
-            self.pos.x - (RV.x),
-            self.pos.y - (RV.y),
-        ):
-            if Within(Vec2(point[1], point[0]), dirt):
-                dirt[point[1], point[0]] *= 1 - self.efficiency * dT
+        x, y = np.ogrid[: dirt.shape[0], : dirt.shape[1]]
+        # Translate to the new coordinate system centered at the rectangle's center
+        y -= int(self.pos[0])
+        x -= int(self.pos[1])
 
-    def bresenham_line(self, x1, y1, x2, y2):
-        """Bresenham's Line Algorithm
-        Produces a list of tuples from start and end (x, y) points
-        """
+        # Apply rotation
+        x_rot = x * np.cos(self.facing) - y * np.sin(self.facing)
+        y_rot = x * np.sin(self.facing) + y * np.cos(self.facing)
+        vacuumThickness = 5
+        F2 = math.pow((1 - self.efficiency), dT / (vacuumThickness / self.maxSpeed))
+        # Check if each point is within the bounds of the rotated rectangle
+        mask = np.logical_and(
+            np.abs(x_rot) <= vacuumThickness / 2, np.abs(y_rot) <= self.vaccum_width / 2
+        )
 
-        # Setup initial conditions
-        x1, y1 = int(round(x1)), int(round(y1))
-        x2, y2 = int(round(x2)), int(round(y2))
-        dx = x2 - x1
-        dy = y2 - y1
-
-        # Determine how steep the line is
-        is_steep = abs(dy) > abs(dx)
-
-        # Rotate line
-        if is_steep:
-            x1, y1 = y1, x1
-            x2, y2 = y2, x2
-
-        # Swap start and end points if necessary and store swap state
-        if x1 > x2:
-            x1, x2 = x2, x1
-            y1, y2 = y2, y1
-
-        # Recalculate differentials
-        dx = x2 - x1
-        dy = y2 - y1
-
-        # Calculate error
-        error = int(dx / 2.0)
-        ystep = 1 if y1 < y2 else -1
-
-        # Iterate over bounding box generating points between start and end
-        y = y1
-        points = []
-        for x in range(x1, x2 + 1):
-            coord = (y, x) if is_steep else (x, y)
-            points.append(coord)
-            error -= abs(dy)
-            if error < 0:
-                y += ystep
-                error += dx
-        return points
+        dirt[mask] = dirt[mask] * F2
 
     def __str__(self) -> str:
         return (

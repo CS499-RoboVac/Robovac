@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>OPRWindow</class>
+ <widget class="QMainWindow" name="OPRWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -14,43 +14,40 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="BackButton">
+   <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>81</width>
-      <height>26</height>
+      <x>120</x>
+      <y>70</y>
+      <width>871</width>
+      <height>531</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Back</string>
-    </property>
    </widget>
-   <widget class="QPushButton" name="OpenFileButton">
+   <widget class="QPushButton" name="openFileButton">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>50</y>
-      <width>81</width>
-      <height>26</height>
+      <x>20</x>
+      <y>20</y>
+      <width>75</width>
+      <height>23</height>
      </rect>
     </property>
     <property name="text">
      <string>Open</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="SimulationButton">
+   <widget class="QPlainTextEdit" name="plainTextEdit">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>90</y>
-      <width>81</width>
-      <height>26</height>
+      <x>120</x>
+      <y>10</y>
+      <width>871</width>
+      <height>51</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Simulation</string>
+    <property name="readOnly">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>

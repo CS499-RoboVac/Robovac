@@ -26,7 +26,7 @@ def cm_to_ft(cm):
     Returns:
         int: Feet
     """
-    return int(cm / 30.48)
+    return int(round(cm / 30.48))
 
 
 def ft_to_cm(ft):
@@ -37,7 +37,7 @@ def ft_to_cm(ft):
     Returns:
         int: Centimeters
     """
-    return int(ft * 30.48)
+    return int(round(ft * 30.48))
 
 
 class Vec2:

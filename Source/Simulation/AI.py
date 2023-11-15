@@ -1,6 +1,7 @@
 import random
 from enum import Enum
 import Common.Robot as Robot
+from Common.Util import Vec2
 
 from math import sin, cos, pi, sqrt, atan2
 
@@ -29,11 +30,11 @@ class SnakeAI:
         Short = 2
 
     def __init__(self, robit: Robot):
-        self.state = self.State.Long
+        self.state = self.State.Turning
         self.robot = robit
-        self.TurnHelp = None
         self.TimeShort = 0
         self.turnDir = 1
+        self.TurnHelp = Turner(pi / 8, self.robot.maxTurn)
 
     def update(self, isColliding: bool, dT: float):
         """takes in the normal inputs for an AI: bool for if collision occurred on the last frame, and float for what fraction of a second has elapsed since last frame
@@ -42,10 +43,9 @@ class SnakeAI:
         if isColliding:
             if self.state == self.State.Long:
                 self.turnDir *= -1
-                self.TimeShort = 0
-
+            self.TimeShort = 0
             self.state = self.State.Turning
-            self.TurnHelp = Turner(pi / 2 * self.turnDir, self.robot.maxTurn)
+            self.TurnHelp = Turner(pi / 2.1 * self.turnDir, self.robot.maxTurn)
         if self.state == self.State.Long:
             return (1, 0)
         elif self.state == self.State.Turning:
@@ -59,7 +59,7 @@ class SnakeAI:
             self.TimeShort += dT
             if self.TimeShort > self.robot.diameter / self.robot.maxSpeed:
                 self.state = self.State.Turning
-                self.TurnHelp = Turner(pi / 2 * self.turnDir, self.robot.maxTurn)
+                self.TurnHelp = Turner(pi / 2.1 * self.turnDir, self.robot.maxTurn)
 
             return (1, 0)
 
@@ -120,6 +120,12 @@ class SpiralAI:
         self.TurnHelp = None
         self.SpiralTimer = 0
         self.LinearCountdown = 0
+        self.dir = 0
+
+    def GoSpiral(self):
+        self.SpiralTimer = 0
+        self.state = self.State.Spiraling
+        self.dir = 0
 
     def update(self, isColliding: bool, dT: float):
         if self.state == self.State.Linear:
@@ -128,13 +134,9 @@ class SpiralAI:
                     (random.random() - 0.5) * 2 * pi, self.robot.maxTurn
                 )
                 self.state = self.State.Turning
-
                 return (0, 0)
-            self.LinearCountdown -= dT
-            if self.LinearCountdown < 0:
-                SpiralTimer = 0
-
-                self.state = self.State.Spiraling
+            if random.random() < 0.01:
+                self.GoSpiral()
                 return (0, 0)
             return (1, 0)
         elif self.state == self.State.Turning:
@@ -152,23 +154,17 @@ class SpiralAI:
                 self.state = self.State.Turning
 
                 return (0, 0)
-            self.SpiralTimer += dT
+
             d = self.robot.diameter
             t = self.SpiralTimer
-            dxdt = d * cos(2 * pi * t) + 2 * pi * d * t * sin(2 * pi * t)
-            dydt = d * sin(2 * pi * t) - 2 * pi * d * t * cos(2 * pi * t)
 
-            drdt = sqrt(dxdt**2 + dydt**2)
-            dθdt = atan2(dydt, dxdt) - self.robot.facing
-            LineRatio = self.robot.maxSpeed * dT / drdt
-            TurnRatio = self.robot.maxTurn * dT / dθdt
-            MinRatio = 0
-            if abs(LineRatio) > abs(TurnRatio):
-                MinRatio = TurnRatio
-            else:
-                MinRatio = LineRatio
-            o = (
-                MinRatio * drdt / (self.robot.maxSpeed * dT),
-                MinRatio * dθdt / (self.robot.maxTurn * dT),
+            vel = self.robot.maxSpeed * dT
+            # Don't worry about the 628, it's a magic number
+            dθ = min(
+                (628 * vel / d) / max(self.dir * (d / (2 * pi)), 0.001),
+                self.robot.maxTurn,
             )
-            return o
+            self.dir += min(dθ, self.robot.maxTurn) * dT
+            self.SpiralTimer += dT
+
+            return (1, min(dθ / (self.robot.maxTurn), 1))

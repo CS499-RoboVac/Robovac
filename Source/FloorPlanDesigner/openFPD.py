@@ -28,7 +28,7 @@ import math
 import random
 
 from Views.ui_fpd import Ui_FPDWindow
-from Common.Util import cm_to_ft, ft_to_cm
+from Common.Util import cm_to_ft, ft_to_cm, Vec2
 
 
 class fpdWindowApp(QMainWindow, Ui_FPDWindow):
@@ -67,7 +67,8 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
 
         # Add the names of the rooms to the combo box
         for room in self.FPDGraphicsView.scene.items():
-            self.roomOptionsComboBox.addItem(room.name)
+            if type(room) == Room.Room:
+                self.roomOptionsComboBox.addItem(room.name)
 
     def addRoom(self):
         """
@@ -88,6 +89,18 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         room.setZValue(0)
         self.FPDGraphicsView.scene.addItem(room)
         self.populateRoomOptions()
+
+    def addChest(self):
+        roomName = self.roomOptionsComboBox.currentText()
+        for room in self.FPDGraphicsView.scene.items():
+            if type(room) == Room.Room and roomName == room.name:
+                chest = Room.Chest(Vec2(0, 0), Vec2(100, 50), parent=room)
+                chest.setZValue(0)
+                self.FPDGraphicsView.scene.addItem(chest)
+        self.populateRoomOptions()
+
+    def addFurniture(self):
+        pass
 
     def addDoor(self):
         """
@@ -110,6 +123,35 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.FPDGraphicsView.scene.addItem(door)
         self.populateRoomOptions()
 
+    def Helper01(self, fp, flag):
+        for item in fp:
+            if (item["type"] == "Room") == flag:
+                continue
+            # Read the values from the JSON file
+            x = int(item["x1"])
+            y = int(item["y1"])
+            w = int(item["width"])
+            h = int(item["height"])
+            name = item["Room Name"]
+            if not flag:
+                # This renders the rectangle to the screen
+                room = Room.Room(x, y, w, h, name)  # parameters are x, y, width, height
+                # If the room is a door, change the color to brown, and set its Z to 2
+                if "Door" in name:
+                    room.color = QColor(139, 69, 19)
+                    room.setZValue(2)
+                self.FPDGraphicsView.scene.addItem(room)
+            else:
+                typeString = item["type"]
+                parent = item["parent"]
+                for RR in self.FPDGraphicsView.scene.items():
+                    if type(RR) == Room.Room and parent == RR.name:
+                        print("hi")
+                        chest = Room.Chest(Vec2(x, y), Vec2(w, h), parent=RR)
+                        chest.setZValue(0)
+                        self.FPDGraphicsView.scene.addItem(chest)
+                        break
+
     def loadFloorPlan(self):
         """
         Loads a floorplan from a file selected by the user using a file dialog.
@@ -128,24 +170,9 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             with open(fileName, "r") as inFile:
                 fp = json.load(inFile)
 
-            for key in fp.keys():
-                # Read the values from the JSON file
-                x = int(fp[key]["x1"])
-                y = int(fp[key]["y1"])
-                w = int(fp[key]["width"])
-                h = int(fp[key]["height"])
-                name = fp[key]["Room Name"]
-                furniture = fp[key]["furniture"]  # What even is this parameter???
-                # This renders the rectangle to the screen
-                room = Room.Room(x, y, w, h, name)  # parameters are x, y, width, height
+            self.Helper01(fp, False)
+            self.Helper01(fp, True)
 
-                # If the room is a door, change the color to brown, and set it's Z to 2
-                if "Door" in name:
-                    room.color = QColor(139, 69, 19)
-                    room.setZValue(2)
-
-                # Add the rectangle to the scene
-                self.FPDGraphicsView.scene.addItem(room)
         self.populateRoomOptions()
 
     def saveFloorPlan(self):
@@ -168,22 +195,31 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         if fileName:
             if ".fpd" not in fileName:
                 fileName = fileName + ".fpd"
-            fp = dict()
+            fp = list()
             for room in self.FPDGraphicsView.scene.items():
-                fp[room.name] = {
-                    "Room Name": room.name,
-                    "x1": room.rect.x(),
-                    "y1": room.rect.y(),
-                    "width": room.rect.width(),
-                    "height": room.rect.height(),
-                    "furniture": "",
-                }
-            jsonObj = json.dumps(fp)
-            with open(fileName, "w") as outFile:
-                outFile.write(jsonObj)
-            self.saveFloorplanButton.setText("Floorplan Saved!")
-            QtTest.QTest.qWait(5000)
-            self.saveFloorplanButton.setText("Save Floorplan")
+                fp.append(
+                    {
+                        "Room Name": room.name,
+                        "x1": room.x(),
+                        "y1": room.y(),
+                        "width": room.rect.width(),
+                        "height": room.rect.height(),
+                        "type": type(room).__name__,
+                        "parent": None if type(room) == Room.Room else room.parent.name,
+                    }
+                )
+
+            if self.validateFloorPlan(fp):
+                jsonObj = json.dumps(fp)
+                with open(fileName, "w") as outFile:
+                    outFile.write(jsonObj)
+                self.saveFloorplanButton.setText("Floorplan Saved!")
+                QtTest.QTest.qWait(5000)
+                self.saveFloorplanButton.setText("Save Floorplan")
+            else:
+                self.saveFloorplanButton.setText("Error - Floorplan Not Valid!")
+                QtTest.QTest.qWait(5000)
+                self.saveFloorplanButton.setText("Save Floorplan")
         else:
             self.saveFloorplanButton.setText("Error - Floorplan Not Saved!")
             QtTest.QTest.qWait(5000)
@@ -198,8 +234,6 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.populateRoomOptions()
 
         # Set the room values to the default values
-        self.roomXBox.setValue(0)
-        self.roomYBox.setValue(0)
         self.roomWBox.setValue(10)
         self.roomHBox.setValue(10)
 
@@ -220,9 +254,6 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         roomName = self.roomOptionsComboBox.currentText()
         for room in self.FPDGraphicsView.scene.items():
             if roomName == room.name:
-                room.changePositon(
-                    ft_to_cm(self.roomXBox.value()), ft_to_cm(self.roomYBox.value())
-                )
                 room.changeSize(
                     ft_to_cm(self.roomWBox.value()), ft_to_cm(self.roomHBox.value())
                 )
@@ -246,19 +277,13 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         roomName = self.roomOptionsComboBox.currentText()
 
         for room in self.FPDGraphicsView.scene.items():
-            if roomName == room.name:
-                self.roomXBox.blockSignals(True)
-                self.roomYBox.blockSignals(True)
+            if type(room) == Room.Room and roomName == room.name:
                 self.roomWBox.blockSignals(True)
                 self.roomHBox.blockSignals(True)
 
-                self.roomXBox.setValue(cm_to_ft(room.rect.x()))
-                self.roomYBox.setValue(cm_to_ft(room.rect.y()))
                 self.roomWBox.setValue(cm_to_ft(room.rect.width()))
                 self.roomHBox.setValue(cm_to_ft(room.rect.height()))
 
-                self.roomXBox.blockSignals(False)
-                self.roomYBox.blockSignals(False)
                 self.roomWBox.blockSignals(False)
                 self.roomHBox.blockSignals(False)
 
@@ -278,13 +303,39 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         # Add room and add Door
         self.addRoomButton.clicked.connect(self.addRoom)
         self.addDoorButton.clicked.connect(self.addDoor)
+        self.addChestButton.clicked.connect(self.addChest)
+        self.addFurnitureButton.clicked.connect(self.addFurniture)
 
         # Connect the room options combo box to the onRoomSelected function
         self.roomOptionsComboBox.currentIndexChanged.connect(self.onRoomSelected)
         self.roomOptionsComboBox.highlighted.connect(self.onRoomSelected)
 
         # Modify room dimensions
-        self.roomXBox.valueChanged.connect(self.updateRoomDimensions)
-        self.roomYBox.valueChanged.connect(self.updateRoomDimensions)
         self.roomWBox.valueChanged.connect(self.updateRoomDimensions)
         self.roomHBox.valueChanged.connect(self.updateRoomDimensions)
+
+    def validateFloorPlan(self, fp):
+        if len(fp) == 1:
+            return True
+        fpc = {
+            Primitives.Rectangle(
+                Vec2(v["x1"], v["y1"]),
+                Vec2(v["x1"] + v["width"], v["y1"] + v["height"]),
+                False,
+            ): False
+            for v in fp
+            if v["type"] == "Room"
+        }
+        fpc[next(iter(fpc.keys()))] = True
+        TurnedThisRound = True
+        while TurnedThisRound:
+            TurnedThisRound = False
+            for S in fpc.keys():
+                if not fpc[S]:
+                    for C in fpc.keys():
+                        if fpc[C]:
+                            if S & C or C & S:
+                                fpc[S] = True
+                                TurnedThisRound = True
+                                break
+        return all([v for v in fpc.values()])

@@ -24,6 +24,27 @@ class Rectangle:
         )
         return inside
 
+    def __eq__(self, o):
+        if type(0) != type(self):
+            return False
+        return self.minCorner == o.minCorner and self.maxCorner == o.maxCorner
+
+    def __hash__(self):
+        return hash(
+            (self.minCorner.x, self.minCorner.y, self.maxCorner.x, self.maxCorner.y)
+        )
+
+    def __and__(self, other):
+        for pt in [
+            self.minCorner,
+            self.maxCorner,
+            Vec2(self.minCorner.x, self.maxCorner.y),
+            Vec2(self.maxCorner.x, self.minCorner.y),
+        ]:
+            if other.isInside(pt):
+                return True
+        return False
+
 
 class Circle:
     def __init__(self, center: Vec2, radius: float, exclusion: bool):
@@ -64,7 +85,6 @@ def PrimitiveInclusion(shapes, point):
     return insideAnyInclusion and outsideEveryExclusion
 
 
-# TODO: make this work with the new robot class, also this will probably need to be changed and or moved to the floorplan class once that exists
 def Collision(pos: Vec2, d: float, shapes: list):
     """function that takes a position and radius, and a floorplan dict, returns True if a collision happens or False if the position is clear
     pos : Vec2 of the vacuum's position,
