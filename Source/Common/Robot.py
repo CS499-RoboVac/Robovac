@@ -1,7 +1,7 @@
 from Common.Util import Vec2
 import math
 import numpy as np
-
+import cv2
 # This class will represent the robot in the simulation
 # It will only handle information about the robot, not the actual drawing of the robot
 # that will be handled by the RobotDrawer class

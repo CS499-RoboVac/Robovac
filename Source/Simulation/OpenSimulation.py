@@ -142,8 +142,10 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         self.RobotRenderObject = None
         self.dirtRenderObject = None
         self.maxT = 30
+        self.simulationRunning = False
 
         self.dirt = None
+        self.StartDirt = 0
         self.floorplansDir = (
             os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             + "/Floor Plans/"
@@ -188,7 +190,8 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             # Render Update Ideal Framerate
             dT = 1 / 60
             lastTime = time.time()
-            while True:
+            print(self.parent.dirt.shape)
+            while self.parent.simulationRunning:
                 # Read the simulation rate to control the run loop
                 T += (
                     1 / 20
@@ -209,24 +212,24 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         if self.RobotRenderObject:
             self.RobotRenderObject.radius = self.DiameterSlide.value() / 2
             self.RobotRenderObject.setRadius(
-                self.DiameterSlide.value() / 2, self.WhiskerSlide.value()
+                self.DiameterSlide.value() * 0.254 / 2, self.WhiskerSlide.value() * 0.254 / 2
             )
 
     def sliderChange(self):
         self.Stat_Diameter.setText(
-            "{} in/s ({:.2f} cm)".format(
+            "{} in ({:.2f} cm)".format(
                 self.DiameterSlide.value() / 10, self.DiameterSlide.value() * 0.254
             )
         )
         self.Stat_VacuumWidth.setText(
-            "{} in/s ({:.2f} cm)".format(
+            "{} in ({:.2f} cm)".format(
                 self.VacWidthSlide.value() / 10, self.VacWidthSlide.value() * 0.254
             )
         )
         self.Stat_VacEff.setText("{}%".format(self.EfficiencySlide.value()))
         self.Stat_Whisker.setText(
-            "{} in/s ({:.2f} cm)".format(
-                self.WhiskerSlide.value(), self.WhiskerSlide.value() * 2.54
+            "{} in ({:.2f} cm)".format(
+                self.WhiskerSlide.value() / 10, self.WhiskerSlide.value() * 0.254
             )
         )
         self.Stat_WhiskerEfficiency.setText("{}%".format(self.WhiskerEffSlide.value()))
@@ -333,43 +336,56 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         self.main.append(OpenIntro.mainWindowApp())
         self.main[-1].show()
 
+    def completeMessage(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+        msg.setText("Simulation Complete")
+        msg.setInformativeText(f"{np.sum(self.dirt)} remaining dirt out of an initial {self.StartDirt}, efficiency {1-(np.sum(self.dirt)/self.StartDirt)}")
+        msg.setWindowTitle("Simulation Comlete")
+        msg.exec_()
+
     def beginSimulation(self):
-        """Simulation initialization logic"""
-        # Check to see if all values are valid for starting the simulation:
-        if len(self.shapes):
-            # Create a QThread object
-            self.thread = QThread()
-            # Create a worker object
-            self.worker = self.Worker(self)
-            # Move worker to the thread
-            self.worker.moveToThread(self.thread)
-            # Connect signals and slots
-            self.thread.started.connect(self.worker.run)
-            self.worker.finished.connect(self.thread.quit)
-
-            self.worker.frameUpdated.connect(self.updateFrame)
-            self.worker.simulationError.connect(self.simulateErrorMessage)
-
-            self.worker.finished.connect(self.worker.deleteLater)
-            self.thread.finished.connect(self.thread.deleteLater)
-
-            # Start the thread
-            self.thread.start()
-
-            self.SimulationButton.setEnabled(False)
-            self.thread.finished.connect(lambda: self.SimulationButton.setEnabled(True))
-            self.thread.finished.connect(
-                lambda: self.SimulationButton.setText("Finished Simulation")
-            )
+        if self.simulationRunning:
+            self.simulationRunning = False
+            self.SimulationButton.setText("Simulate")
         else:
-            # Emit failure message because a condition was not met
-            msg = QMessageBox()
-            msg.setIcon(QMessageBox.Critical)
-            msg.setText("Simulation Parameter Invalid or Floor Plan not loaded")
-            msg.setInformativeText("TMP, replace with informative information")
-            msg.setWindowTitle("Error")
-            msg.exec_()
-            pass
+            """Simulation initialization logic"""
+            # Check to see if all values are valid for starting the simulation:
+            if len(self.shapes):
+                # Create a QThread object
+                self.thread = QThread()
+                # Create a worker object
+                self.worker = self.Worker(self)
+                # Move worker to the thread
+                self.worker.moveToThread(self.thread)
+                # Connect signals and slots
+                self.thread.started.connect(self.worker.run)
+                self.worker.finished.connect(self.thread.quit)
+                self.worker.finished.connect(self.completeMessage)
+
+                self.worker.frameUpdated.connect(self.updateFrame)
+                self.worker.simulationError.connect(self.simulateErrorMessage)
+
+                self.worker.finished.connect(self.worker.deleteLater)
+                self.thread.finished.connect(self.thread.deleteLater)
+
+                # Start the thread
+                self.thread.start()
+                self.simulationRunning = True
+                self.SimulationButton.setText("Stop Simulation")
+                self.thread.finished.connect(lambda: self.SimulationButton.setEnabled(True))
+                self.thread.finished.connect(
+                    lambda: self.SimulationButton.setText("Finished Simulation")
+                )
+            else:
+                # Emit failure message because a condition was not met
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Critical)
+                msg.setText("Simulation Parameter Invalid or Floor Plan not loaded")
+                msg.setInformativeText("TMP, replace with informative information")
+                msg.setWindowTitle("Error")
+                msg.exec_()
+                pass
 
     def InstanceAI(self):
         textSelected = self.PathAlgorithmBox.currentText()
@@ -388,9 +404,9 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         return Robot.Robot(
             Vec2(p.x() - tl.x, p.y() - tl.y),
             0,
-            diameter=self.DiameterSlide.value(),
-            maxSpeed=self.SpeedSlide.value(),
-            whisker_length=self.WhiskerSlide.value(),
+            diameter=self.DiameterSlide.value() * 0.254,
+            maxSpeed=self.SpeedSlide.value() * 2.54,
+            whisker_length=self.WhiskerSlide.value() * 0.254,
             efficiency=60 * self.EfficiencySlide.value() / 100,
             whisker_eff=60 * self.WhiskerEffSlide.value() / 100,
         )
@@ -461,7 +477,8 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
                         Primitives.PrimitiveInclusion(self.shapes, Vec2(x, y) + tl)
                         * 200
                     )
-                    # Create a QImage from the numpy array
+                    # CreatSe a QImage from the numpy array
+            self.StartDirt = np.sum(self.dirt)
             self.dirt = np.rot90(self.dirt)
             self.dirt = np.flipud(self.dirt)
             # Create a QGraphicsPixmapItem from the QPixmap
