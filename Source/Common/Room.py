@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, QtTest
-from PyQt5.QtCore import QObject, QThread, pyqtSignal, QRectF
+from PyQt5.QtCore import QObject, QThread, pyqtSignal, QRectF, Qt
 from PyQt5.QtWidgets import QWidget, QApplication
 from PyQt5.QtGui import QPainter, QColor, QBrush, QPen
 from PyQt5.QtWidgets import (
@@ -17,6 +17,7 @@ from PyQt5.QtWidgets import (
 
 # Import random for random numbers
 import random
+from Common.Util import Vec2
 
 
 class Room(QGraphicsItem):
@@ -30,8 +31,16 @@ class Room(QGraphicsItem):
         self.selected = False
         self.rect = QRectF(x, y, width, height)
         self.setFlag(QGraphicsItem.ItemIsMovable)
+        #self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
+        #self.setFlag(QGraphicsItem.ItemIsSelectable)
+        #self.setAcceptHoverEvents(True)
+        # Flags to indicate which edge/corner is being dragged
+        self.dragging_top = False
+        self.dragging_bottom = False
+        self.dragging_left = False
+        self.dragging_right = False
 
-    from PyQt5.QtGui import QPen
+
 
     def boundingRect(self):
         return self.rect
@@ -52,3 +61,35 @@ class Room(QGraphicsItem):
 
     def changeSize(self, width, height):
         self.rect = QRectF(self.rect.x(), self.rect.y(), width, height)
+    
+class Chest(QGraphicsItem):
+    def __init__(self, pos, dim,parent):
+        super(Chest, self).__init__(parent)
+        self.setFlag(QGraphicsItem.ItemIsMovable)
+        self.rect = QRectF(0,0, dim.x, dim.y)
+        self.setPos(pos.x,pos.y)
+        self.name = ""
+        self.parent = parent
+
+    def paint(self, painter, option, widget):
+        painter.setBrush(QColor(100, 100, 0))  # Set the fill color
+        painter.drawRect(self.rect)
+
+    def boundingRect(self):
+        return self.rect
+
+class Table(QGraphicsItem):
+    def __init__(self, pos, dim,parent):
+        super(Chest, self).__init__(parent)
+        self.setFlag(QGraphicsItem.ItemIsMovable)
+        self.rect = QRectF(0,0, dim.x, dim.y)
+        self.setPos(pos.x,pos.y)
+        self.name=""
+        self.corners = []
+
+    def paint(self, painter, option, widget):
+        painter.setBrush(QColor(100, 100, 0))  # Set the fill color
+        painter.drawRect(self.rect)
+
+    def boundingRect(self):
+        return self.rect
