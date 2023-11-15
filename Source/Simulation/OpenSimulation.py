@@ -155,8 +155,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             + "/Floor Plans/"
         )
         self.lastRunsDir = (
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            + "/Old Runs/"
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/Old Runs/"
         )
 
         self.graphicsView.scene = QGraphicsScene()
@@ -198,7 +197,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             # Render Update Ideal Framerate
             dT = 1 / 60
             lastTime = time.time()
-            
+
             lastSimTime = time.time()
             while self.parent.simulationRunning:
                 if (time.time() - lastSimTime) > (1 / (20 * self.parent.SimSpeed)):
@@ -221,7 +220,8 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         if self.RobotRenderObject:
             self.RobotRenderObject.radius = self.DiameterSlide.value() / 2
             self.RobotRenderObject.setRadius(
-                self.DiameterSlide.value() * 0.254 / 2, self.WhiskerSlide.value() * 0.254 / 2
+                self.DiameterSlide.value() * 0.254 / 2,
+                self.WhiskerSlide.value() * 0.254 / 2,
             )
 
     def sliderChange(self):
@@ -348,9 +348,11 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Information)
         msg.setText("Simulation Complete")
-        msg.setInformativeText(f"Simulation at {datetime.datetime.now()}\n Using aglo {self.PathAlgorithmBox.currentText()}\n On floorplan {self.fileName}\n With efficiency {round(1-(np.sum(self.dirt)/self.StartDirt), 2)}\n Final duration {self.Stat_SimulationTime.text()}")
+        msg.setInformativeText(
+            f"Simulation at {datetime.datetime.now()}\n Using aglo {self.PathAlgorithmBox.currentText()}\n On floorplan {self.fileName}\n With efficiency {round(1-(np.sum(self.dirt)/self.StartDirt), 2)}\n Final duration {self.Stat_SimulationTime.text()}"
+        )
         msg.setWindowTitle("Simulation Comlete")
-            # Create a button and add it to the message box
+        # Create a button and add it to the message box
         button = QPushButton("Save Run")
         msg.addButton(button, QMessageBox.AcceptRole)
 
@@ -368,8 +370,8 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             if len(self.shapes):
                 tl, br = self.BoundingBox()
                 self.dirt = np.zeros(
-                (math.ceil(abs(tl.x - br.x)), math.ceil(abs(tl.y - br.y))),
-                dtype=np.uint8,
+                    (math.ceil(abs(tl.x - br.x)), math.ceil(abs(tl.y - br.y))),
+                    dtype=np.uint8,
                 )
 
                 # Generates dirt tile objects and puts them in the rendering window.
@@ -403,7 +405,9 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
                 self.thread.start()
                 self.simulationRunning = True
                 self.SimulationButton.setText("Stop Simulation")
-                self.thread.finished.connect(lambda: self.SimulationButton.setEnabled(True))
+                self.thread.finished.connect(
+                    lambda: self.SimulationButton.setEnabled(True)
+                )
                 self.thread.finished.connect(
                     lambda: self.SimulationButton.setText("Finished Simulation")
                 )
@@ -437,9 +441,9 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             diameter=self.DiameterSlide.value() * 0.254,
             maxSpeed=self.SpeedSlide.value() * 2.54,
             whisker_length=self.WhiskerSlide.value() * 0.254,
-            efficiency= self.EfficiencySlide.value() / 100,
-            whisker_eff= self.WhiskerEffSlide.value() / 100,
-            vaccum_width= self.VacWidthSlide.value() * 0.254
+            efficiency=self.EfficiencySlide.value() / 100,
+            whisker_eff=self.WhiskerEffSlide.value() / 100,
+            vaccum_width=self.VacWidthSlide.value() * 0.254,
         )
 
     def BoundingBox(self):
@@ -478,8 +482,8 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
                     y = int(item["y1"])
                     w = int(item["width"])
                     h = int(item["height"])
-                    
-                    if item["type"]=="Room":
+
+                    if item["type"] == "Room":
                         self.shapes.append(
                             Primitives.Rectangle(Vec2(x, y), Vec2(x + w, y + h), False)
                         )
@@ -489,8 +493,10 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
                         )
                     # TODO deal with not rectangles for rendering
                     # This renders the rectangle to the screen
-                    rect = RectangleItem(x, y, w, h, item["type"]=="Room")  # parameters are x, y, width, height
-                    if (item["type"]!="Room"):
+                    rect = RectangleItem(
+                        x, y, w, h, item["type"] == "Room"
+                    )  # parameters are x, y, width, height
+                    if item["type"] != "Room":
                         rect.setZValue(2)
                     # Add the rectangle to the scene
                     self.graphicsView.scene.addItem(rect)
@@ -523,7 +529,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             self.RobotRenderObject = RobotSprite(0, 0, 16, 4, 0)
             self.graphicsView.scene.addItem(self.RobotRenderObject)
             self.robotSizeChange()
-            self.fileName= fileName
+            self.fileName = fileName
 
     def getDirtPixmap(self):
         # Convert the 2D alpha_values array into a 3D array with 4 channels (RGBA)
@@ -578,7 +584,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         painter = QPainter(image)
         view.viewport().render(painter)
         painter.end()
-        
+
         return image
 
     def saveRun(self):
@@ -589,7 +595,13 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             self.lastRunsDir,
             options=opts,
         )
-        os.mkdir(folderName:=(folderName + "/" + str(datetime.datetime.now()).split('.')[0].replace(":", "-")))
+        os.mkdir(
+            folderName := (
+                folderName
+                + "/"
+                + str(datetime.datetime.now()).split(".")[0].replace(":", "-")
+            )
+        )
 
         rb = [
             self.SpeedSlide.value(),
@@ -601,15 +613,20 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         ]
 
         jsonObj = json.dumps(rb)
-        with open(folderName+ "/Robot_Settings.rbt", "w") as outFile:
+        with open(folderName + "/Robot_Settings.rbt", "w") as outFile:
             outFile.write(jsonObj)
         with open(folderName + "/Message.txt", "w") as outFile:
-            outFile.write(f"Simulation at {datetime.datetime.now()}\n Using aglo {self.PathAlgorithmBox.currentText()}\n On floorplan {self.fileName}\n With efficiency {round(1-(np.sum(self.dirt)/self.StartDirt), 2)}\n Final duration {self.Stat_SimulationTime.text()}")
-            
-        with open(self.fileName, 'rb') as src, open(folderName+ "/Floor_Plan.fpd", 'wb') as dest:
+            outFile.write(
+                f"Simulation at {datetime.datetime.now()}\n Using aglo {self.PathAlgorithmBox.currentText()}\n On floorplan {self.fileName}\n With efficiency {round(1-(np.sum(self.dirt)/self.StartDirt), 2)}\n Final duration {self.Stat_SimulationTime.text()}"
+            )
+
+        with open(self.fileName, "rb") as src, open(
+            folderName + "/Floor_Plan.fpd", "wb"
+        ) as dest:
             shutil.copyfileobj(src, dest)
-        
-        self.getWindowImage().save(folderName+ "/Result_Image.png")
+
+        self.getWindowImage().save(folderName + "/Result_Image.png")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

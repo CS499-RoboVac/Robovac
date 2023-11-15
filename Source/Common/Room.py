@@ -31,16 +31,14 @@ class Room(QGraphicsItem):
         self.selected = False
         self.rect = QRectF(x, y, width, height)
         self.setFlag(QGraphicsItem.ItemIsMovable)
-        #self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
-        #self.setFlag(QGraphicsItem.ItemIsSelectable)
-        #self.setAcceptHoverEvents(True)
+        # self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
+        # self.setFlag(QGraphicsItem.ItemIsSelectable)
+        # self.setAcceptHoverEvents(True)
         # Flags to indicate which edge/corner is being dragged
         self.dragging_top = False
         self.dragging_bottom = False
         self.dragging_left = False
         self.dragging_right = False
-
-
 
     def boundingRect(self):
         return self.rect
@@ -61,13 +59,14 @@ class Room(QGraphicsItem):
 
     def changeSize(self, width, height):
         self.rect = QRectF(self.rect.x(), self.rect.y(), width, height)
-    
+
+
 class Chest(QGraphicsItem):
-    def __init__(self, pos, dim,parent):
+    def __init__(self, pos, dim, parent):
         super(Chest, self).__init__(parent)
         self.setFlag(QGraphicsItem.ItemIsMovable)
-        self.rect = QRectF(0,0, dim.x, dim.y)
-        self.setPos(pos.x,pos.y)
+        self.rect = QRectF(0, 0, dim.x, dim.y)
+        self.setPos(pos.x, pos.y)
         self.name = ""
         self.parent = parent
 
@@ -78,13 +77,14 @@ class Chest(QGraphicsItem):
     def boundingRect(self):
         return self.rect
 
+
 class Table(QGraphicsItem):
-    def __init__(self, pos, dim,parent):
+    def __init__(self, pos, dim, parent):
         super(Chest, self).__init__(parent)
         self.setFlag(QGraphicsItem.ItemIsMovable)
-        self.rect = QRectF(0,0, dim.x, dim.y)
-        self.setPos(pos.x,pos.y)
-        self.name=""
+        self.rect = QRectF(0, 0, dim.x, dim.y)
+        self.setPos(pos.x, pos.y)
+        self.name = ""
         self.corners = []
 
     def paint(self, painter, option, widget):

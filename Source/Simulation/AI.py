@@ -34,7 +34,7 @@ class SnakeAI:
         self.robot = robit
         self.TimeShort = 0
         self.turnDir = 1
-        self.TurnHelp = Turner(pi/8, self.robot.maxTurn)
+        self.TurnHelp = Turner(pi / 8, self.robot.maxTurn)
 
     def update(self, isColliding: bool, dT: float):
         """takes in the normal inputs for an AI: bool for if collision occurred on the last frame, and float for what fraction of a second has elapsed since last frame
@@ -123,9 +123,9 @@ class SpiralAI:
         self.dir = 0
 
     def GoSpiral(self):
-        self.SpiralTimer=0
+        self.SpiralTimer = 0
         self.state = self.State.Spiraling
-        self.dir=0
+        self.dir = 0
 
     def update(self, isColliding: bool, dT: float):
         if self.state == self.State.Linear:
@@ -154,14 +154,17 @@ class SpiralAI:
                 self.state = self.State.Turning
 
                 return (0, 0)
-            
+
             d = self.robot.diameter
             t = self.SpiralTimer
-            
-            vel = self.robot.maxSpeed*dT
+
+            vel = self.robot.maxSpeed * dT
             # Don't worry about the 628, it's a magic number
-            dθ=min((628 * vel/d)/max(self.dir*(d/(2*pi)), 0.001),self.robot.maxTurn)
-            self.dir += min(dθ,self.robot.maxTurn)*dT
+            dθ = min(
+                (628 * vel / d) / max(self.dir * (d / (2 * pi)), 0.001),
+                self.robot.maxTurn,
+            )
+            self.dir += min(dθ, self.robot.maxTurn) * dT
             self.SpiralTimer += dT
 
-            return (1, min(dθ/(self.robot.maxTurn),1))
+            return (1, min(dθ / (self.robot.maxTurn), 1))

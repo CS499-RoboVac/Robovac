@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QGraphicsPixmapItem,
     QFileDialog,
-    QGraphicsScene
+    QGraphicsScene,
 )
 import sys
 import os
@@ -43,7 +43,7 @@ class oprWindowApp(QMainWindow, Ui_OPRWindow):
         folderName = QFileDialog.getExistingDirectory(
             self,
             "Load Run",
-            os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+ "/Old Runs/",
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/Old Runs/",
             options=opts,
         )
         fileName = folderName + "/Result_Image.png"
@@ -51,10 +51,10 @@ class oprWindowApp(QMainWindow, Ui_OPRWindow):
         if not pixmap.isNull():
             pixmap_item = QGraphicsPixmapItem(pixmap)
             self.graphicsView.scene.addItem(pixmap_item)
-        with open(folderName+"/Message.txt") as f:
+        with open(folderName + "/Message.txt") as f:
             Message = f.read()
             self.plainTextEdit.setPlainText(Message)
-        
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

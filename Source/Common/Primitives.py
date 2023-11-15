@@ -25,18 +25,26 @@ class Rectangle:
         return inside
 
     def __eq__(self, o):
-        if type(0)!=type(self):
+        if type(0) != type(self):
             return False
         return self.minCorner == o.minCorner and self.maxCorner == o.maxCorner
 
     def __hash__(self):
-        return hash((self.minCorner.x, self.minCorner.y, self.maxCorner.x, self.maxCorner.y))
+        return hash(
+            (self.minCorner.x, self.minCorner.y, self.maxCorner.x, self.maxCorner.y)
+        )
 
     def __and__(self, other):
-        for pt in [self.minCorner, self.maxCorner, Vec2(self.minCorner.x, self.maxCorner.y), Vec2(self.maxCorner.x, self.minCorner.y)]:
+        for pt in [
+            self.minCorner,
+            self.maxCorner,
+            Vec2(self.minCorner.x, self.maxCorner.y),
+            Vec2(self.maxCorner.x, self.minCorner.y),
+        ]:
             if other.isInside(pt):
                 return True
         return False
+
 
 class Circle:
     def __init__(self, center: Vec2, radius: float, exclusion: bool):

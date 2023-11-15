@@ -2,6 +2,7 @@ from Common.Util import Vec2
 import math
 import numpy as np
 import cv2
+
 # This class will represent the robot in the simulation
 # It will only handle information about the robot, not the actual drawing of the robot
 # that will be handled by the RobotDrawer class
@@ -129,12 +130,15 @@ class Robot:
         # circles:
         for whisker in self.whiskers:
             p = self.pos + whisker.pos.turn(self.facing)
-            F = math.pow((1 - whisker.efficiency), dT/(math.pi/4 * whisker.diameter / self.maxSpeed))
-            y, x = np.ogrid[:dirt.shape[0], :dirt.shape[1]]
-            mask = (x - p[0])**2 + (y - p[1])**2 <= (whisker.diameter / 2)**2
-            dirt[mask] = dirt[mask]*F
-        
-        x, y = np.ogrid[:dirt.shape[0], :dirt.shape[1]]
+            F = math.pow(
+                (1 - whisker.efficiency),
+                dT / (math.pi / 4 * whisker.diameter / self.maxSpeed),
+            )
+            y, x = np.ogrid[: dirt.shape[0], : dirt.shape[1]]
+            mask = (x - p[0]) ** 2 + (y - p[1]) ** 2 <= (whisker.diameter / 2) ** 2
+            dirt[mask] = dirt[mask] * F
+
+        x, y = np.ogrid[: dirt.shape[0], : dirt.shape[1]]
         # Translate to the new coordinate system centered at the rectangle's center
         y -= int(self.pos[0])
         x -= int(self.pos[1])
@@ -143,11 +147,13 @@ class Robot:
         x_rot = x * np.cos(self.facing) - y * np.sin(self.facing)
         y_rot = x * np.sin(self.facing) + y * np.cos(self.facing)
         vacuumThickness = 5
-        F2 = math.pow((1 - self.efficiency), dT/(vacuumThickness / self.maxSpeed))
+        F2 = math.pow((1 - self.efficiency), dT / (vacuumThickness / self.maxSpeed))
         # Check if each point is within the bounds of the rotated rectangle
-        mask = np.logical_and(np.abs(x_rot) <=  vacuumThickness/ 2, np.abs(y_rot) <= self.vaccum_width / 2)
+        mask = np.logical_and(
+            np.abs(x_rot) <= vacuumThickness / 2, np.abs(y_rot) <= self.vaccum_width / 2
+        )
 
-        dirt[mask] = dirt[mask]*F2
+        dirt[mask] = dirt[mask] * F2
 
     def __str__(self) -> str:
         return (
