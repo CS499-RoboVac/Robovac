@@ -181,7 +181,35 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         The floorplan is stored in a JSON file format.
         """
         _translate = QtCore.QCoreApplication.translate
+        # If there are no rooms in the floorplan, don't do anything
         if len(self.FPDGraphicsView.scene.items()) == 0:
+            return
+
+        # Create the floorplan dictionary to be saved
+        fp = list()
+        for room in self.FPDGraphicsView.scene.items():
+            fp.append(
+                {
+                    "Room Name": room.name,
+                    "x1": room.x(),
+                    "y1": room.y(),
+                    "width": room.rect.width(),
+                    "height": room.rect.height(),
+                    "type": type(room).__name__,
+                    "parent": None if type(room) == Room.Room else room.parent.name,
+                }
+            )
+        
+        # If the floorplan is not valid, don't save it, and display an error message
+        if not self.validateFloorPlan(fp):
+            # Pop up a message box to tell the user that the floorplan is not valid
+            message = "The floorplan is not valid. Please make sure that all rooms are connected."
+            self.msg = QMessageBox()
+            self.msg.setWindowTitle("Error")
+            self.msg.setText(message)
+            self.msg.setIcon(QMessageBox.Critical)
+            self.msg.setStandardButtons(QMessageBox.Ok)
+            self.msg.show()
             return
 
         opts = QFileDialog.Options()
@@ -195,31 +223,13 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         if fileName:
             if ".fpd" not in fileName:
                 fileName = fileName + ".fpd"
-            fp = list()
-            for room in self.FPDGraphicsView.scene.items():
-                fp.append(
-                    {
-                        "Room Name": room.name,
-                        "x1": room.x(),
-                        "y1": room.y(),
-                        "width": room.rect.width(),
-                        "height": room.rect.height(),
-                        "type": type(room).__name__,
-                        "parent": None if type(room) == Room.Room else room.parent.name,
-                    }
-                )
-
-            if self.validateFloorPlan(fp):
-                jsonObj = json.dumps(fp)
-                with open(fileName, "w") as outFile:
-                    outFile.write(jsonObj)
-                self.saveFloorplanButton.setText("Floorplan Saved!")
-                QtTest.QTest.qWait(5000)
-                self.saveFloorplanButton.setText("Save Floorplan")
-            else:
-                self.saveFloorplanButton.setText("Error - Floorplan Not Valid!")
-                QtTest.QTest.qWait(5000)
-                self.saveFloorplanButton.setText("Save Floorplan")
+            
+            jsonObj = json.dumps(fp)
+            with open(fileName, "w") as outFile:
+                outFile.write(jsonObj)
+            self.saveFloorplanButton.setText("Floorplan Saved!")
+            QtTest.QTest.qWait(5000)
+            self.saveFloorplanButton.setText("Save Floorplan")
         else:
             self.saveFloorplanButton.setText("Error - Floorplan Not Saved!")
             QtTest.QTest.qWait(5000)
