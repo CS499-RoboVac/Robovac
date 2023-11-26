@@ -27,10 +27,9 @@ class oprWindowApp(QMainWindow, Ui_OPRWindow):
         self.setupUi(self)
         self.connectButtons()
         self.viewers = []
-        
+
     def connectButtons(self):
         self.openFileButton.clicked.connect(self.loadFolder)
-        
 
     def loadFolder(self):
         opts = QFileDialog.Options()
@@ -72,4 +71,3 @@ class oprViewerWindowApp(QMainWindow, Ui_PRViewWindow):
         pixmap = QPixmap(fileName)
         if not pixmap.isNull():
             self.pieChartView.setPixmap(pixmap)
-

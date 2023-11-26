@@ -31,6 +31,7 @@ from Views.ui_fpd import Ui_FPDWindow
 from Common.Util import cm_to_ft, ft_to_cm, Vec2
 from FloorPlanDesigner.saveMessageBox import SaveMessageBox
 
+
 class fpdWindowApp(QMainWindow, Ui_FPDWindow):
     def resetGraphicsScene(self):
         """
@@ -115,7 +116,6 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.changed = True
 
     def addFurniture(self):
-
         self.changed = True
         pass
 
@@ -227,7 +227,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                     "type": type(room).__name__,
                 }
             )
-        
+
         # If the floorplan is not valid, don't save it, and display an error message
         if not self.validateFloorPlan(fp):
             # Pop up a message box to tell the user that the floorplan is not valid
@@ -251,7 +251,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         if fileName:
             if ".fpd" not in fileName:
                 fileName = fileName + ".fpd"
-            
+
             jsonObj = json.dumps(fp)
             with open(fileName, "w") as outFile:
                 outFile.write(jsonObj)
@@ -269,7 +269,6 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             QtTest.QTest.qWait(5000)
             self.saveFloorplanButton.setText("Save Floorplan")
             return 0
-        
 
     def savePrompt(self, exitAfter=False):
         """
@@ -281,14 +280,14 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             exitAfter (bool): Flag indicating whether to exit the floorplan designer after saving or not saving.
         Returns:
             1 if the floorplan was saved, 0 if the floorplan was not saved, and -1 if the operation was cancelled.
-       """
+        """
         self.returnVal = 0
         # If there is nothing in the scene, don't do anything
         if len(self.FPDGraphicsView.scene.items()) == 0:
             if exitAfter:
                 self.close()
             return self.returnVal
-        
+
         # Update the changed flag
         self.floorplanHasBeenChangedCheck()
 
@@ -299,7 +298,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             return self.returnVal
 
         # If the floorplan has been changed, ask the user if they want to save it
-        
+
         def yesbtn(i):
             # Save the floorplan
             if self.saveFloorPlan(calledFromSavePrompt=True) == 1:
@@ -310,7 +309,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                 self.returnVal = -1
             # Close the message box
             self.msg.hide()
-            
+
             # Close the floorplan designer
             if exitAfter and self.returnVal == 1:
                 self.close()
@@ -326,15 +325,17 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             self.returnVal = -1
             # Close the message box
             self.msg.hide()
-            
+
         if self.changed:
             # Pop up a message box to ask the user if they want to save the floorplan
             message = "Do you want to save the current floorplan?\n\nAny unsaved changes will be lost."
-            self.msg = SaveMessageBox(message=message, yesbtn=yesbtn, nobtn=nobtn, cancelbtn=cancelbtn)
+            self.msg = SaveMessageBox(
+                message=message, yesbtn=yesbtn, nobtn=nobtn, cancelbtn=cancelbtn
+            )
             self.msg.exec_()
-        
+
         return self.returnVal
-    
+
     def createNewFloorPlan(self):
         """
         Empties the current floorplan and creates a new floorplan.
@@ -344,7 +345,6 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         if self.savePrompt() == -1:
             return
 
-        
         # Clear the scene
         self.resetGraphicsScene()
         self.populateRoomOptions()
@@ -421,7 +421,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             if hasattr(object, "hasChanged") and object.hasChanged:
                 self.changed = True
                 return
-            
+
     def floorplanIsSavedSet(self):
         """
         Checks to see if a room has been changed.
@@ -434,7 +434,6 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                 object.hasChanged = False
         self.changed = False
 
-        
     def connectButtons(self):
         # Load, new, and save buttons
         self.loadFloorplanButton.clicked.connect(self.loadFloorPlan)
@@ -457,7 +456,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
 
         # Exit the floorplan designer
         self.BackButton.clicked.connect(self.close)
-    
+
     def closeEvent(self, event):
         """
         This function is called when the user tries to close the window.

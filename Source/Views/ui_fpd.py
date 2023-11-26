@@ -20,7 +20,9 @@ class Ui_FPDWindow(object):
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
         self.MenuVLayout = QtWidgets.QWidget(self.centralwidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.MenuVLayout.sizePolicy().hasHeightForWidth())
@@ -29,10 +31,14 @@ class Ui_FPDWindow(object):
         self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.MenuVLayout)
         self.verticalLayout_7.setObjectName("verticalLayout_7")
         self.FloorPlanButtonLayout = QtWidgets.QWidget(self.MenuVLayout)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.FloorPlanButtonLayout.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.FloorPlanButtonLayout.sizePolicy().hasHeightForWidth()
+        )
         self.FloorPlanButtonLayout.setSizePolicy(sizePolicy)
         self.FloorPlanButtonLayout.setObjectName("FloorPlanButtonLayout")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.FloorPlanButtonLayout)
@@ -55,20 +61,28 @@ class Ui_FPDWindow(object):
         self.verticalLayout_6.addLayout(self.horizontalLayout_8)
         self.verticalLayout_7.addWidget(self.FloorPlanButtonLayout)
         self.AddItemMenuLayout_2 = QtWidgets.QWidget(self.MenuVLayout)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.AddItemMenuLayout_2.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.AddItemMenuLayout_2.sizePolicy().hasHeightForWidth()
+        )
         self.AddItemMenuLayout_2.setSizePolicy(sizePolicy)
         self.AddItemMenuLayout_2.setObjectName("AddItemMenuLayout_2")
         self.AddItemMenuLayout = QtWidgets.QVBoxLayout(self.AddItemMenuLayout_2)
         self.AddItemMenuLayout.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
         self.AddItemMenuLayout.setObjectName("AddItemMenuLayout")
         self.OverviewTextLabel = QtWidgets.QLabel(self.AddItemMenuLayout_2)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.OverviewTextLabel.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.OverviewTextLabel.sizePolicy().hasHeightForWidth()
+        )
         self.OverviewTextLabel.setSizePolicy(sizePolicy)
         self.OverviewTextLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.OverviewTextLabel.setObjectName("OverviewTextLabel")
@@ -79,27 +93,37 @@ class Ui_FPDWindow(object):
         self.textEdit.setObjectName("textEdit")
         self.AddItemMenuLayout.addWidget(self.textEdit)
         self.AddItemButtonLayout = QtWidgets.QVBoxLayout()
-        self.AddItemButtonLayout.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
+        self.AddItemButtonLayout.setSizeConstraint(
+            QtWidgets.QLayout.SetDefaultConstraint
+        )
         self.AddItemButtonLayout.setSpacing(5)
         self.AddItemButtonLayout.setObjectName("AddItemButtonLayout")
         self.RoomFurnLayout = QtWidgets.QHBoxLayout()
         self.RoomFurnLayout.setSpacing(6)
         self.RoomFurnLayout.setObjectName("RoomFurnLayout")
         self.addRoomButton = QtWidgets.QPushButton(self.AddItemMenuLayout_2)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.addRoomButton.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.addRoomButton.sizePolicy().hasHeightForWidth()
+        )
         self.addRoomButton.setSizePolicy(sizePolicy)
         self.addRoomButton.setMinimumSize(QtCore.QSize(115, 30))
         self.addRoomButton.setMaximumSize(QtCore.QSize(16777215, 30))
         self.addRoomButton.setObjectName("addRoomButton")
         self.RoomFurnLayout.addWidget(self.addRoomButton)
         self.addFurnitureButton = QtWidgets.QPushButton(self.AddItemMenuLayout_2)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.addFurnitureButton.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.addFurnitureButton.sizePolicy().hasHeightForWidth()
+        )
         self.addFurnitureButton.setSizePolicy(sizePolicy)
         self.addFurnitureButton.setMinimumSize(QtCore.QSize(115, 30))
         self.addFurnitureButton.setMaximumSize(QtCore.QSize(16777215, 30))
@@ -109,20 +133,28 @@ class Ui_FPDWindow(object):
         self.DoorChestLayout = QtWidgets.QHBoxLayout()
         self.DoorChestLayout.setObjectName("DoorChestLayout")
         self.addDoorButton = QtWidgets.QPushButton(self.AddItemMenuLayout_2)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.addDoorButton.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.addDoorButton.sizePolicy().hasHeightForWidth()
+        )
         self.addDoorButton.setSizePolicy(sizePolicy)
         self.addDoorButton.setMinimumSize(QtCore.QSize(115, 30))
         self.addDoorButton.setMaximumSize(QtCore.QSize(16777215, 30))
         self.addDoorButton.setObjectName("addDoorButton")
         self.DoorChestLayout.addWidget(self.addDoorButton)
         self.addChestButton = QtWidgets.QPushButton(self.AddItemMenuLayout_2)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.addChestButton.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.addChestButton.sizePolicy().hasHeightForWidth()
+        )
         self.addChestButton.setSizePolicy(sizePolicy)
         self.addChestButton.setMinimumSize(QtCore.QSize(115, 30))
         self.addChestButton.setMaximumSize(QtCore.QSize(16777215, 30))
@@ -132,10 +164,14 @@ class Ui_FPDWindow(object):
         self.AddItemMenuLayout.addLayout(self.AddItemButtonLayout)
         self.verticalLayout_7.addWidget(self.AddItemMenuLayout_2)
         self.DimensionTextLabel = QtWidgets.QLabel(self.MenuVLayout)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.DimensionTextLabel.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.DimensionTextLabel.sizePolicy().hasHeightForWidth()
+        )
         self.DimensionTextLabel.setSizePolicy(sizePolicy)
         self.DimensionTextLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.DimensionTextLabel.setObjectName("DimensionTextLabel")
@@ -151,11 +187,15 @@ class Ui_FPDWindow(object):
         self.roomWLabel = QtWidgets.QLabel(self.MenuVLayout)
         self.roomWLabel.setObjectName("roomWLabel")
         self.WidthLayout.addWidget(self.roomWLabel)
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.WidthLayout.addItem(spacerItem)
         self.roomWBox = QtWidgets.QSpinBox(self.MenuVLayout)
         self.roomWBox.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.roomWBox.sizePolicy().hasHeightForWidth())
@@ -173,10 +213,14 @@ class Ui_FPDWindow(object):
         self.roomHLabel = QtWidgets.QLabel(self.MenuVLayout)
         self.roomHLabel.setObjectName("roomHLabel")
         self.HeightLayout.addWidget(self.roomHLabel)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.HeightLayout.addItem(spacerItem1)
         self.roomHBox = QtWidgets.QSpinBox(self.MenuVLayout)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.roomHBox.sizePolicy().hasHeightForWidth())
@@ -193,19 +237,25 @@ class Ui_FPDWindow(object):
         self.SimButtonLayout = QtWidgets.QHBoxLayout()
         self.SimButtonLayout.setObjectName("SimButtonLayout")
         self.verticalLayout_7.addLayout(self.SimButtonLayout)
-        spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem2 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
+        )
         self.verticalLayout_7.addItem(spacerItem2)
         self.gridLayout.addWidget(self.MenuVLayout, 0, 0, 1, 1)
         self.GraphicViewVLayout = QtWidgets.QVBoxLayout()
         self.GraphicViewVLayout.setObjectName("GraphicViewVLayout")
         self.FPDTitleHLayout = QtWidgets.QHBoxLayout()
         self.FPDTitleHLayout.setObjectName("FPDTitleHLayout")
-        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem3 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.FPDTitleHLayout.addItem(spacerItem3)
         self.FloorPlanNameLabel = QtWidgets.QLabel(self.centralwidget)
         self.FloorPlanNameLabel.setObjectName("FloorPlanNameLabel")
         self.FPDTitleHLayout.addWidget(self.FloorPlanNameLabel)
-        spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem4 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.FPDTitleHLayout.addItem(spacerItem4)
         self.GraphicViewVLayout.addLayout(self.FPDTitleHLayout)
         self.FPDGraphicsView = QtWidgets.QGraphicsView(self.centralwidget)
@@ -240,6 +290,7 @@ class Ui_FPDWindow(object):
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     FPDWindow = QtWidgets.QMainWindow()
     ui = Ui_FPDWindow()

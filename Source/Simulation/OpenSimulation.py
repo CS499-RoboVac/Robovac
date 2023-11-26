@@ -333,7 +333,9 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Critical)
         msg.setText("Sorry! It looks like you can't put the Robot there")
-        msg.setInformativeText("The robot has to be in a room, and not on a piece of furniture")
+        msg.setInformativeText(
+            "The robot has to be in a room, and not on a piece of furniture"
+        )
         msg.setWindowTitle("Error")
         msg.exec_()
 
@@ -350,7 +352,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         msg.setIcon(QMessageBox.Information)
         msg.setText("Simulation Complete")
         msg.setInformativeText(
-            f"Simulation at {datetime.datetime.now()}\n\tUsing Algorithm {self.PathAlgorithmBox.currentText()}\n\tOn floorplan \"{self.fileName}\"\n\tWith floor type {self.FloorTypeBox.currentText()}\n\tTotal Percentage cleaned: {100 * round(1-(np.sum(self.dirt)/self.StartDirt), 2)}%\n\tFinal duration {self.Stat_SimulationTime.text()}"
+            f'Simulation at {datetime.datetime.now()}\n\tUsing Algorithm {self.PathAlgorithmBox.currentText()}\n\tOn floorplan "{self.fileName}"\n\tWith floor type {self.FloorTypeBox.currentText()}\n\tTotal Percentage cleaned: {100 * round(1-(np.sum(self.dirt)/self.StartDirt), 2)}%\n\tFinal duration {self.Stat_SimulationTime.text()}'
         )
         msg.setWindowTitle("Simulation Comlete")
         # Create a button and add it to the message box
@@ -620,7 +622,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             outFile.write(jsonObj)
         with open(folderName + "/Message.txt", "w") as outFile:
             outFile.write(
-                f"Simulation at {datetime.datetime.now()}\n\tUsing Algorithm {self.PathAlgorithmBox.currentText()}\n\tOn floorplan \"{self.fileName}\"\n\tWith floor type {self.FloorTypeBox.currentText()}\n\tTotal Percentage cleaned: {100 * round(1-(np.sum(self.dirt)/self.StartDirt), 2)}%\n\tFinal duration {self.Stat_SimulationTime.text()}"
+                f'Simulation at {datetime.datetime.now()}\n\tUsing Algorithm {self.PathAlgorithmBox.currentText()}\n\tOn floorplan "{self.fileName}"\n\tWith floor type {self.FloorTypeBox.currentText()}\n\tTotal Percentage cleaned: {100 * round(1-(np.sum(self.dirt)/self.StartDirt), 2)}%\n\tFinal duration {self.Stat_SimulationTime.text()}'
             )
 
         with open(self.fileName, "rb") as src, open(
@@ -640,7 +642,9 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         # Render the scene to a png
         # This has to be done this way because the floorplan may be larger than the window
         area = self.graphicsView.scene.sceneRect()
-        image = QImage(int(area.width()), int(area.height()), QImage.Format_ARGB32_Premultiplied)
+        image = QImage(
+            int(area.width()), int(area.height()), QImage.Format_ARGB32_Premultiplied
+        )
         painter = QPainter(image)
 
         self.graphicsView.scene.render(painter)

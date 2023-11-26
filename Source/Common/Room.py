@@ -41,7 +41,7 @@ class Room(QGraphicsItem):
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
         # self.setFlag(QGraphicsItem.ItemIsSelectable)
         # self.setAcceptHoverEvents(True)
-        
+
     def boundingRect(self):
         return self.rect
 
@@ -65,28 +65,27 @@ class Room(QGraphicsItem):
         """
         self.hasChanged = False
 
-
     def itemChange(self, change, value):
         """
         When this item is moved, we update the flag to indicate that it has been Changed
         """
         if change == QGraphicsItem.ItemPositionHasChanged:
             self.hasChanged = True
-            
+
         return super().itemChange(change, value)
-    
+
     def __repr__(self) -> str:
-                return f"{type(self).__name__}\"{self.name}\" self.pos: ({self.pos().x()}, {self.pos().y()}) rect: ({self.rect.x()}, {self.rect.y()}, {self.rect.width()}, {self.rect.height()})"
-    
+        return f'{type(self).__name__}"{self.name}" self.pos: ({self.pos().x()}, {self.pos().y()}) rect: ({self.rect.x()}, {self.rect.y()}, {self.rect.width()}, {self.rect.height()})'
+
     def __str__(self) -> str:
-        return f"{type(self).__name__}\"{self.name}\" where rect is ({self.rect.x()}, {self.rect.y()}, {self.rect.width()}, {self.rect.height()}) \n and self.pos is ({self.pos().x()}, {self.pos().y()})"
-    
+        return f'{type(self).__name__}"{self.name}" where rect is ({self.rect.x()}, {self.rect.y()}, {self.rect.width()}, {self.rect.height()}) \n and self.pos is ({self.pos().x()}, {self.pos().y()})'
+
 
 # Chest class, inherits from Room it's basically the same thing, but with a different color
 class Chest(Room):
     def __init__(self, x, y, width, height, name):
         super().__init__(x, y, width, height, name, QColor(100, 100, 0))
-    
+
 
 class Table(QGraphicsItem):
     def __init__(self, pos, dim, parent):
@@ -105,7 +104,7 @@ class Table(QGraphicsItem):
 
     def boundingRect(self):
         return self.rect
-    
+
     def itemSaved(self):
         """
         When this item is saved, we update the flag to indicate that it has been saved

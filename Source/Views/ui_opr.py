@@ -40,6 +40,7 @@ class Ui_OPRWindow(object):
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     OPRWindow = QtWidgets.QMainWindow()
     ui = Ui_OPRWindow()

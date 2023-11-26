@@ -49,15 +49,21 @@ class Ui_PRViewWindow(object):
     def retranslateUi(self, PRViewWindow):
         _translate = QtCore.QCoreApplication.translate
         PRViewWindow.setWindowTitle(_translate("PRViewWindow", "MainWindow"))
-        self.MessageLabel.setText(_translate("PRViewWindow", "Simulation at 2023-11-26 02:26:19.378937\n"
-"    Using Algorithm Random Bounce\n"
-"    On floorplan C:/Users/Bepis/Documents/GitHub/Robovac/Source/Floor Plans/ResultsTest2.fpd\n"
-"    With efficiency 0.75\n"
-"    Final duration 00:28:22"))
+        self.MessageLabel.setText(
+            _translate(
+                "PRViewWindow",
+                "Simulation at 2023-11-26 02:26:19.378937\n"
+                "    Using Algorithm Random Bounce\n"
+                "    On floorplan C:/Users/Bepis/Documents/GitHub/Robovac/Source/Floor Plans/ResultsTest2.fpd\n"
+                "    With efficiency 0.75\n"
+                "    Final duration 00:28:22",
+            )
+        )
 
 
 if __name__ == "__main__":
     import sys
+
     app = QtWidgets.QApplication(sys.argv)
     PRViewWindow = QtWidgets.QMainWindow()
     ui = Ui_PRViewWindow()

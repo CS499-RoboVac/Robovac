@@ -23,10 +23,14 @@ class Ui_SimWindow(object):
         self.verticalLayout_4 = QtWidgets.QVBoxLayout()
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.verticalWidget_4 = QtWidgets.QWidget(self.centralwidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Preferred
+        )
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.verticalWidget_4.sizePolicy().hasHeightForWidth())
+        sizePolicy.setHeightForWidth(
+            self.verticalWidget_4.sizePolicy().hasHeightForWidth()
+        )
         self.verticalWidget_4.setSizePolicy(sizePolicy)
         self.verticalWidget_4.setObjectName("verticalWidget_4")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.verticalWidget_4)
@@ -40,7 +44,9 @@ class Ui_SimWindow(object):
         self.horizontalLayout.addLayout(self.verticalLayout)
         self.verticalLayout_3.addLayout(self.horizontalLayout)
         self.verticalLayout_2.addLayout(self.verticalLayout_3)
-        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
+        spacerItem = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum
+        )
         self.verticalLayout_2.addItem(spacerItem)
         # self.EditFloorPlanButton = QtWidgets.QPushButton(self.verticalWidget_4)
         # self.EditFloorPlanButton.setObjectName("EditFloorPlanButton")
@@ -74,7 +80,9 @@ class Ui_SimWindow(object):
         self.DiameterLabel = QtWidgets.QLabel(self.verticalWidget_4)
         self.DiameterLabel.setObjectName("DiameterLabel")
         self.DiameterHLayout.addWidget(self.DiameterLabel)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.DiameterHLayout.addItem(spacerItem1)
         self.Stat_Diameter = QtWidgets.QLabel(self.verticalWidget_4)
         self.Stat_Diameter.setObjectName("Stat_Diameter")
@@ -90,14 +98,18 @@ class Ui_SimWindow(object):
         self.DiameterSlide.setOrientation(QtCore.Qt.Horizontal)
         self.DiameterSlide.setObjectName("DiameterSlide")
         self.VacuumParameterLayout.addWidget(self.DiameterSlide)
-        spacerItem2 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        spacerItem2 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
+        )
         self.VacuumParameterLayout.addItem(spacerItem2)
         self.VacuumWidthHLayout = QtWidgets.QHBoxLayout()
         self.VacuumWidthHLayout.setObjectName("VacuumWidthHLayout")
         self.VacWidthLabel = QtWidgets.QLabel(self.verticalWidget_4)
         self.VacWidthLabel.setObjectName("VacWidthLabel")
         self.VacuumWidthHLayout.addWidget(self.VacWidthLabel)
-        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem3 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.VacuumWidthHLayout.addItem(spacerItem3)
         self.Stat_VacuumWidth = QtWidgets.QLabel(self.verticalWidget_4)
         self.Stat_VacuumWidth.setObjectName("Stat_VacuumWidth")
@@ -111,17 +123,23 @@ class Ui_SimWindow(object):
         self.VacWidthSlide.setOrientation(QtCore.Qt.Horizontal)
         self.VacWidthSlide.setObjectName("VacWidthSlide")
         self.VacuumParameterLayout.addWidget(self.VacWidthSlide)
-        spacerItem4 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        spacerItem4 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
+        )
         self.VacuumParameterLayout.addItem(spacerItem4)
         self.VacuumEffLayout = QtWidgets.QHBoxLayout()
         self.VacuumEffLayout.setObjectName("VacuumEffLayout")
         self.VacEffLabel = QtWidgets.QLabel(self.verticalWidget_4)
         self.VacEffLabel.setObjectName("VacEffLabel")
         self.VacuumEffLayout.addWidget(self.VacEffLabel)
-        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem5 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.VacuumEffLayout.addItem(spacerItem5)
         self.Stat_VacEff = QtWidgets.QLabel(self.verticalWidget_4)
-        self.Stat_VacEff.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.Stat_VacEff.setAlignment(
+            QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter
+        )
         self.Stat_VacEff.setObjectName("Stat_VacEff")
         self.VacuumEffLayout.addWidget(self.Stat_VacEff)
         self.VacuumParameterLayout.addLayout(self.VacuumEffLayout)
@@ -132,14 +150,18 @@ class Ui_SimWindow(object):
         self.EfficiencySlide.setOrientation(QtCore.Qt.Horizontal)
         self.EfficiencySlide.setObjectName("EfficiencySlide")
         self.VacuumParameterLayout.addWidget(self.EfficiencySlide)
-        spacerItem6 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        spacerItem6 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
+        )
         self.VacuumParameterLayout.addItem(spacerItem6)
         self.WhiskerHLayout = QtWidgets.QHBoxLayout()
         self.WhiskerHLayout.setObjectName("WhiskerHLayout")
         self.WhiskerLabel = QtWidgets.QLabel(self.verticalWidget_4)
         self.WhiskerLabel.setObjectName("WhiskerLabel")
         self.WhiskerHLayout.addWidget(self.WhiskerLabel)
-        spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem7 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.WhiskerHLayout.addItem(spacerItem7)
         self.Stat_Whisker = QtWidgets.QLabel(self.verticalWidget_4)
         self.Stat_Whisker.setObjectName("Stat_Whisker")
@@ -153,14 +175,18 @@ class Ui_SimWindow(object):
         self.WhiskerSlide.setOrientation(QtCore.Qt.Horizontal)
         self.WhiskerSlide.setObjectName("WhiskerSlide")
         self.VacuumParameterLayout.addWidget(self.WhiskerSlide)
-        spacerItem8 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        spacerItem8 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
+        )
         self.VacuumParameterLayout.addItem(spacerItem8)
         self.WhiskerEfficiencyHLayout = QtWidgets.QHBoxLayout()
         self.WhiskerEfficiencyHLayout.setObjectName("WhiskerEfficiencyHLayout")
         self.WhiskerEfficiencyLabel = QtWidgets.QLabel(self.verticalWidget_4)
         self.WhiskerEfficiencyLabel.setObjectName("WhiskerEfficiencyLabel")
         self.WhiskerEfficiencyHLayout.addWidget(self.WhiskerEfficiencyLabel)
-        spacerItem9 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem9 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.WhiskerEfficiencyHLayout.addItem(spacerItem9)
         self.Stat_WhiskerEfficiency = QtWidgets.QLabel(self.verticalWidget_4)
         self.Stat_WhiskerEfficiency.setObjectName("Stat_WhiskerEfficiency")
@@ -173,17 +199,23 @@ class Ui_SimWindow(object):
         self.WhiskerEffSlide.setOrientation(QtCore.Qt.Horizontal)
         self.WhiskerEffSlide.setObjectName("WhiskerEffSlide")
         self.VacuumParameterLayout.addWidget(self.WhiskerEffSlide)
-        spacerItem10 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        spacerItem10 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
+        )
         self.VacuumParameterLayout.addItem(spacerItem10)
         self.SpeedHLayout = QtWidgets.QHBoxLayout()
         self.SpeedHLayout.setObjectName("SpeedHLayout")
         self.SpeedLabel = QtWidgets.QLabel(self.verticalWidget_4)
         self.SpeedLabel.setObjectName("SpeedLabel")
         self.SpeedHLayout.addWidget(self.SpeedLabel)
-        spacerItem11 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem11 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.SpeedHLayout.addItem(spacerItem11)
         self.Stat_Speed = QtWidgets.QLabel(self.verticalWidget_4)
-        self.Stat_Speed.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.Stat_Speed.setAlignment(
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignTrailing | QtCore.Qt.AlignVCenter
+        )
         self.Stat_Speed.setObjectName("Stat_Speed")
         self.SpeedHLayout.addWidget(self.Stat_Speed)
         self.VacuumParameterLayout.addLayout(self.SpeedHLayout)
@@ -195,14 +227,18 @@ class Ui_SimWindow(object):
         self.SpeedSlide.setOrientation(QtCore.Qt.Horizontal)
         self.SpeedSlide.setObjectName("SpeedSlide")
         self.VacuumParameterLayout.addWidget(self.SpeedSlide)
-        spacerItem12 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        spacerItem12 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
+        )
         self.VacuumParameterLayout.addItem(spacerItem12)
         self.BatteryLifeHLayout = QtWidgets.QHBoxLayout()
         self.BatteryLifeHLayout.setObjectName("BatteryLifeHLayout")
         self.BatteryLifeLabel = QtWidgets.QLabel(self.verticalWidget_4)
         self.BatteryLifeLabel.setObjectName("BatteryLifeLabel")
         self.BatteryLifeHLayout.addWidget(self.BatteryLifeLabel)
-        spacerItem13 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem13 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.BatteryLifeHLayout.addItem(spacerItem13)
         self.Stat_BatteryLife = QtWidgets.QLabel(self.verticalWidget_4)
         self.Stat_BatteryLife.setObjectName("Stat_BatteryLife")
@@ -216,7 +252,9 @@ class Ui_SimWindow(object):
         self.BatteryLifeSlide.setOrientation(QtCore.Qt.Horizontal)
         self.BatteryLifeSlide.setObjectName("BatteryLifeSlide")
         self.VacuumParameterLayout.addWidget(self.BatteryLifeSlide)
-        spacerItem14 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        spacerItem14 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
+        )
         self.VacuumParameterLayout.addItem(spacerItem14)
         self.VacuumSaveLoadLayout = QtWidgets.QHBoxLayout()
         self.VacuumSaveLoadLayout.setObjectName("VacuumSaveLoadLayout")
@@ -230,7 +268,9 @@ class Ui_SimWindow(object):
         self.VacuumLayout.addLayout(self.VacuumParameterLayout)
         self.verticalLayout_2.addLayout(self.VacuumLayout)
         self.verticalLayout_4.addWidget(self.verticalWidget_4)
-        spacerItem15 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        spacerItem15 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum
+        )
         self.verticalLayout_4.addItem(spacerItem15)
         self.verticalLayout_5 = QtWidgets.QVBoxLayout()
         self.verticalLayout_5.setObjectName("verticalLayout_5")
@@ -262,12 +302,16 @@ class Ui_SimWindow(object):
         self.GraphicLayout.setObjectName("GraphicLayout")
         self.FloorPlanLayout = QtWidgets.QHBoxLayout()
         self.FloorPlanLayout.setObjectName("FloorPlanLayout")
-        spacerItem16 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem16 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.FloorPlanLayout.addItem(spacerItem16)
         self.FloorPlanNameLabel = QtWidgets.QLabel(self.centralwidget)
         self.FloorPlanNameLabel.setObjectName("FloorPlanNameLabel")
         self.FloorPlanLayout.addWidget(self.FloorPlanNameLabel)
-        spacerItem17 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacerItem17 = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
+        )
         self.FloorPlanLayout.addItem(spacerItem17)
         self.GraphicLayout.addLayout(self.FloorPlanLayout)
         self.graphicsView = QtWidgets.QGraphicsView(self.centralwidget)

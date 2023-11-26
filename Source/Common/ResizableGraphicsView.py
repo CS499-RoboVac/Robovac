@@ -1,6 +1,7 @@
-
 from PyQt5.QtWidgets import QGraphicsView, QGraphicsPixmapItem
 from PyQt5.QtCore import Qt
+
+
 class ResizableGraphicsView(QGraphicsView):
     def __init__(self, parent=None):
         super().__init__(parent)
