@@ -137,44 +137,58 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.populateRoomOptions()
         self.changed = True
 
-    def Helper01(self, fp, flag):
+    def Helper01(self, fp):
         """
         Helper method to process and render items from a floor plan.
 
         Args:
             fp (list): List of items in the floor plan.
-            flag (bool): Flag indicating whether to render rooms or chests.
 
         Returns:
             None
         """
         for item in fp:
-            if (item["type"] == "Room") == flag:
-                continue
             # Read the values from the JSON file
             x = int(item["x1"])
             y = int(item["y1"])
             w = int(item["width"])
             h = int(item["height"])
             name = item["Room Name"]
-            if not flag:
-                # This renders the rectangle to the screen
+            typeString = item["type"]
+            # First, add the rooms to the scene
+            if typeString == "Room":
+                # This renders the rooms to the screen
                 room = Room.Room(x, y, w, h, name)  # parameters are x, y, width, height
                 # If the room is a door, change the color to brown, and set its Z to 2
                 if "Door" in name:
                     room.color = QColor(139, 69, 19)
                     room.setZValue(2)
                 self.FPDGraphicsView.scene.addItem(room)
-            else:
-                typeString = item["type"]
+        # Next, add the furniture to the scene
+        for item in fp:
+            # Read the values from the JSON file
+            x = int(item["x1"])
+            y = int(item["y1"])
+            w = int(item["width"])
+            h = int(item["height"])
+            name = item["Room Name"]
+            typeString = item["type"]
+            # Add the furniture to the scene
+            if typeString == "Chest":
+                # This renders the rooms to the screen
                 parent = item["parent"]
-                for RR in self.FPDGraphicsView.scene.items():
-                    if type(RR) == Room.Room and parent == RR.name:
-                        print("hi")
-                        chest = Room.Chest(Vec2(x, y), Vec2(w, h), parent=RR)
+                for object in self.FPDGraphicsView.scene.items():
+                    if type(object) is Room.Room and object.name == parent:
+                        # Calculate the position of the chest relative to it's parent room
+                        x = x + object.x()
+                        y = y + object.y()
+                        
+                        chest = Room.Chest(Vec2(x, y), Vec2(w, h), parent=object)
                         chest.setZValue(0)
                         self.FPDGraphicsView.scene.addItem(chest)
                         break
+                        
+
 
     def loadFloorPlan(self):
         """
@@ -199,8 +213,8 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             with open(fileName, "r") as inFile:
                 fp = json.load(inFile)
 
-            self.Helper01(fp, False)
-            self.Helper01(fp, True)
+            self.Helper01(fp)
+            # self.Helper01(fp, True)
 
         self.populateRoomOptions()
         self.floorplanIsSavedSet()

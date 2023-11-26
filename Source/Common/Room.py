@@ -68,13 +68,17 @@ class Room(QGraphicsItem):
         """
         self.hasChanged = False
 
+
     def itemChange(self, change, value):
         """
         When this item is moved, we update the flag to indicate that it has been Changed
         """
-        if self.hasChanged is False and change == QGraphicsItem.ItemPositionHasChanged:
+        if change == QGraphicsItem.ItemPositionHasChanged:
             self.hasChanged = True
+            
         return super().itemChange(change, value)
+    
+
         
 
 class Chest(QGraphicsItem):
@@ -101,12 +105,14 @@ class Chest(QGraphicsItem):
         """
         self.hasChanged = False
 
+
     def itemChange(self, change, value):
         """
         When this item is moved, we update the flag to indicate that it has been Changed
         """
-        if self.hasChanged is False and change == QGraphicsItem.ItemPositionHasChanged:
+        if change == QGraphicsItem.ItemPositionHasChanged:
             self.hasChanged = True
+
         return super().itemChange(change, value)
 
 
