@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_FPDWindow(object):
     def setupUi(self, FPDWindow):
         FPDWindow.setObjectName("FPDWindow")
-        FPDWindow.resize(1010, 823)
+        FPDWindow.resize(1010, 824)
         self.centralwidget = QtWidgets.QWidget(FPDWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
@@ -30,29 +30,6 @@ class Ui_FPDWindow(object):
         self.MenuVLayout.setObjectName("MenuVLayout")
         self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.MenuVLayout)
         self.verticalLayout_7.setObjectName("verticalLayout_7")
-        self.BackButtonLayout = QtWidgets.QWidget(self.MenuVLayout)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum
-        )
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.BackButtonLayout.sizePolicy().hasHeightForWidth()
-        )
-        self.BackButtonLayout.setSizePolicy(sizePolicy)
-        self.BackButtonLayout.setMinimumSize(QtCore.QSize(0, 0))
-        self.BackButtonLayout.setObjectName("BackButtonLayout")
-        self.horizontalLayout_9 = QtWidgets.QHBoxLayout(self.BackButtonLayout)
-        self.horizontalLayout_9.setObjectName("horizontalLayout_9")
-        self.BackButton = QtWidgets.QPushButton(self.BackButtonLayout)
-        self.BackButton.setMinimumSize(QtCore.QSize(100, 0))
-        self.BackButton.setObjectName("BackButton")
-        self.horizontalLayout_9.addWidget(self.BackButton)
-        spacerItem = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
-        self.horizontalLayout_9.addItem(spacerItem)
-        self.verticalLayout_7.addWidget(self.BackButtonLayout)
         self.FloorPlanButtonLayout = QtWidgets.QWidget(self.MenuVLayout)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum
@@ -66,6 +43,10 @@ class Ui_FPDWindow(object):
         self.FloorPlanButtonLayout.setObjectName("FloorPlanButtonLayout")
         self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.FloorPlanButtonLayout)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
+        self.BackButton = QtWidgets.QPushButton(self.FloorPlanButtonLayout)
+        self.BackButton.setMinimumSize(QtCore.QSize(100, 0))
+        self.BackButton.setObjectName("BackButton")
+        self.verticalLayout_6.addWidget(self.BackButton)
         self.newFloorplanButton = QtWidgets.QPushButton(self.FloorPlanButtonLayout)
         self.newFloorplanButton.setObjectName("newFloorplanButton")
         self.verticalLayout_6.addWidget(self.newFloorplanButton)
@@ -206,10 +187,10 @@ class Ui_FPDWindow(object):
         self.roomWLabel = QtWidgets.QLabel(self.MenuVLayout)
         self.roomWLabel.setObjectName("roomWLabel")
         self.WidthLayout.addWidget(self.roomWLabel)
-        spacerItem1 = QtWidgets.QSpacerItem(
+        spacerItem = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
         )
-        self.WidthLayout.addItem(spacerItem1)
+        self.WidthLayout.addItem(spacerItem)
         self.roomWBox = QtWidgets.QSpinBox(self.MenuVLayout)
         self.roomWBox.setEnabled(True)
         sizePolicy = QtWidgets.QSizePolicy(
@@ -232,10 +213,10 @@ class Ui_FPDWindow(object):
         self.roomHLabel = QtWidgets.QLabel(self.MenuVLayout)
         self.roomHLabel.setObjectName("roomHLabel")
         self.HeightLayout.addWidget(self.roomHLabel)
-        spacerItem2 = QtWidgets.QSpacerItem(
+        spacerItem1 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
         )
-        self.HeightLayout.addItem(spacerItem2)
+        self.HeightLayout.addItem(spacerItem1)
         self.roomHBox = QtWidgets.QSpinBox(self.MenuVLayout)
         sizePolicy = QtWidgets.QSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed
@@ -253,50 +234,29 @@ class Ui_FPDWindow(object):
         self.HeightLayout.addWidget(self.roomHBox)
         self.ItemDimVLayout.addLayout(self.HeightLayout)
         self.verticalLayout_7.addLayout(self.ItemDimVLayout)
-        spacerItem3 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
-        )
-        self.verticalLayout_7.addItem(spacerItem3)
         self.SimButtonLayout = QtWidgets.QHBoxLayout()
         self.SimButtonLayout.setObjectName("SimButtonLayout")
-        spacerItem4 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
-        self.SimButtonLayout.addItem(spacerItem4)
-        self.SimulateButton = QtWidgets.QPushButton(self.MenuVLayout)
-        sizePolicy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed
-        )
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(
-            self.SimulateButton.sizePolicy().hasHeightForWidth()
-        )
-        self.SimulateButton.setSizePolicy(sizePolicy)
-        self.SimulateButton.setMinimumSize(QtCore.QSize(150, 30))
-        self.SimulateButton.setObjectName("SimulateButton")
-        self.SimButtonLayout.addWidget(self.SimulateButton)
-        spacerItem5 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
-        )
-        self.SimButtonLayout.addItem(spacerItem5)
         self.verticalLayout_7.addLayout(self.SimButtonLayout)
+        spacerItem2 = QtWidgets.QSpacerItem(
+            20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding
+        )
+        self.verticalLayout_7.addItem(spacerItem2)
         self.gridLayout.addWidget(self.MenuVLayout, 0, 0, 1, 1)
         self.GraphicViewVLayout = QtWidgets.QVBoxLayout()
         self.GraphicViewVLayout.setObjectName("GraphicViewVLayout")
         self.FPDTitleHLayout = QtWidgets.QHBoxLayout()
         self.FPDTitleHLayout.setObjectName("FPDTitleHLayout")
-        spacerItem6 = QtWidgets.QSpacerItem(
+        spacerItem3 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
         )
-        self.FPDTitleHLayout.addItem(spacerItem6)
+        self.FPDTitleHLayout.addItem(spacerItem3)
         self.FloorPlanNameLabel = QtWidgets.QLabel(self.centralwidget)
         self.FloorPlanNameLabel.setObjectName("FloorPlanNameLabel")
         self.FPDTitleHLayout.addWidget(self.FloorPlanNameLabel)
-        spacerItem7 = QtWidgets.QSpacerItem(
+        spacerItem4 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum
         )
-        self.FPDTitleHLayout.addItem(spacerItem7)
+        self.FPDTitleHLayout.addItem(spacerItem4)
         self.GraphicViewVLayout.addLayout(self.FPDTitleHLayout)
         self.FPDGraphicsView = QtWidgets.QGraphicsView(self.centralwidget)
         self.FPDGraphicsView.setObjectName("FPDGraphicsView")
@@ -310,7 +270,7 @@ class Ui_FPDWindow(object):
     def retranslateUi(self, FPDWindow):
         _translate = QtCore.QCoreApplication.translate
         FPDWindow.setWindowTitle(_translate("FPDWindow", "Floor Plan Designer"))
-        self.BackButton.setText(_translate("FPDWindow", "Back"))
+        self.BackButton.setText(_translate("FPDWindow", "Exit Floor Plan Designer"))
         self.newFloorplanButton.setText(_translate("FPDWindow", "Create New Floorplan"))
         self.saveFloorplanButton.setText(_translate("FPDWindow", "Save Plan"))
         self.loadFloorplanButton.setText(_translate("FPDWindow", "Load Plan"))
@@ -325,5 +285,15 @@ class Ui_FPDWindow(object):
         self.roomWBox.setSuffix(_translate("FPDWindow", " ft"))
         self.roomHLabel.setText(_translate("FPDWindow", "Item Height"))
         self.roomHBox.setSuffix(_translate("FPDWindow", " ft"))
-        self.SimulateButton.setText(_translate("FPDWindow", "Simulate"))
         self.FloorPlanNameLabel.setText(_translate("FPDWindow", "Floor Plan:"))
+
+
+if __name__ == "__main__":
+    import sys
+
+    app = QtWidgets.QApplication(sys.argv)
+    FPDWindow = QtWidgets.QMainWindow()
+    ui = Ui_FPDWindow()
+    ui.setupUi(FPDWindow)
+    FPDWindow.show()
+    sys.exit(app.exec_())

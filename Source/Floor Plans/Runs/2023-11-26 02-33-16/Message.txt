@@ -1,0 +1,6 @@
+Simulation at 2023-11-26 02:33:16.288159
+	Using Algorithm Random Bounce
+	On floorplan "C:/Users/Bepis/Documents/GitHub/Robovac/Source/Floor Plans/ResultsTest3.fpd"
+	With floor type Hard
+	Total Percentage cleaned: 3.0%
+	Final duration 00:00:29

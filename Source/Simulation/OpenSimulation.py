@@ -33,6 +33,7 @@ import Simulation.AI as AI
 import numpy as np
 import math
 import shutil
+import matplotlib.pyplot as plt
 
 
 import Simulator.SimulationCore as SimulationCore
@@ -331,8 +332,10 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
     def simulateErrorMessage(self):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Critical)
-        msg.setText("You DOOFUS, don't put the Robot there")
-        msg.setInformativeText("TMP, replace with informative information")
+        msg.setText("Sorry! It looks like you can't put the Robot there")
+        msg.setInformativeText(
+            "The robot has to be in a room, and not on a piece of furniture"
+        )
         msg.setWindowTitle("Error")
         msg.exec_()
 
@@ -349,7 +352,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         msg.setIcon(QMessageBox.Information)
         msg.setText("Simulation Complete")
         msg.setInformativeText(
-            f"Simulation at {datetime.datetime.now()}\n Using aglo {self.PathAlgorithmBox.currentText()}\n On floorplan {self.fileName}\n With efficiency {round(1-(np.sum(self.dirt)/self.StartDirt), 2)}\n Final duration {self.Stat_SimulationTime.text()}"
+            f'Simulation at {datetime.datetime.now()}\n\tUsing Algorithm {self.PathAlgorithmBox.currentText()}\n\tOn floorplan "{self.fileName}"\n\tWith floor type {self.FloorTypeBox.currentText()}\n\tTotal Percentage cleaned: {100 * round(1-(np.sum(self.dirt)/self.StartDirt), 2)}%\n\tFinal duration {self.Stat_SimulationTime.text()}'
         )
         msg.setWindowTitle("Simulation Comlete")
         # Create a button and add it to the message box
@@ -416,7 +419,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
                 msg = QMessageBox()
                 msg.setIcon(QMessageBox.Critical)
                 msg.setText("Simulation Parameter Invalid or Floor Plan not loaded")
-                msg.setInformativeText("TMP, replace with informative information")
+                msg.setInformativeText("Make sure you have a floor plan loaded")
                 msg.setWindowTitle("Error")
                 msg.exec_()
                 pass
@@ -483,6 +486,8 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
                     w = int(item["width"])
                     h = int(item["height"])
 
+                    # If it is a room, add it to the list of shapes as an inclusion primitive
+                    # If it is a or another type for furniture, add it to the list of shapes as an exclusion primitive
                     if item["type"] == "Room":
                         self.shapes.append(
                             Primitives.Rectangle(Vec2(x, y), Vec2(x + w, y + h), False)
@@ -552,8 +557,8 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         return pixmap
 
     def connectButtons(self):
-        self.BacktoMainButton.clicked.connect(self.openMain)
-        self.EditFloorPlanButton.clicked.connect(self.openFPD)
+        # self.BacktoMainButton.clicked.connect(self.openMain)
+        # self.EditFloorPlanButton.clicked.connect(self.openFPD)
         self.SimulationButton.clicked.connect(self.beginSimulation)
         self.LoadFloorPlanButton.clicked.connect(self.loadFloorPlan)
 
@@ -617,7 +622,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             outFile.write(jsonObj)
         with open(folderName + "/Message.txt", "w") as outFile:
             outFile.write(
-                f"Simulation at {datetime.datetime.now()}\n Using aglo {self.PathAlgorithmBox.currentText()}\n On floorplan {self.fileName}\n With efficiency {round(1-(np.sum(self.dirt)/self.StartDirt), 2)}\n Final duration {self.Stat_SimulationTime.text()}"
+                f'Simulation at {datetime.datetime.now()}\n\tUsing Algorithm {self.PathAlgorithmBox.currentText()}\n\tOn floorplan "{self.fileName}"\n\tWith floor type {self.FloorTypeBox.currentText()}\n\tTotal Percentage cleaned: {100 * round(1-(np.sum(self.dirt)/self.StartDirt), 2)}%\n\tFinal duration {self.Stat_SimulationTime.text()}'
             )
 
         with open(self.fileName, "rb") as src, open(
@@ -625,7 +630,27 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         ) as dest:
             shutil.copyfileobj(src, dest)
 
-        self.getWindowImage().save(folderName + "/Result_Image.png")
+        # Visualize the dirtienes using a pie chart
+        plt.pie(
+            [np.sum(self.dirt), self.StartDirt - np.sum(self.dirt)],
+            labels=["Dirt", "Clean"],
+            colors=["saddlebrown", "limegreen"],
+            autopct="%1.1f%%",
+        )
+        plt.savefig(folderName + "/Dirt_Pie.png")
+
+        # Render the scene to a png
+        # This has to be done this way because the floorplan may be larger than the window
+        area = self.graphicsView.scene.sceneRect()
+        image = QImage(
+            int(area.width()), int(area.height()), QImage.Format_ARGB32_Premultiplied
+        )
+        painter = QPainter(image)
+
+        self.graphicsView.scene.render(painter)
+        painter.end()
+
+        image.save(folderName + "/Result_Image.png")
 
 
 if __name__ == "__main__":

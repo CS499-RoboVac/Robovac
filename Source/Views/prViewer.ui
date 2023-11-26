@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PRViewWindow</class>
+ <widget class="QMainWindow" name="PRViewWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1166</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <layout class="QVBoxLayout" name="GraphicLayout_2">
+      <item>
+       <widget class="QGraphicsView" name="runView"/>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" name="GraphicLayout">
+      <item>
+       <widget class="QLabel" name="MessageLabel">
+        <property name="text">
+         <string>Simulation at 2023-11-26 02:26:19.378937
+	Using Algorithm Random Bounce
+	On floorplan C:/Users/Bepis/Documents/GitHub/Robovac/Source/Floor Plans/ResultsTest2.fpd
+	With efficiency 0.75
+	Final duration 00:28:22</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="FloorPlanLayout"/>
+      </item>
+      <item>
+       <widget class="QGraphicsView" name="pieChartView"/>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
