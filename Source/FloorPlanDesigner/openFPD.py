@@ -31,6 +31,15 @@ from Views.ui_fpd import Ui_FPDWindow
 from Common.Util import cm_to_ft, ft_to_cm, Vec2
 
 class fpdWindowApp(QMainWindow, Ui_FPDWindow):
+    def resetGraphicsScene(self):
+        """
+        Resets the graphics scene to its default state, by clearing the scene and creating a new scene.
+        """
+        self.FPDGraphicsView.scene = QGraphicsScene()
+        self.FPDGraphicsView.setScene(self.FPDGraphicsView.scene)
+        self.FPDGraphicsView.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.FPDGraphicsView.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+
     def __init__(self, parent=None):
         super(fpdWindowApp, self).__init__(parent)
         self.setupUi(self)
@@ -44,10 +53,8 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             + "/Floor Plans/"
         )
 
-        self.FPDGraphicsView.scene = QGraphicsScene()
-        self.FPDGraphicsView.setScene(self.FPDGraphicsView.scene)
-        self.FPDGraphicsView.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.FPDGraphicsView.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        # Create the graphics scene
+        self.resetGraphicsScene()
 
     def populateRoomOptions(self):
         """
@@ -185,7 +192,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             options=opts,
         )
         if fileName:
-            self.FPDGraphicsView.scene.clear()
+            self.resetGraphicsScene()
             with open(fileName, "r") as inFile:
                 fp = json.load(inFile)
 
@@ -193,6 +200,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             self.Helper01(fp, True)
 
         self.populateRoomOptions()
+        self.changed = False
 
     def saveFloorPlan(self, calledFromSavePrompt=False):
         """
@@ -334,7 +342,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.savePrompt()
         
         # Clear the scene
-        self.FPDGraphicsView.scene.clear()
+        self.resetGraphicsScene()
         self.populateRoomOptions()
 
         # Set the room values to the default values
