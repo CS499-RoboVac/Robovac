@@ -1,0 +1,6 @@
+Simulation at 2023-11-26 02:57:13.631160
+	Using Algorithm Snake
+	On floorplan "C:/Users/Bepis/Documents/GitHub/Robovac/Source/Floor Plans/ResultsTest2.fpd"
+	With floor type Hard
+	Total Percentage cleaned: 9.0%
+	Final duration 00:01:38

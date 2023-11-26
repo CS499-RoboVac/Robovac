@@ -1,0 +1,5 @@
+Simulation at 2023-11-26 02:10:16.777923
+ Using aglo Random Bounce
+ On floorplan C:/Users/Bepis/Documents/GitHub/Robovac/Source/Floor Plans/ResultsTest1.fpd
+ With efficiency 0.01
+ Final duration 00:00:16

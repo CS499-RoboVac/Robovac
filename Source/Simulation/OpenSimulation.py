@@ -33,6 +33,7 @@ import Simulation.AI as AI
 import numpy as np
 import math
 import shutil
+import matplotlib.pyplot as plt
 
 
 import Simulator.SimulationCore as SimulationCore
@@ -331,8 +332,8 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
     def simulateErrorMessage(self):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Critical)
-        msg.setText("You DOOFUS, don't put the Robot there")
-        msg.setInformativeText("TMP, replace with informative information")
+        msg.setText("Sorry! It looks like you can't put the Robot there")
+        msg.setInformativeText("The robot has to be in a room, and not on a piece of furniture")
         msg.setWindowTitle("Error")
         msg.exec_()
 
@@ -416,7 +417,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
                 msg = QMessageBox()
                 msg.setIcon(QMessageBox.Critical)
                 msg.setText("Simulation Parameter Invalid or Floor Plan not loaded")
-                msg.setInformativeText("TMP, replace with informative information")
+                msg.setInformativeText("Make sure you have a floor plan loaded")
                 msg.setWindowTitle("Error")
                 msg.exec_()
                 pass
@@ -554,8 +555,8 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         return pixmap
 
     def connectButtons(self):
-        self.BacktoMainButton.clicked.connect(self.openMain)
-        self.EditFloorPlanButton.clicked.connect(self.openFPD)
+        # self.BacktoMainButton.clicked.connect(self.openMain)
+        # self.EditFloorPlanButton.clicked.connect(self.openFPD)
         self.SimulationButton.clicked.connect(self.beginSimulation)
         self.LoadFloorPlanButton.clicked.connect(self.loadFloorPlan)
 
@@ -626,6 +627,15 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             folderName + "/Floor_Plan.fpd", "wb"
         ) as dest:
             shutil.copyfileobj(src, dest)
+
+        # Visualize the dirtienes using a pie chart
+        plt.pie(
+            [np.sum(self.dirt), self.StartDirt - np.sum(self.dirt)],
+            labels=["Dirt", "Clean"],
+            colors=["saddlebrown", "limegreen"],
+            autopct="%1.1f%%",
+        )
+        plt.savefig(folderName + "/Dirt_Pie.png")
 
         # Render the scene to a png
         # This has to be done this way because the floorplan may be larger than the window
