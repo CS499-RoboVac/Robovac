@@ -200,7 +200,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             self.Helper01(fp, True)
 
         self.populateRoomOptions()
-        self.changed = False
+        self.floorplanIsSavedSet()
 
     def saveFloorPlan(self, calledFromSavePrompt=False):
         """
@@ -256,11 +256,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                 outFile.write(jsonObj)
                 QtTest.QTest.qWait(1)
             self.saveFloorplanButton.setText("Floorplan Saved!")
-            self.changed = False
-            # Set the rooms to not changed
-            for room in self.FPDGraphicsView.scene.items():
-                if type(room) == Room.Room:
-                    room.itemSaved()
+            self.floorplanIsSavedSet()
             # If this function was called from the exit button we don't want to wait
             if calledFromSavePrompt:
                 self.saveFloorplanButton.setText("Save Floorplan")
@@ -322,14 +318,14 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             self.msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
             self.msg.setDefaultButton(QMessageBox.Yes)
             self.msg.buttonClicked.connect(msgbtn)
-            self.msg.show()
+            self.msg.exec_()
         
         # Wait for the user to click a button
         # This is kind of a hacky way to do this, but it works
         # Otherwise, CreateNewFloorPlan would just clear the scene before the user could click a button
-        while not self.canContinue:
-            QtTest.QTest.qWait(100)
-            pass
+        # while not self.canContinue:
+        #     QtTest.QTest.qWait(100)
+        #     pass
         
         return
     
@@ -417,6 +413,19 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             if hasattr(object, "hasChanged") and object.hasChanged:
                 self.changed = True
                 return
+            
+    def floorplanIsSavedSet(self):
+        """
+        Checks to see if a room has been changed.
+        """
+        # Loop through the list of objects in the floorplan,
+        # and check to see if any of them have been changed
+        for object in self.FPDGraphicsView.scene.items():
+            # Check if the object has a hasChanged attribute
+            if hasattr(object, "hasChanged"):
+                object.hasChanged = False
+        self.changed = False
+
         
     def connectButtons(self):
         # Load, new, and save buttons
