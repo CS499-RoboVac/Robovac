@@ -31,7 +31,12 @@ class Room(QGraphicsItem):
         self.name = name
         self.color = color
         self.selected = False
+        # We have to set the rect's x and y so things are drawn correctly when we set the position
+        # but we don't actually want the rect's position to be different, so we set it back to 0, 0
         self.rect = QRectF(x, y, width, height)
+        self.setPos(x, y)
+        self.rect = QRectF(0, 0, width, height)
+        
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
         # self.setFlag(QGraphicsItem.ItemIsSelectable)
@@ -56,12 +61,6 @@ class Room(QGraphicsItem):
         painter.setBrush(self.color)  # Set the fill color
         painter.drawRect(self.rect)
 
-    def changePositon(self, x, y):
-        self.rect = QRectF(x, y, self.rect.width(), self.rect.height())
-
-    def changeSize(self, width, height):
-        self.rect = QRectF(self.rect.x(), self.rect.y(), width, height)
-
     def itemSaved(self):
         """
         When this item is saved, we update the flag to indicate that it has been saved
@@ -77,6 +76,12 @@ class Room(QGraphicsItem):
             self.hasChanged = True
             
         return super().itemChange(change, value)
+    
+    def __repr__(self) -> str:
+                return f"{type(self).__name__}\"{self.name}\" self.pos: ({self.pos().x()}, {self.pos().y()}) rect: ({self.rect.x()}, {self.rect.y()}, {self.rect.width()}, {self.rect.height()})"
+    
+    def __str__(self) -> str:
+        return f"{type(self).__name__}\"{self.name}\" where rect is ({self.rect.x()}, {self.rect.y()}, {self.rect.width()}, {self.rect.height()}) \n and self.pos is ({self.pos().x()}, {self.pos().y()})"
     
 
 # Chest class, inherits from Room it's basically the same thing, but with a different color
