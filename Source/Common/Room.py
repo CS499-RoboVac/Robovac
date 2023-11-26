@@ -36,17 +36,12 @@ class Room(QGraphicsItem):
         self.rect = QRectF(x, y, width, height)
         self.setPos(x, y)
         self.rect = QRectF(0, 0, width, height)
-        
+
         self.setFlag(QGraphicsItem.ItemIsMovable)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
         # self.setFlag(QGraphicsItem.ItemIsSelectable)
         # self.setAcceptHoverEvents(True)
-        # Flags to indicate which edge/corner is being dragged
-        self.dragging_top = False
-        self.dragging_bottom = False
-        self.dragging_left = False
-        self.dragging_right = False
-
+        
     def boundingRect(self):
         return self.rect
 
@@ -60,6 +55,9 @@ class Room(QGraphicsItem):
 
         painter.setBrush(self.color)  # Set the fill color
         painter.drawRect(self.rect)
+
+    def changeSize(self, width, height):
+        self.rect = QRectF(self.rect.x(), self.rect.y(), width, height)
 
     def itemSaved(self):
         """
