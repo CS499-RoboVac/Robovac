@@ -29,6 +29,7 @@ import random
 
 from Views.ui_fpd import Ui_FPDWindow
 from Common.Util import cm_to_ft, ft_to_cm, Vec2
+from FloorPlanDesigner.saveMessageBox import SaveMessageBox
 
 class fpdWindowApp(QMainWindow, Ui_FPDWindow):
     def resetGraphicsScene(self):
@@ -181,7 +182,9 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         The floorplan is stored in a JSON file format.
         """
         # Check if the user wants to save the current floorplan
-        self.savePrompt()
+        result = self.savePrompt()
+        if result == -1:
+            return
 
         opts = QFileDialog.Options()
         fileName, _ = QFileDialog.getOpenFileName(
@@ -206,11 +209,12 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         """
         Saves the floorplan to a file selected by the user using a file dialog.
         The floorplan is stored in a JSON file format.
+        Returns: 0 if the floorplan was not saved, 1 if the floorplan was saved
         """
         _translate = QtCore.QCoreApplication.translate
         # If there are no rooms in the floorplan, don't do anything
         if len(self.FPDGraphicsView.scene.items()) == 0:
-            return
+            return 0
 
         # Create the floorplan dictionary to be saved
         fp = list()
@@ -236,8 +240,8 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             self.msg.setText(message)
             self.msg.setIcon(QMessageBox.Critical)
             self.msg.setStandardButtons(QMessageBox.Ok)
-            self.msg.show()
-            return
+            self.msg.exec_()
+            return 0
 
         opts = QFileDialog.Options()
         fileName, _ = QFileDialog.getSaveFileName(
@@ -260,13 +264,15 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             # If this function was called from the exit button we don't want to wait
             if calledFromSavePrompt:
                 self.saveFloorplanButton.setText("Save Floorplan")
-                return
+                return 1
             QtTest.QTest.qWait(5000)
             self.saveFloorplanButton.setText("Save Floorplan")
         else:
             self.saveFloorplanButton.setText("Error - Floorplan Not Saved!")
             QtTest.QTest.qWait(5000)
             self.saveFloorplanButton.setText("Save Floorplan")
+            return 0
+        
 
     def savePrompt(self, exitAfter=False):
         """
@@ -276,12 +282,15 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         Args:
             self: The FloorPlanDesigner object.
             exitAfter (bool): Flag indicating whether to exit the floorplan designer after saving or not saving.
+        Returns:
+            1 if the floorplan was saved, 0 if the floorplan was not saved, and -1 if the operation was cancelled.
        """
+        self.returnVal = 0
         # If there is nothing in the scene, don't do anything
         if len(self.FPDGraphicsView.scene.items()) == 0:
             if exitAfter:
                 self.close()
-            return
+            return self.returnVal
         
         # Update the changed flag
         self.floorplanHasBeenChangedCheck()
@@ -290,44 +299,44 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         if not self.changed:
             if exitAfter:
                 self.close()
-            return
+            return self.returnVal
 
         # If the floorplan has been changed, ask the user if they want to save it
         
-        def msgbtn(i):
-            if i.text() == "&Yes":
-                self.saveFloorPlan(calledFromSavePrompt=True)
-                # Close the message box
-                self.msg.hide()
+        def yesbtn(i):
+            # Save the floorplan
+            if self.saveFloorPlan(calledFromSavePrompt=True) == 1:
+                self.returnVal = 1
+            else:
+                # The floorplan could not be saved for some reason
+                # So we don't want to close the floorplan designer
+                self.returnVal = -1
+            # Close the message box
+            self.msg.hide()
             
             # Close the floorplan designer
+            if exitAfter and self.returnVal == 1:
+                self.close()
+
+        def nobtn():
+            self.returnVal = 0
+            # Close the message box
+            self.msg.hide()
             if exitAfter:
                 self.close()
 
-            self.canContinue = True
+        def cancelbtn():
+            self.returnVal = -1
+            # Close the message box
+            self.msg.hide()
             
-        self.canContinue = False
-
         if self.changed:
             # Pop up a message box to ask the user if they want to save the floorplan
             message = "Do you want to save the current floorplan?\n\nAny unsaved changes will be lost."
-            self.msg = QMessageBox()
-            self.msg.setWindowTitle("Save Floorplan?")
-            self.msg.setText(message)
-            self.msg.setIcon(QMessageBox.Question)
-            self.msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
-            self.msg.setDefaultButton(QMessageBox.Yes)
-            self.msg.buttonClicked.connect(msgbtn)
+            self.msg = SaveMessageBox(message=message, yesbtn=yesbtn, nobtn=nobtn, cancelbtn=cancelbtn)
             self.msg.exec_()
         
-        # Wait for the user to click a button
-        # This is kind of a hacky way to do this, but it works
-        # Otherwise, CreateNewFloorPlan would just clear the scene before the user could click a button
-        # while not self.canContinue:
-        #     QtTest.QTest.qWait(100)
-        #     pass
-        
-        return
+        return self.returnVal
     
     def createNewFloorPlan(self):
         """
@@ -335,7 +344,9 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         Which is really just deleting all of the items in the scene.
         """
         # Check if the user wants to save the current floorplan
-        self.savePrompt()
+        if self.savePrompt() == -1:
+            return
+
         
         # Clear the scene
         self.resetGraphicsScene()
@@ -454,8 +465,10 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         """
         This function is called when the user tries to close the window.
         """
-        self.savePrompt(exitAfter=True)
-        return super().closeEvent(event)
+        if self.savePrompt(exitAfter=True) == -1:
+            event.ignore()
+        else:
+            return super().closeEvent(event)
 
     def validateFloorPlan(self, fp):
         if len(fp) == 1:
