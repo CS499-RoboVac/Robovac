@@ -30,13 +30,14 @@ import random
 from Views.ui_fpd import Ui_FPDWindow
 from Common.Util import cm_to_ft, ft_to_cm, Vec2
 
-
 class fpdWindowApp(QMainWindow, Ui_FPDWindow):
     def __init__(self, parent=None):
         super(fpdWindowApp, self).__init__(parent)
         self.setupUi(self)
         self.connectButtons()
         self.main = []
+        # Flag to indicate whether the floorplan has been changed since the last save
+        self.changed = False
 
         self.floorplansDir = (
             os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -89,6 +90,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         room.setZValue(0)
         self.FPDGraphicsView.scene.addItem(room)
         self.populateRoomOptions()
+        self.changed = True
 
     def addChest(self):
         roomName = self.roomOptionsComboBox.currentText()
@@ -98,8 +100,11 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                 chest.setZValue(0)
                 self.FPDGraphicsView.scene.addItem(chest)
         self.populateRoomOptions()
+        self.changed = True
 
     def addFurniture(self):
+
+        self.changed = True
         pass
 
     def addDoor(self):
@@ -122,8 +127,19 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         door.setZValue(1)
         self.FPDGraphicsView.scene.addItem(door)
         self.populateRoomOptions()
+        self.changed = True
 
     def Helper01(self, fp, flag):
+        """
+        Helper method to process and render items from a floor plan.
+
+        Args:
+            fp (list): List of items in the floor plan.
+            flag (bool): Flag indicating whether to render rooms or chests.
+
+        Returns:
+            None
+        """
         for item in fp:
             if (item["type"] == "Room") == flag:
                 continue
@@ -157,6 +173,9 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         Loads a floorplan from a file selected by the user using a file dialog.
         The floorplan is stored in a JSON file format.
         """
+        # Check if the user wants to save the current floorplan
+        self.savePrompt()
+
         opts = QFileDialog.Options()
         fileName, _ = QFileDialog.getOpenFileName(
             self,
@@ -175,7 +194,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
 
         self.populateRoomOptions()
 
-    def saveFloorPlan(self):
+    def saveFloorPlan(self, calledFromSavePrompt=False):
         """
         Saves the floorplan to a file selected by the user using a file dialog.
         The floorplan is stored in a JSON file format.
@@ -227,7 +246,17 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             jsonObj = json.dumps(fp)
             with open(fileName, "w") as outFile:
                 outFile.write(jsonObj)
+                QtTest.QTest.qWait(1)
             self.saveFloorplanButton.setText("Floorplan Saved!")
+            self.changed = False
+            # Set the rooms to not changed
+            for room in self.FPDGraphicsView.scene.items():
+                if type(room) == Room.Room:
+                    room.itemSaved()
+            # If this function was called from the exit button we don't want to wait
+            if calledFromSavePrompt:
+                self.saveFloorplanButton.setText("Save Floorplan")
+                return
             QtTest.QTest.qWait(5000)
             self.saveFloorplanButton.setText("Save Floorplan")
         else:
@@ -235,11 +264,76 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             QtTest.QTest.qWait(5000)
             self.saveFloorplanButton.setText("Save Floorplan")
 
+    def savePrompt(self, exitAfter=False):
+        """
+        Makes sure that the floorplan is saved before doing something that would cause the floorplan to be lost.
+        asks the user if they want to save the floorplan if it has been changed,
+        and then closes the floorplan designer if exitAfter is True.
+        Args:
+            self: The FloorPlanDesigner object.
+            exitAfter (bool): Flag indicating whether to exit the floorplan designer after saving or not saving.
+       """
+        # If there is nothing in the scene, don't do anything
+        if len(self.FPDGraphicsView.scene.items()) == 0:
+            if exitAfter:
+                self.close()
+            return
+        
+        # Update the changed flag
+        self.floorplanHasBeenChangedCheck()
+
+        # If the floorplan has not been changed, don't do anything
+        if not self.changed:
+            if exitAfter:
+                self.close()
+            return
+
+        # If the floorplan has been changed, ask the user if they want to save it
+        
+        def msgbtn(i):
+            if i.text() == "&Yes":
+                self.saveFloorPlan(calledFromSavePrompt=True)
+                # Close the message box
+                self.msg.hide()
+            
+            # Close the floorplan designer
+            if exitAfter:
+                self.close()
+
+            self.canContinue = True
+            
+        self.canContinue = False
+
+        if self.changed:
+            # Pop up a message box to ask the user if they want to save the floorplan
+            message = "Do you want to save the current floorplan?\n\nAny unsaved changes will be lost."
+            self.msg = QMessageBox()
+            self.msg.setWindowTitle("Save Floorplan?")
+            self.msg.setText(message)
+            self.msg.setIcon(QMessageBox.Question)
+            self.msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            self.msg.setDefaultButton(QMessageBox.Yes)
+            self.msg.buttonClicked.connect(msgbtn)
+            self.msg.show()
+        
+        # Wait for the user to click a button
+        # This is kind of a hacky way to do this, but it works
+        # Otherwise, CreateNewFloorPlan would just clear the scene before the user could click a button
+        while not self.canContinue:
+            QtTest.QTest.qWait(100)
+            pass
+        
+        return
+    
     def createNewFloorPlan(self):
         """
         Empties the current floorplan and creates a new floorplan.
         Which is really just deleting all of the items in the scene.
         """
+        # Check if the user wants to save the current floorplan
+        self.savePrompt()
+        
+        # Clear the scene
         self.FPDGraphicsView.scene.clear()
         self.populateRoomOptions()
 
@@ -304,6 +398,18 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                 room.setZValue(room.zValue() - 1)
             self.FPDGraphicsView.scene.update()
 
+    def floorplanHasBeenChangedCheck(self):
+        """
+        Checks to see if a room has been changed.
+        """
+        # Loop through the list of objects in the floorplan,
+        # and check to see if any of them have been changed
+        for object in self.FPDGraphicsView.scene.items():
+            # Check if the object has a hasChanged attribute
+            if hasattr(object, "hasChanged") and object.hasChanged:
+                self.changed = True
+                return
+        
     def connectButtons(self):
         # Load, new, and save buttons
         self.loadFloorplanButton.clicked.connect(self.loadFloorPlan)
@@ -323,6 +429,16 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         # Modify room dimensions
         self.roomWBox.valueChanged.connect(self.updateRoomDimensions)
         self.roomHBox.valueChanged.connect(self.updateRoomDimensions)
+
+        # Exit the floorplan designer
+        self.BackButton.clicked.connect(self.close)
+    
+    def closeEvent(self, event):
+        """
+        This function is called when the user tries to close the window.
+        """
+        self.savePrompt(exitAfter=True)
+        return super().closeEvent(event)
 
     def validateFloorPlan(self, fp):
         if len(fp) == 1:
