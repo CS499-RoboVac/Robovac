@@ -79,42 +79,11 @@ class Room(QGraphicsItem):
         return super().itemChange(change, value)
     
 
-        
-
-class Chest(QGraphicsItem):
-    def __init__(self, pos, dim, parent):
-        super(Chest, self).__init__(parent)
-        self.hasChanged = False
-        self.setFlag(QGraphicsItem.ItemIsMovable)
-        self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
-        self.rect = QRectF(0, 0, dim.x, dim.y)
-        self.setPos(pos.x, pos.y)
-        self.name = ""
-        self.parent = parent
-
-    def paint(self, painter, option, widget):
-        painter.setBrush(QColor(100, 100, 0))  # Set the fill color
-        painter.drawRect(self.rect)
-
-    def boundingRect(self):
-        return self.rect
+# Chest class, inherits from Room it's basically the same thing, but with a different color
+class Chest(Room):
+    def __init__(self, x, y, width, height, name):
+        super().__init__(x, y, width, height, name, QColor(100, 100, 0))
     
-    def itemSaved(self):
-        """
-        When this item is saved, we update the flag to indicate that it has been saved
-        """
-        self.hasChanged = False
-
-
-    def itemChange(self, change, value):
-        """
-        When this item is moved, we update the flag to indicate that it has been Changed
-        """
-        if change == QGraphicsItem.ItemPositionHasChanged:
-            self.hasChanged = True
-
-        return super().itemChange(change, value)
-
 
 class Table(QGraphicsItem):
     def __init__(self, pos, dim, parent):

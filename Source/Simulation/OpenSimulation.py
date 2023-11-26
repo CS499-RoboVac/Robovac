@@ -483,6 +483,8 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
                     w = int(item["width"])
                     h = int(item["height"])
 
+                    # If it is a room, add it to the list of shapes as an inclusion primitive
+                    # If it is a or another type for furniture, add it to the list of shapes as an exclusion primitive
                     if item["type"] == "Room":
                         self.shapes.append(
                             Primitives.Rectangle(Vec2(x, y), Vec2(x + w, y + h), False)

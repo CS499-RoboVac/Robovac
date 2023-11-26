@@ -101,13 +101,17 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.changed = True
 
     def addChest(self):
-        roomName = self.roomOptionsComboBox.currentText()
-        for room in self.FPDGraphicsView.scene.items():
-            if type(room) == Room.Room and roomName == room.name:
-                chest = Room.Chest(Vec2(0, 0), Vec2(100, 50), parent=room)
-                chest.setZValue(0)
-                self.FPDGraphicsView.scene.addItem(chest)
-        self.populateRoomOptions()
+        chestCount = len(
+            [
+                item
+                for item in self.FPDGraphicsView.scene.items()
+                if (type(item) == Room.Chest)
+            ]
+        )
+        chestName = "Chest " + str(chestCount + 1)
+        chest = Room.Chest(0, 0, ft_to_cm(3), ft_to_cm(1), chestName)
+        chest.setZValue(0)
+        self.FPDGraphicsView.scene.addItem(chest)
         self.changed = True
 
     def addFurniture(self):
@@ -155,7 +159,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             h = int(item["height"])
             name = item["Room Name"]
             typeString = item["type"]
-            # First, add the rooms to the scene
+            # First, add the rooms and furniture to the scene
             if typeString == "Room":
                 # This renders the rooms to the screen
                 room = Room.Room(x, y, w, h, name)  # parameters are x, y, width, height
@@ -164,31 +168,11 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                     room.color = QColor(139, 69, 19)
                     room.setZValue(2)
                 self.FPDGraphicsView.scene.addItem(room)
-        # Next, add the furniture to the scene
-        for item in fp:
-            # Read the values from the JSON file
-            x = int(item["x1"])
-            y = int(item["y1"])
-            w = int(item["width"])
-            h = int(item["height"])
-            name = item["Room Name"]
-            typeString = item["type"]
-            # Add the furniture to the scene
-            if typeString == "Chest":
-                # This renders the rooms to the screen
-                parent = item["parent"]
-                for object in self.FPDGraphicsView.scene.items():
-                    if type(object) is Room.Room and object.name == parent:
-                        # Calculate the position of the chest relative to it's parent room
-                        x = x + object.x()
-                        y = y + object.y()
-                        
-                        chest = Room.Chest(Vec2(x, y), Vec2(w, h), parent=object)
-                        chest.setZValue(0)
-                        self.FPDGraphicsView.scene.addItem(chest)
-                        break
-                        
-
+            elif typeString == "Chest":
+                # This renders the chests to the screen
+                chest = Room.Chest(x, y, w, h, name)
+                chest.setZValue(5)
+                self.FPDGraphicsView.scene.addItem(chest)
 
     def loadFloorPlan(self):
         """
@@ -241,7 +225,6 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                     "width": room.rect.width(),
                     "height": room.rect.height(),
                     "type": type(room).__name__,
-                    "parent": None if type(room) == Room.Room else room.parent.name,
                 }
             )
         
