@@ -14,22 +14,15 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_OPRWindow(object):
     def setupUi(self, OPRWindow):
         OPRWindow.setObjectName("OPRWindow")
-        OPRWindow.resize(1009, 645)
+        OPRWindow.resize(494, 110)
         self.centralwidget = QtWidgets.QWidget(OPRWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.graphicsView = QtWidgets.QGraphicsView(self.centralwidget)
-        self.graphicsView.setGeometry(QtCore.QRect(120, 70, 871, 531))
-        self.graphicsView.setObjectName("graphicsView")
         self.openFileButton = QtWidgets.QPushButton(self.centralwidget)
-        self.openFileButton.setGeometry(QtCore.QRect(20, 20, 75, 23))
+        self.openFileButton.setGeometry(QtCore.QRect(20, 10, 461, 51))
         self.openFileButton.setObjectName("openFileButton")
-        self.plainTextEdit = QtWidgets.QPlainTextEdit(self.centralwidget)
-        self.plainTextEdit.setGeometry(QtCore.QRect(120, 10, 871, 51))
-        self.plainTextEdit.setReadOnly(True)
-        self.plainTextEdit.setObjectName("plainTextEdit")
         OPRWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(OPRWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1009, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 494, 21))
         self.menubar.setObjectName("menubar")
         OPRWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(OPRWindow)
@@ -42,4 +35,14 @@ class Ui_OPRWindow(object):
     def retranslateUi(self, OPRWindow):
         _translate = QtCore.QCoreApplication.translate
         OPRWindow.setWindowTitle(_translate("OPRWindow", "MainWindow"))
-        self.openFileButton.setText(_translate("OPRWindow", "Open"))
+        self.openFileButton.setText(_translate("OPRWindow", "Open a Previous Run"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    OPRWindow = QtWidgets.QMainWindow()
+    ui = Ui_OPRWindow()
+    ui.setupUi(OPRWindow)
+    OPRWindow.show()
+    sys.exit(app.exec_())
