@@ -1,0 +1,6 @@
+Simulation at 2023-11-26 20:19:59.509997
+	Using Algorithm Spiral
+	On floorplan "/Users/johningram/Documents/Code/Robovac/Source/Floor Plans/ScreenShotFP.fpd"
+	With floor type Frieze-cut Pile
+	Total Percentage cleaned: 60.0%
+	Final duration 00:24:17
