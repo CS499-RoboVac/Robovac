@@ -643,10 +643,10 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         # This has to be done this way because the floorplan may be larger than the window
         area = self.graphicsView.scene.sceneRect()
         image = QImage(
-            int(area.width()), int(area.height()), QImage.Format_ARGB32_Premultiplied
+            int(area.width()), int(area.height()), QImage.Format_ARGB32
         )
         painter = QPainter(image)
-
+        image.fill(QtCore.Qt.white)
         self.graphicsView.scene.render(painter)
         painter.end()
 
