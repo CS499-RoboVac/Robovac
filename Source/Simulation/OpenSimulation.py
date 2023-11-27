@@ -600,6 +600,8 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             self.lastRunsDir,
             options=opts,
         )
+        if not folderName:
+            return
         os.mkdir(
             folderName := (
                 folderName
@@ -622,7 +624,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             outFile.write(jsonObj)
         with open(folderName + "/Message.txt", "w") as outFile:
             outFile.write(
-                f'Simulation at {datetime.datetime.now()}\n\tUsing Algorithm {self.PathAlgorithmBox.currentText()}\n\tOn floorplan "{self.fileName}"\n\tWith floor type {self.FloorTypeBox.currentText()}\n\tTotal Percentage cleaned: {100 * round(1-(np.sum(self.dirt)/self.StartDirt), 2)}%\n\tFinal duration {self.Stat_SimulationTime.text()}'
+                f'Simulation at {datetime.datetime.now()}\n\tUsing Algorithm {self.PathAlgorithmBox.currentText()}\n\tOn floorplan "{self.fileName}"\n\tWith floor type {self.FloorTypeBox.currentText()}\n\tTotal Percentage cleaned: {100 * round(1-(np.sum(self.dirt)/self.StartDirt), 5)}%\n\tFinal duration {self.Stat_SimulationTime.text()}'
             )
 
         with open(self.fileName, "rb") as src, open(
