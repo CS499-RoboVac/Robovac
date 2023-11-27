@@ -57,7 +57,7 @@ class oprViewerWindowApp(QMainWindow, Ui_PRViewWindow):
         # Use ResizableGraphicsView instead of QGraphicsView
         self.runView.setScene(QGraphicsScene())
         self.pieChartView.setScene(QGraphicsScene())
-        fileName = self.folderName + "/Result_Image.png"
+        fileName = self.folderName + "/Dirt_Pie.png"
         # Display the Result Image in the runView GraphicsView
         pixmap = QPixmap(fileName)
         if not pixmap.isNull():
@@ -67,7 +67,7 @@ class oprViewerWindowApp(QMainWindow, Ui_PRViewWindow):
             Message = f.read()
             self.MessageLabel.setText(Message)
         # Display the Pie Chart in the pieChartView GraphicsView
-        fileName = self.folderName + "/Dirt_Pie.png"
+        fileName = self.folderName + "/Result_Image.png"
         pixmap = QPixmap(fileName)
         if not pixmap.isNull():
             self.pieChartView.setPixmap(pixmap)

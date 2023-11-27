@@ -111,7 +111,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         )
         chestName = "Chest " + str(chestCount + 1)
         chest = Room.Chest(0, 0, ft_to_cm(3), ft_to_cm(1), chestName)
-        chest.setZValue(0)
+        chest.setZValue(3)
         self.FPDGraphicsView.scene.addItem(chest)
         self.changed = True
 
@@ -136,7 +136,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         door = Room.Room(
             0, 0, ft_to_cm(2), ft_to_cm(2), doorname, color=QColor(139, 69, 19)
         )
-        door.setZValue(1)
+        door.setZValue(5)
         self.FPDGraphicsView.scene.addItem(door)
         self.populateRoomOptions()
         self.changed = True
@@ -166,12 +166,12 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                 # If the room is a door, change the color to brown, and set its Z to 2
                 if "Door" in name:
                     room.color = QColor(139, 69, 19)
-                    room.setZValue(2)
+                    room.setZValue(0)
                 self.FPDGraphicsView.scene.addItem(room)
             elif typeString == "Chest":
                 # This renders the chests to the screen
                 chest = Room.Chest(x, y, w, h, name)
-                chest.setZValue(5)
+                chest.setZValue(3)
                 self.FPDGraphicsView.scene.addItem(chest)
 
     def loadFloorPlan(self):
@@ -404,10 +404,10 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                 self.roomHBox.blockSignals(False)
 
                 room.selected = True
-                room.setZValue(room.zValue() + 1)
+                room.setZValue(0)
             else:
                 room.selected = False
-                room.setZValue(room.zValue() - 1)
+                room.setZValue(0)
             self.FPDGraphicsView.scene.update()
 
     def floorplanHasBeenChangedCheck(self):
@@ -444,7 +444,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.addRoomButton.clicked.connect(self.addRoom)
         self.addDoorButton.clicked.connect(self.addDoor)
         self.addChestButton.clicked.connect(self.addChest)
-        self.addFurnitureButton.clicked.connect(self.addFurniture)
+        # self.addFurnitureButton.clicked.connect(self.addFurniture)
 
         # Connect the room options combo box to the onRoomSelected function
         self.roomOptionsComboBox.currentIndexChanged.connect(self.onRoomSelected)
