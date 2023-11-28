@@ -1,0 +1,6 @@
+Simulation at 2023-11-27 12:25:57.051813
+	Using Algorithm Random Bounce
+	On floorplan "/Users/johningram/Documents/Code/Robovac/Source/Floor Plans/furnituretest.fpd"
+	With floor type Frieze-cut Pile
+	Total Percentage cleaned: 99.961%
+	Final duration 01:29:59

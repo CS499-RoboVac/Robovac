@@ -136,12 +136,12 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         door = Room.Room(
             0, 0, ft_to_cm(2), ft_to_cm(2), doorname, color=QColor(139, 69, 19)
         )
-        door.setZValue(5)
+        door.setZValue(1)
         self.FPDGraphicsView.scene.addItem(door)
         self.populateRoomOptions()
         self.changed = True
 
-    def Helper01(self, fp):
+    def Helper01(self, fp, loadChests=False):
         """
         Helper method to process and render items from a floor plan.
 
@@ -160,15 +160,17 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             name = item["Room Name"]
             typeString = item["type"]
             # First, add the rooms and furniture to the scene
-            if typeString == "Room":
+            if typeString == "Room" and not loadChests:
                 # This renders the rooms to the screen
                 room = Room.Room(x, y, w, h, name)  # parameters are x, y, width, height
                 # If the room is a door, change the color to brown, and set its Z to 2
                 if "Door" in name:
                     room.color = QColor(139, 69, 19)
+                    room.setZValue(1)
+                else:
                     room.setZValue(0)
                 self.FPDGraphicsView.scene.addItem(room)
-            elif typeString == "Chest":
+            elif typeString == "Chest" and loadChests:
                 # This renders the chests to the screen
                 chest = Room.Chest(x, y, w, h, name)
                 chest.setZValue(3)
@@ -197,8 +199,8 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             with open(fileName, "r") as inFile:
                 fp = json.load(inFile)
 
-            self.Helper01(fp)
-            # self.Helper01(fp, True)
+            self.Helper01(fp, loadChests=False)
+            self.Helper01(fp, loadChests=True)
 
         self.populateRoomOptions()
         self.floorplanIsSavedSet()
