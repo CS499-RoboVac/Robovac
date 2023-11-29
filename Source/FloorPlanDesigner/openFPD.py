@@ -207,6 +207,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
 
         self.populateRoomOptions()
         self.floorplanIsSavedSet()
+
     def SizeComplaint(self, big):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
@@ -224,7 +225,6 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
 
         return (Vec2(left, top), Vec2(right, bottom))
 
-
     def saveFloorPlan(self, calledFromSavePrompt=False):
         """
         Saves the floorplan to a file selected by the user using a file dialog.
@@ -235,9 +235,9 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         # If there are no rooms in the floorplan, don't do anything
         if len(self.FPDGraphicsView.scene.items()) == 0:
             return 0
-        
+
         self.shapes = []
-       
+
         # Create the floorplan dictionary to be saved
         fp = list()
         for room in self.FPDGraphicsView.scene.items():
@@ -252,33 +252,44 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                 }
             )
             if type(room).__name__ == "Room":
-                        self.shapes.append(
-                            Primitives.Rectangle(Vec2(room.x(), room.y()), Vec2(room.x() + room.rect.width(), room.y() + room.rect.height()), False)
-                        )
+                self.shapes.append(
+                    Primitives.Rectangle(
+                        Vec2(room.x(), room.y()),
+                        Vec2(
+                            room.x() + room.rect.width(), room.y() + room.rect.height()
+                        ),
+                        False,
+                    )
+                )
             else:
-                        self.shapes.append(
-                            Primitives.Rectangle(Vec2(room.x(), room.y()), Vec2(room.x() + room.rect.width(), room.y() + room.rect.height()), True)
-                        )
-   
+                self.shapes.append(
+                    Primitives.Rectangle(
+                        Vec2(room.x(), room.y()),
+                        Vec2(
+                            room.x() + room.rect.width(), room.y() + room.rect.height()
+                        ),
+                        True,
+                    )
+                )
+
         tl, br = self.BoundingBox()
         self.dirt = np.zeros(
-                (math.ceil(abs(tl.x - br.x)), math.ceil(abs(tl.y - br.y))),
-                dtype=np.uint8,
-            )
-      
+            (math.ceil(abs(tl.x - br.x)), math.ceil(abs(tl.y - br.y))),
+            dtype=np.uint8,
+        )
+
         for x in range(len(self.dirt)):
-                for y in range(len(self.dirt[0])):
-                    self.dirt[x, y] = (
-                        Primitives.PrimitiveInclusion(self.shapes, Vec2(x, y) + tl)
-                        * 200
-                    )
-     
+            for y in range(len(self.dirt[0])):
+                self.dirt[x, y] = (
+                    Primitives.PrimitiveInclusion(self.shapes, Vec2(x, y) + tl) * 200
+                )
+
         self.StartDirt = np.sum(self.dirt)
 
         if self.StartDirt / 185800 > 8000 or self.StartDirt / 185800 < 200:
             self.SizeComplaint(self.StartDirt / 185800 > 8000)
             return 0
-        
+
         # If the floorplan is not valid, don't save it, and display an error message
         if not self.validateFloorPlan(fp):
             # Pop up a message box to tell the user that the floorplan is not valid

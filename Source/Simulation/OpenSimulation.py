@@ -312,13 +312,13 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         floor = self.FloorTypeBox.currentText()
         brush = None
         if floor == "Hard":
-            brush = QBrush(QColor(252,209,222))
+            brush = QBrush(QColor(252, 209, 222))
         if floor == "Loop Pile":
-            brush = QBrush(QColor(255,245,219))
+            brush = QBrush(QColor(255, 245, 219))
         if floor == "Cut Pile":
-            brush = QBrush(QColor(194,232,246))
+            brush = QBrush(QColor(194, 232, 246))
         if floor == "Frieze-cut Pile":
-            brush = QBrush(QColor(188,190,235))
+            brush = QBrush(QColor(188, 190, 235))
         for shape in self.graphicsView.scene.items():
             try:
                 if shape.isRoom:
