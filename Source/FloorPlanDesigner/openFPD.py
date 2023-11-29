@@ -480,6 +480,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             for v in fp
             if v["type"] == "Room"
         }
+
         fpc[next(iter(fpc.keys()))] = True
         TurnedThisRound = True
         while TurnedThisRound:
