@@ -47,6 +47,9 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.setupUi(self)
         self.connectButtons()
         self.main = []
+        self.shapes = []
+        self.dirt = None
+        self.StartDirt = 0
         # Flag to indicate whether the floorplan has been changed since the last save
         self.changed = False
 
@@ -205,6 +208,23 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.populateRoomOptions()
         self.floorplanIsSavedSet()
 
+    def SizeComplaint(self, big):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setText("Floor Plan too " + "large" if big else "small")
+        msg.setInformativeText(f"Floor plan must be between 200 and 8000 square feet.")
+        msg.setWindowTitle("Warning - Invalid Plan")
+        msg.exec_()
+
+    def BoundingBox(self):
+        """returns bounds of the whole floorplan, as top-left and bottom-right Vec2s"""
+        left = min(self.shapes, key=lambda s: s.BoundingBox()[0].x).BoundingBox()[0].x
+        top = min(self.shapes, key=lambda s: s.BoundingBox()[0].y).BoundingBox()[0].y
+        right = max(self.shapes, key=lambda s: s.BoundingBox()[1].x).BoundingBox()[1].x
+        bottom = max(self.shapes, key=lambda s: s.BoundingBox()[1].y).BoundingBox()[1].y
+
+        return (Vec2(left, top), Vec2(right, bottom))
+
     def saveFloorPlan(self, calledFromSavePrompt=False):
         """
         Saves the floorplan to a file selected by the user using a file dialog.
@@ -215,6 +235,8 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         # If there are no rooms in the floorplan, don't do anything
         if len(self.FPDGraphicsView.scene.items()) == 0:
             return 0
+
+        self.shapes = []
 
         # Create the floorplan dictionary to be saved
         fp = list()
@@ -229,6 +251,44 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                     "type": type(room).__name__,
                 }
             )
+            if type(room).__name__ == "Room":
+                self.shapes.append(
+                    Primitives.Rectangle(
+                        Vec2(room.x(), room.y()),
+                        Vec2(
+                            room.x() + room.rect.width(), room.y() + room.rect.height()
+                        ),
+                        False,
+                    )
+                )
+            else:
+                self.shapes.append(
+                    Primitives.Rectangle(
+                        Vec2(room.x(), room.y()),
+                        Vec2(
+                            room.x() + room.rect.width(), room.y() + room.rect.height()
+                        ),
+                        True,
+                    )
+                )
+
+        tl, br = self.BoundingBox()
+        self.dirt = np.zeros(
+            (math.ceil(abs(tl.x - br.x)), math.ceil(abs(tl.y - br.y))),
+            dtype=np.uint8,
+        )
+
+        for x in range(len(self.dirt)):
+            for y in range(len(self.dirt[0])):
+                self.dirt[x, y] = (
+                    Primitives.PrimitiveInclusion(self.shapes, Vec2(x, y) + tl) * 200
+                )
+
+        self.StartDirt = np.sum(self.dirt)
+
+        if self.StartDirt / 185800 > 8000 or self.StartDirt / 185800 < 200:
+            self.SizeComplaint(self.StartDirt / 185800 > 8000)
+            return 0
 
         # If the floorplan is not valid, don't save it, and display an error message
         if not self.validateFloorPlan(fp):
@@ -480,6 +540,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             for v in fp
             if v["type"] == "Room"
         }
+
         fpc[next(iter(fpc.keys()))] = True
         TurnedThisRound = True
         while TurnedThisRound:

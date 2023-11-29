@@ -50,7 +50,7 @@ class RectangleItem(QGraphicsItem):
     def __init__(self, x, y, width, height, isRoom):
         super().__init__()
         self.rect = QRectF(x, y, width, height)
-
+        self.isRoom = isRoom
         self.x = x
         self.y = y
         self._brush = QBrush(QColor(230, 255, 230) if isRoom else QColor(255, 100, 100))
@@ -69,6 +69,7 @@ class RectangleItem(QGraphicsItem):
 class CircleItem(QGraphicsItem):
     def __init__(self, x, y, radius):
         super().__init__()
+        self.isRoom = False
         self.rect = QRectF(x - radius, y - radius, 2 * radius, 2 * radius)
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         self.setFlag(QGraphicsItem.ItemIsMovable)
@@ -307,6 +308,24 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             msg.setWindowTitle("Save Error")
             msg.exec_()
 
+    def floorTypeChange(self):
+        floor = self.FloorTypeBox.currentText()
+        brush = None
+        if floor == "Hard":
+            brush = QBrush(QColor(252, 209, 222))
+        if floor == "Loop Pile":
+            brush = QBrush(QColor(255, 245, 219))
+        if floor == "Cut Pile":
+            brush = QBrush(QColor(194, 232, 246))
+        if floor == "Frieze-cut Pile":
+            brush = QBrush(QColor(188, 190, 235))
+        for shape in self.graphicsView.scene.items():
+            try:
+                if shape.isRoom:
+                    shape.setBrush(brush)
+            except:
+                pass
+
     def simSpeedChange(self):
         self.simSpeedIndex = (self.simSpeedIndex + 1) % len(self.simSpeedOptions)
         self.SimSpeed = self.simSpeedOptions[self.simSpeedIndex]
@@ -458,6 +477,14 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
 
         return (Vec2(left, top), Vec2(right, bottom))
 
+    def SizeComplaint(self, big):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setText("Floor Plan too " + "large" if big else "small")
+        msg.setInformativeText(f"Floor plan must be between 200 and 8000 square feet.")
+        msg.setWindowTitle("Warning - Invalid Plan")
+        msg.exec_()
+
     def loadFloorPlan(self):
         """
         Loads a floorplan from a file selected by the user using a file dialog.
@@ -523,6 +550,11 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
                     )
                     # CreatSe a QImage from the numpy array
             self.StartDirt = np.sum(self.dirt)
+            self.FloorPlanNameLabel.setText(
+                f"Floor Plan: {round(self.StartDirt/185800)} sq ft."
+            )
+            if self.StartDirt / 185800 > 8000 or self.StartDirt / 185800 < 200:
+                self.SizeComplaint(self.StartDirt / 185800 > 8000)
             self.dirt = np.rot90(self.dirt)
             self.dirt = np.flipud(self.dirt)
             # Create a QGraphicsPixmapItem from the QPixmap
@@ -561,6 +593,8 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
         # self.EditFloorPlanButton.clicked.connect(self.openFPD)
         self.SimulationButton.clicked.connect(self.beginSimulation)
         self.LoadFloorPlanButton.clicked.connect(self.loadFloorPlan)
+
+        self.FloorTypeBox.currentIndexChanged.connect(self.floorTypeChange)
 
         self.DiameterSlide.valueChanged.connect(self.robotSizeChange)
         self.WhiskerSlide.valueChanged.connect(self.robotSizeChange)

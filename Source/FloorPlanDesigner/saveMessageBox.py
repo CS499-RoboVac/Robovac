@@ -10,7 +10,7 @@ class SaveMessageBox(QMessageBox):
     def __init__(
         self,
         parent=None,
-        message="Save Floorplan?",
+        message="Save Floorplan? HERE IS TEST TEXT",
         title="Save Floorplan?",
         yesbtn=None,
         nobtn=None,
