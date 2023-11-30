@@ -3,10 +3,17 @@ import math
 
 
 class Rectangle:
-    def __init__(self, minCorner: Vec2, maxCorner: Vec2, exclusion: bool):
+    def __init__(
+        self,
+        minCorner: Vec2,
+        maxCorner: Vec2,
+        exclusion: bool,
+        isTableTop: bool = False,
+    ):
         self.minCorner = minCorner
         self.maxCorner = maxCorner
         self.exclusion = exclusion
+        self.isTableTop = isTableTop
 
     def BoundingBox(self):
         return (self.minCorner, self.maxCorner)

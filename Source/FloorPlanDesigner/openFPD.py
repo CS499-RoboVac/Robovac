@@ -119,8 +119,25 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.changed = True
 
     def addFurniture(self):
+        # adds a table to the floorplan
+        tableCount = len(
+            [
+                item
+                for item in self.FPDGraphicsView.scene.items()
+                if (type(item) == Room.TableTop)
+            ]
+        )
+        tableName = "Table" + str(tableCount + 1)
+        table = Room.TableTop(0, 0, ft_to_cm(3), ft_to_cm(3), tableName)
+        table.setZValue(6)
+        # add the table legs to the scene
+        for tableLeg in table.tableLegs:
+            tableLeg.setZValue(5)
+            self.FPDGraphicsView.scene.addItem(tableLeg)
+
+        # add the table top to the scene
+        self.FPDGraphicsView.scene.addItem(table)
         self.changed = True
-        pass
 
     def addDoor(self):
         """
@@ -140,11 +157,12 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             0, 0, ft_to_cm(2), ft_to_cm(2), doorname, color=QColor(139, 69, 19)
         )
         door.setZValue(1)
+        door.setZValue(1)
         self.FPDGraphicsView.scene.addItem(door)
         self.populateRoomOptions()
         self.changed = True
 
-    def Helper01(self, fp, loadChests=False):
+    def RenderItems(self, fp, loadChests=False):
         """
         Helper method to process and render items from a floor plan.
 
@@ -152,7 +170,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             fp (list): List of items in the floor plan.
 
         Returns:
-            None
+            Nothing
         """
         for item in fp:
             # Read the values from the JSON file
@@ -173,11 +191,46 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                 else:
                     room.setZValue(0)
                 self.FPDGraphicsView.scene.addItem(room)
+
             elif typeString == "Chest" and loadChests:
                 # This renders the chests to the screen
                 chest = Room.Chest(x, y, w, h, name)
                 chest.setZValue(3)
                 self.FPDGraphicsView.scene.addItem(chest)
+
+    def RenderTables(self, fp):
+        # Grab the table legs for each table top, create them, and then add their table top
+        for item in fp:
+            if item["type"] == "TableTop":
+                # Find the table legs for this table top
+                tableLegs = []
+                for leg in fp:
+                    if (
+                        leg["type"] == "TableLeg"
+                        and item["Room Name"] in leg["Room Name"]
+                    ):
+                        tableLeg = Room.TableLeg(
+                            int(leg["x1"]),
+                            int(leg["y1"]),
+                            int(leg["width"]),
+                            int(leg["height"]),
+                            leg["Room Name"],
+                        )
+                        tableLegs.append(tableLeg)
+                        tableLeg.setZValue(5)
+                        self.FPDGraphicsView.scene.addItem(tableLeg)
+
+                # Create the table top
+                tableTop = Room.TableTop(
+                    int(item["x1"]),
+                    int(item["y1"]),
+                    int(item["width"]),
+                    int(item["height"]),
+                    item["Room Name"],
+                    tableLegs,
+                )
+                tableTop.setZValue(6)
+                self.FPDGraphicsView.scene.addItem(tableTop)
 
     def loadFloorPlan(self):
         """
@@ -202,8 +255,9 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             with open(fileName, "r") as inFile:
                 fp = json.load(inFile)
 
-            self.Helper01(fp, loadChests=False)
-            self.Helper01(fp, loadChests=True)
+            self.RenderItems(fp, loadChests=False)
+            self.RenderItems(fp, loadChests=True)
+            self.RenderTables(fp)
 
         self.populateRoomOptions()
         self.floorplanIsSavedSet()
@@ -246,8 +300,8 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                     "Room Name": room.name,
                     "x1": room.x(),
                     "y1": room.y(),
-                    "width": room.rect.width(),
-                    "height": room.rect.height(),
+                    "width": room.boundingRect().width(),
+                    "height": room.boundingRect().height(),
                     "type": type(room).__name__,
                 }
             )
@@ -459,8 +513,8 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                 self.roomWBox.blockSignals(True)
                 self.roomHBox.blockSignals(True)
 
-                self.roomWBox.setValue(cm_to_ft(room.rect.width()))
-                self.roomHBox.setValue(cm_to_ft(room.rect.height()))
+                self.roomWBox.setValue(cm_to_ft(room.boundingRect().width()))
+                self.roomHBox.setValue(cm_to_ft(room.boundingRect().height()))
 
                 self.roomWBox.blockSignals(False)
                 self.roomHBox.blockSignals(False)
@@ -506,7 +560,7 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.addRoomButton.clicked.connect(self.addRoom)
         self.addDoorButton.clicked.connect(self.addDoor)
         self.addChestButton.clicked.connect(self.addChest)
-        # self.addFurnitureButton.clicked.connect(self.addFurniture)
+        self.addFurnitureButton.clicked.connect(self.addFurniture)
 
         # Connect the room options combo box to the onRoomSelected function
         self.roomOptionsComboBox.currentIndexChanged.connect(self.onRoomSelected)

@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QWidget,
     QGraphicsItem,
+    QGraphicsEllipseItem,
     QMessageBox,
     QFileDialog,
 )
@@ -87,34 +88,85 @@ class Chest(Room):
         super().__init__(x, y, width, height, name, QColor(100, 100, 0))
 
 
-class Table(QGraphicsItem):
-    def __init__(self, pos, dim, parent):
-        super(Chest, self).__init__(parent)
-        self.setFlag(QGraphicsItem.ItemIsMovable)
-        self.hasChanged = False
-        self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
-        self.rect = QRectF(0, 0, dim.x, dim.y)
-        self.setPos(pos.x, pos.y)
-        self.name = ""
-        self.corners = []
+class TableLeg(Room):
+    def __init__(self, x, y, width, height, name):
+        super().__init__(x, y, width, height, name, QColor(33, 39, 209))
 
     def paint(self, painter, option, widget):
-        painter.setBrush(QColor(100, 100, 0))  # Set the fill color
+        if self.selected:
+            painter.setPen(QColor(0, 0, 0))
+        else:
+            pen = QPen()
+            pen.setStyle(QtCore.Qt.NoPen)
+            painter.setPen(pen)
+
+        painter.setBrush(self.color)  # Set the fill color
+        painter.drawEllipse(self.rect)
+
+
+# TableTop class, This is like a room, but it's semitransparent and it has 4 TableLeg objects
+class TableTop(Room):
+    def __init__(self, x, y, width, height, name, tableLegs=None):
+        super().__init__(x, y, width, height, name, QColor(33, 39, 209))
+        if tableLegs is None:
+            # If we don't have any tableLegs, we create them
+            self.tableLegs = [
+                TableLeg(x, y, 10, 10, f"{name} Leg1"),
+                TableLeg(x + width - 10, y, 10, 10, f"{name} Leg2"),
+                TableLeg(x, y + height - 10, 10, 10, f"{name} Leg3"),
+                TableLeg(x + width - 10, y + height - 10, 10, 10, f"{name} Leg4"),
+            ]
+        else:
+            # If we do have tableLegs, we set them to the ones we have
+            self.tableLegs = tableLegs
+
+    def paint(self, painter, option, widget):
+        if self.selected:
+            painter.setPen(QColor(0, 0, 0))
+        else:
+            pen = QPen()
+            pen.setStyle(QtCore.Qt.NoPen)
+            painter.setPen(pen)
+
+        painter.setBrush(self.color)
+        painter.setOpacity(0.5)
         painter.drawRect(self.rect)
 
-    def boundingRect(self):
-        return self.rect
-
-    def itemSaved(self):
+    def changeSize(self, width, height):
         """
-        When this item is saved, we update the flag to indicate that it has been saved
+        Changes the size of the table top, and moves the table legs to the correct position
+        based on the new size of the table top
         """
-        self.hasChanged = False
+        super().changeSize(width, height)
+        self.tableLegs[0].setPos(self.pos().x(), self.pos().y())
+        self.tableLegs[1].setPos(
+            self.pos().x() + self.rect.width() - 10, self.pos().y()
+        )
+        self.tableLegs[2].setPos(
+            self.pos().x(), self.pos().y() + self.rect.height() - 10
+        )
+        self.tableLegs[3].setPos(
+            self.pos().x() + self.rect.width() - 10,
+            self.pos().y() + self.rect.height() - 10,
+        )
 
     def itemChange(self, change, value):
         """
         When this item is moved, we update the flag to indicate that it has been Changed
         """
-        if self.hasChanged is False and change == QGraphicsItem.ItemPositionHasChanged:
+        if change == QGraphicsItem.ItemPositionHasChanged:
             self.hasChanged = True
+            # We also have to move the tableLegs
+            self.tableLegs[0].setPos(self.pos().x(), self.pos().y())
+            self.tableLegs[1].setPos(
+                self.pos().x() + self.rect.width() - 10, self.pos().y()
+            )
+            self.tableLegs[2].setPos(
+                self.pos().x(), self.pos().y() + self.rect.height() - 10
+            )
+            self.tableLegs[3].setPos(
+                self.pos().x() + self.rect.width() - 10,
+                self.pos().y() + self.rect.height() - 10,
+            )
+
         return super().itemChange(change, value)
