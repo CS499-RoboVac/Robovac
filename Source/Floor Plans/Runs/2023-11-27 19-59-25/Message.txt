@@ -1,0 +1,6 @@
+Simulation at 2023-11-27 19:59:25.044617
+	Using Algorithm Random Bounce
+	On floorplan "/Users/johningram/Documents/Code/Robovac/Source/Floor Plans/furnituretest.fpd"
+	With floor type Hard
+	Total Percentage cleaned: 75.541%
+	Final duration 00:03:04

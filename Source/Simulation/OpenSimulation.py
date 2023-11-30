@@ -47,13 +47,18 @@ import IntroWindow.openIntro as OpenIntro
 
 
 class RectangleItem(QGraphicsItem):
-    def __init__(self, x, y, width, height, isRoom):
+    def __init__(self, x, y, width, height, isRoom, isTableTop=False):
         super().__init__()
         self.rect = QRectF(x, y, width, height)
 
         self.x = x
         self.y = y
         self._brush = QBrush(QColor(230, 255, 230) if isRoom else QColor(255, 100, 100))
+        self.isTableTop = isTableTop
+        if isTableTop:
+            self._brush = QBrush(QColor(33, 39, 209))
+            # Correct the position of the table top by shifting it up and left
+            self.rect = QRectF(x - 5, y - 5, width, height)
 
     def setBrush(self, brush):
         self._brush = brush
@@ -63,6 +68,8 @@ class RectangleItem(QGraphicsItem):
         return self.rect
 
     def paint(self, painter=None, style=None, widget=None):
+        if self.isTableTop:
+            painter.setOpacity(0.5)
         painter.fillRect(self.rect, self._brush)
 
 
@@ -70,15 +77,19 @@ class CircleItem(QGraphicsItem):
     def __init__(self, x, y, radius):
         super().__init__()
         self.rect = QRectF(x - radius, y - radius, 2 * radius, 2 * radius)
-        self.setFlag(QGraphicsItem.ItemIsSelectable)
-        self.setFlag(QGraphicsItem.ItemIsMovable)
-        self.setFlag(QGraphicsItem.ItemSendsGeometryChanges)
+
+    def setBrush(self, brush):
+        self._brush = QColor(130, 49, 9)
+        self.update()
 
     def boundingRect(self):
         return self.rect
 
     def paint(self, painter, option, widget):
-        painter.setBrush(QColor(0, 0, 200))  # Set the fill color
+        pen = QtGui.QPen()
+        pen.setStyle(QtCore.Qt.NoPen)
+        painter.setPen(pen)
+        painter.setBrush(QColor(130, 49, 9))  # Set the fill color
         painter.drawEllipse(self.rect)
 
 
@@ -492,15 +503,29 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
                         self.shapes.append(
                             Primitives.Rectangle(Vec2(x, y), Vec2(x + w, y + h), False)
                         )
+                    elif item["type"] == "TableLeg":
+                        self.shapes.append(Primitives.Circle(Vec2(x, y), w / 2, True))
+                    elif item["type"] == "TableTop":
+                        # since the table top will not be used for collision detection,
+                        # we don't need to add it to the list of shapes
+                        pass
                     else:
                         self.shapes.append(
                             Primitives.Rectangle(Vec2(x, y), Vec2(x + w, y + h), True)
                         )
                     # TODO deal with not rectangles for rendering
                     # This renders the rectangle to the screen
-                    rect = RectangleItem(
-                        x, y, w, h, item["type"] == "Room"
-                    )  # parameters are x, y, width, height
+                    if item["type"] == "TableLeg":
+                        rect = CircleItem(x, y, w / 2)
+                    else:
+                        rect = RectangleItem(
+                            x,
+                            y,
+                            w,
+                            h,
+                            item["type"] == "Room",
+                            item["type"] == "TableTop",
+                        )  # parameters are x, y, width, height
                     if item["type"] != "Room":
                         rect.setZValue(2)
                     # Add the rectangle to the scene
