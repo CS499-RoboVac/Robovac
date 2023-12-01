@@ -269,7 +269,9 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
         msg.setText("Floor Plan too " + ("large" if big else "small") + ".")
-        msg.setInformativeText(f"Floor plan is {floorplanSize} sq. ft.\nFloor plan must be between 200 and 8000 square feet.")
+        msg.setInformativeText(
+            f"Floor plan is {floorplanSize} sq. ft.\nFloor plan must be between 200 and 8000 square feet."
+        )
         msg.setWindowTitle("Warning - Invalid Plan")
         msg.exec_()
 
@@ -332,7 +334,6 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                     )
                 )
 
-
         # If the floorplan is not valid, don't save it, and display an error message
         if not self.validateFloorPlan(fp):
             # Pop up a message box to tell the user that the floorplan is not valid
@@ -352,19 +353,17 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             dtype=np.uint8,
         )
 
-        
         for x in range(len(self.dirt)):
             for y in range(len(self.dirt[0])):
                 self.dirt[x, y] = (
                     Primitives.PrimitiveInclusion(self.shapes, Vec2(x, y) + tl) * 200
                 )
-        
+
         self.StartDirt = np.sum(self.dirt)
 
         floorplanSize = self.StartDirt / 185800
 
         if floorplanSize > 8000 or floorplanSize < 200:
-
             self.SizeComplaint(floorplanSize > 8000, floorplanSize)
             return 0
 

@@ -592,6 +592,7 @@ class simWindowApp(QMainWindow, Ui_SimWindow):
             self.graphicsView.scene.addItem(self.RobotRenderObject)
             self.robotSizeChange()
             self.fileName = fileName
+            self.floorTypeChange()
 
     def getDirtPixmap(self):
         # Convert the 2D alpha_values array into a 3D array with 4 channels (RGBA)
