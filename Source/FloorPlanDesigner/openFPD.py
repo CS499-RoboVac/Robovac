@@ -262,11 +262,14 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
         self.populateRoomOptions()
         self.floorplanIsSavedSet()
 
-    def SizeComplaint(self, big):
+    def SizeComplaint(self, big, floorplanSize):
+        # Round the floorplan size to 0 decimal places
+        floorplanSize = round(floorplanSize)
+
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
-        msg.setText("Floor Plan too " + "large" if big else "small")
-        msg.setInformativeText(f"Floor plan must be between 200 and 8000 square feet.")
+        msg.setText("Floor Plan too " + ("large" if big else "small") + ".")
+        msg.setInformativeText(f"Floor plan is {floorplanSize} sq. ft.\nFloor plan must be between 200 and 8000 square feet.")
         msg.setWindowTitle("Warning - Invalid Plan")
         msg.exec_()
 
@@ -316,6 +319,9 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                     )
                 )
             else:
+                # If this is a tabletop, skip it
+                if type(room).__name__ == "TableTop":
+                    continue
                 self.shapes.append(
                     Primitives.Rectangle(
                         Vec2(room.x(), room.y()),
@@ -326,23 +332,6 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
                     )
                 )
 
-        tl, br = self.BoundingBox()
-        self.dirt = np.zeros(
-            (math.ceil(abs(tl.x - br.x)), math.ceil(abs(tl.y - br.y))),
-            dtype=np.uint8,
-        )
-
-        for x in range(len(self.dirt)):
-            for y in range(len(self.dirt[0])):
-                self.dirt[x, y] = (
-                    Primitives.PrimitiveInclusion(self.shapes, Vec2(x, y) + tl) * 200
-                )
-
-        self.StartDirt = np.sum(self.dirt)
-
-        if self.StartDirt / 185800 > 8000 or self.StartDirt / 185800 < 200:
-            self.SizeComplaint(self.StartDirt / 185800 > 8000)
-            return 0
 
         # If the floorplan is not valid, don't save it, and display an error message
         if not self.validateFloorPlan(fp):
@@ -354,6 +343,29 @@ class fpdWindowApp(QMainWindow, Ui_FPDWindow):
             self.msg.setIcon(QMessageBox.Critical)
             self.msg.setStandardButtons(QMessageBox.Ok)
             self.msg.exec_()
+            return 0
+
+        # Create the dirt map so we can check if the floorplan is too big or too small
+        tl, br = self.BoundingBox()
+        self.dirt = np.zeros(
+            (math.ceil(abs(tl.x - br.x)), math.ceil(abs(tl.y - br.y))),
+            dtype=np.uint8,
+        )
+
+        
+        for x in range(len(self.dirt)):
+            for y in range(len(self.dirt[0])):
+                self.dirt[x, y] = (
+                    Primitives.PrimitiveInclusion(self.shapes, Vec2(x, y) + tl) * 200
+                )
+        
+        self.StartDirt = np.sum(self.dirt)
+
+        floorplanSize = self.StartDirt / 185800
+
+        if floorplanSize > 8000 or floorplanSize < 200:
+
+            self.SizeComplaint(floorplanSize > 8000, floorplanSize)
             return 0
 
         opts = QFileDialog.Options()

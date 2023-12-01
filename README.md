@@ -1,6 +1,8 @@
 # Robovac
 The main repo for Team 1's CS499 project
 
+#  If you are looking for instructions on how to install and run the project, go [here](HowToInstallAndRun.md)
+
 ## Setting up your dev environment
 We will be using python 11 with Pygame, Tkinter, and any other libraries we end up using
 
