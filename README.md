@@ -1,112 +1,53 @@
-# Robovac
-The main repo for Team 1's CS499 project
+# This document contains the instructions to install the required packages to run the QTrobovac project
 
-#  If you are looking for instructions on how to install and run the project, go [here](HowToInstallAndRun.md)
+This project runs best on Python 3.12.
 
-## Setting up your dev environment
-We will be using python 11 with Pygame, Tkinter, and any other libraries we end up using
+To ensure that there are no conflicts, I recommend using Conda to manage your python environments
 
-> **To make sure all of our environments are the same, we will use something called `Miniconda`. This will allow us to use a fresh environment without worrying about what other python things we have installed**
-
-### Install and update Miniconda
+## How to install Conda
 Go [here](https://docs.conda.io/en/latest/miniconda.html) to install the correct Miniconda version for your system **Make sure you acccept the default settings**
 
-On Windows, launch the program called Anaconda prompt. This will be your terminal
+On Windows, launch the program called Anaconda prompt. This will used for all of your conda, pip, and python commands
 
 ![Anaconda Prompt Image](Documentation/AnacondaPrompt.png)
 
 On Mac and Linux, just use your default terminal for all terminal commands
 
 ### Create a new Conda environment
-This will create a new conda enviroment that we can install our packages in. To do this, run
+Create a new conda environment to install the required packages in. To do this, run
 
-```
-conda create --name QTrobovac -c conda-forge black
-```
+```conda create --name robovac python==3.12```
+
 Confirm with `y`
 
 Then to switch to the new environment, run
 
-```
-conda activate robovac
-```
+```conda activate robovac```
 
-Now you are in the new environment. To install the rest of the packages, run
+## Install packages
+Next, install the required packages.
+In your new environment, run
+```pip install pyqt5 numpy matplotlib opencv-python```
 
-```
-pip install pyqt5
-pip install PyQt5Designer
-```
-## How to run pyqt5 designer
-To run pyqt5 designer, run
+This will install all of the required packages to run the project.
 
-```
-designer.exe
-```
-If this doesn't work, make sure that your
-Python.xxScripts is in your PATH environment
+# How to run the project
+To run the project, run runProject.py, which is at the root of the Source folder.
+You may need to make sure that you are in the correct directory. To get there, run
+```cd <Path To Robovac\Source>```
 
-## How to push your code
+then run
 
-### 1. Make sure you are on the correct branch
-You will do all of your work in your own branch. To create a new branch, run
+```python runProject.py```
 
-```
-git checkout -b <your branch name>
-```
+# How to use Robovac
+Robovac has 3 modules, Floorplan Designer, Simulator, and ViewPreviousRuns.
 
-This will create a new branch and switch to it. 
+You can you use the Floorplan Designer to create a floor plan for Robovac to clean. 
 
-To switch to an existing branch, run
+You can use the Simulator to simulate Robovac cleaning a floor plan.
 
-```
-git checkout <branch name>
-```
+You can use ViewPreviousRuns to view the results of previous runs.
 
-If you want to switch to a branch that is not on your computer, run
 
-```
-git fetch origin
-```
-and then try to switch to the branch again
-
-### 2. Make sure your code is formatted correctly
-From the root of the project, run
-
-```
-black .
-```
-Note that this must be run from a terminal that has the conda robovac environment activated. On Windows, this will be the Anaconda Prompt. On Mac and Linux, this will be your default terminal.
-
-Black will format your code to make sure it is consistent with the rest of the project. If you have any errors, you will need to fix them before you can merge your code.
-
-### 3. Add your changes
-
-Once you have made changes to your code, you will need to add them to a commit. To do this, run
-
-```
-git add *
-```
-from the root of the project. This will add all of your changes to the commit
-
-### 4. Commit your changes
-
-Once you have added your changes, you will need to commit them. To do this, run
-
-```
-git commit -m "<your commit message>"
-```
-
-### 5. Push your changes
-Finally, you will push your changes to the remote repository. To do this, run
-
-```
-git push
-```
-## Adding Black to your conda environment
-If you created your conda environment before we added black to the requirements, you will need to add it manually. To do this, run
-
-```
-conda install -c conda-forge black
-```
-And confirm with `y`
+### If you're looking for instructions on how to develop Robovac, go [here](HowToDevelop.md)
